@@ -8,6 +8,7 @@ import Login from "@/auth/Login";
 import Aboutroutes from "./Aboutroutes";
 import Servicesroute from "./Servicesroute";
 import Contactroutes from "./Contactroutes";
+import ThankYou from "@/Components/Contact/ThankYou";
 
 const Mainroutes = () => {
   return (
@@ -16,6 +17,7 @@ const Mainroutes = () => {
       <Route path="/about" element={<Aboutroutes />} />
       <Route path="/services" element={<Servicesroute />} />
       <Route path="/contact" element={<Contactroutes />} />
+      <Route path="/thank-you" element={<ThankYou />} />
 
       <Route
         path="/login"
