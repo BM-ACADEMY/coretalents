@@ -16,6 +16,7 @@ const authRoutes = require("./Routes/authroutes");
 const review = require("./Routes/Reviewroute")
 const imageRoutes = require("./Routes/imageRoutes");
 const bannerRoutes = require("./Routes/bannerRoutes");
+const emailRoutes = require("./Routes/emailRoutes");
 
 const app = express();
 
@@ -63,6 +64,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/review",review)
 app.use("/api/gallery", imageRoutes);
 app.use("/api/banners", bannerRoutes);
+app.use("/api/email", emailRoutes);
 
 // ================== START SERVER ==================
 connectDB();
