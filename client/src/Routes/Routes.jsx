@@ -9,6 +9,8 @@ import Aboutroutes from "./Aboutroutes";
 import Servicesroute from "./Servicesroute";
 import Contactroutes from "./Contactroutes";
 import ThankYou from "@/Components/Contact/ThankYou";
+import Blogroute from "./blogroute";
+import BlogList from "@/Components/Blog/BlogLis";
 
 const Mainroutes = () => {
   return (
@@ -18,6 +20,8 @@ const Mainroutes = () => {
       <Route path="/services" element={<Servicesroute />} />
       <Route path="/contact" element={<Contactroutes />} />
       <Route path="/thank-you" element={<ThankYou />} />
+      <Route path="/blog/*" element={<Blogroute />} />
+      <Route path="/blog" element={<BlogList />} />
 
       <Route
         path="/login"

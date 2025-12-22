@@ -144,7 +144,7 @@ const BannerManagement = () => {
     <div className="container px-4 sm:px-6 lg:px-8 py-10">
       
       {/* HEADER SECTION */}
-      <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-b etween gap-4">
         <div>
             <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Banner Management</h1>
             <p className="text-slate-500 mt-1">Manage your website's hero sliders and visuals.</p>

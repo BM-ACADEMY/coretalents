@@ -17,11 +17,13 @@ const review = require("./Routes/Reviewroute")
 const imageRoutes = require("./Routes/imageRoutes");
 const bannerRoutes = require("./Routes/bannerRoutes");
 const emailRoutes = require("./Routes/emailRoutes");
+const blogRoutes = require("./Routes/blogRoutes");
 
 const app = express();
 
 // Serve static files
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 
 
 // ================== MIDDLEWARE ==================
@@ -65,6 +67,7 @@ app.use("/api/review",review)
 app.use("/api/gallery", imageRoutes);
 app.use("/api/banners", bannerRoutes);
 app.use("/api/email", emailRoutes);
+app.use("/api/blogs", blogRoutes);
 
 // ================== START SERVER ==================
 connectDB();

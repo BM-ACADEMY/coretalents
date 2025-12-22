@@ -117,7 +117,7 @@ const Navbar = () => {
         // Add more if you want
       ],
     },
-    // { title: 'Blog', to: '/blog' },
+    { title: 'Blog', to: '/blog' },
     { title: 'Contact', to: '/contact' },
   ];
 

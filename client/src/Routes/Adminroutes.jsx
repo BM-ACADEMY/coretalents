@@ -5,6 +5,7 @@ import Gallery from "@/Admin/Pages/Gallery";
 import Reviews from "@/Admin/Pages/Reviews";
 import Banner from "@/Admin/Pages/Banner";
 import Others from "@/Admin/Pages/Others";
+import BlogMain from "@/Admin/Pages/Blog/BlogMain";
 
 
 const Adminroutes = () => {
@@ -23,7 +24,9 @@ const Adminroutes = () => {
         <Route path="gallery" element={<Gallery />} />
         <Route path="review" element={<Reviews />} />
         <Route path="banner" element={<Banner />} />
+        <Route path="blog" element={<BlogMain />} />
         <Route path="others" element={<Others />} />
+        
       </Route>
     </Routes>
   );
