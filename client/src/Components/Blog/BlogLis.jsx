@@ -70,11 +70,12 @@ const BlogList = () => {
               {/* Content Area */}
               <div className="p-6 pt-5 flex flex-col flex-grow">
                 <div className="flex flex-wrap gap-2 mb-4">
-                  {(blog.tags?.length > 0 ? blog.tags : ["General", "Trending"]).map((tag, i) => (
-                    <span key={i} className="bg-[#f0f2f5] text-[#6b7280] text-[12px] font-medium px-4 py-1 rounded-full">
-                      {tag}
+                  
+                    <span className="bg-[#f0f2f5] text-[#6b7280] text-[12px] font-medium px-4 py-1 rounded-full">
+                       {blog.category}
                     </span>
-                  ))}
+                 
+                  
                 </div>
 
                 {/* Title (Removed internal Link to avoid nested <a> tags) */}

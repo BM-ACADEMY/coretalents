@@ -4,14 +4,29 @@ const path = require('path');
 
 // --- 1. CREATE BLOG ---
 // --- 1. CREATE BLOG (Updated) ---
+// --- 1. CREATE BLOG (Updated for Category Robustness) ---
 exports.createBlog = async (req, res) => {
   try {
-    const { title, slug, description, contentBlocks, tags, category } = req.body;
+    let { title, slug, description, contentBlocks, tags, category } = req.body;
 
     if (!req.file) return res.status(400).json({ message: "Cover image is required" });
 
-    // Construct the full server URL
-    // Ensure SERVER_URL is defined in your .env (e.g., SERVER_URL=http://localhost:4000)
+    // Handle Category if it comes as a stringified object or a plain object
+    let finalCategory = "Uncategorized";
+    if (category) {
+      try {
+        // If it's a stringified JSON object, parse it
+        const parsedCategory = typeof category === 'string' && category.startsWith('{') 
+          ? JSON.parse(category) 
+          : category;
+        
+        // Extract the name if it's an object, otherwise use the string
+        finalCategory = typeof parsedCategory === 'object' ? parsedCategory.name : parsedCategory;
+      } catch (e) {
+        finalCategory = category; // Fallback to raw string
+      }
+    }
+
     const serverUrl = process.env.SERVER_URL || `${req.protocol}://${req.get('host')}`;
     const coverImageUrl = `${serverUrl}/uploads/blog/${slug}/${req.file.filename}`;
 
@@ -19,9 +34,9 @@ exports.createBlog = async (req, res) => {
       title,
       slug,
       description,
-      category,
+      category: finalCategory, // Now guaranteed to be a string
       coverImage: {
-        url: coverImageUrl, // Saves the full path: http://localhost:4000/uploads/...
+        url: coverImageUrl,
         altText: title
       },
       contentBlocks: typeof contentBlocks === 'string' ? JSON.parse(contentBlocks) : contentBlocks,
@@ -31,7 +46,7 @@ exports.createBlog = async (req, res) => {
     });
 
     await newBlog.save();
-    res.status(201).json({ success: true, message: "Blog created!", data: newBlog });
+    res.status(201).json({ success: true, message: "Blog published successfully!", data: newBlog });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
