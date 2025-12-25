@@ -1,5 +1,7 @@
 import React from 'react';
 import Calltoactionimage from '@/assets/vector/cta-img4.png'
+import { Link } from "react-router-dom";
+
 const Newspapercard = () => {
   return (
     <div className="mb-22 flex items-center justify-center p-4">
@@ -27,9 +29,11 @@ const Newspapercard = () => {
           </p>
           
           <div>
-            <button className="bg-[#1F1F1F] text-white px-8 py-4 rounded-full font-semibold text-sm hover:bg-black transition-colors duration-300 shadow-lg">
-              Get Started Now
-            </button>
+            <Link to="/contact">
+  <button className="bg-[#1F1F1F] text-white px-8 py-4 rounded-full font-semibold text-sm hover:bg-black transition-colors duration-300 shadow-lg">
+    Get Started Now
+  </button>
+</Link>
           </div>
         </div>
 
