@@ -165,7 +165,8 @@ const BlogDetails = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <Calendar size={18} className="text-indigo-500" />
-                    <span>{new Date(blog.createdAt).toLocaleDateString()}</span>
+                    <span>{blog.date ? new Date(blog.date).toLocaleDateString()
+                : new Date().toLocaleDateString()}</span>
                   </div>
                 </div>
               </header>

@@ -7,7 +7,7 @@ const path = require('path');
 // --- 1. CREATE BLOG (Updated for Category Robustness) ---
 exports.createBlog = async (req, res) => {
   try {
-    let { title,mainHeading, slug, description, contentBlocks, tags, category } = req.body;
+    let { title,mainHeading, slug, description, contentBlocks, tags, category,date } = req.body;
 
     if (!req.file) return res.status(400).json({ message: "Cover image is required" });
 
@@ -34,6 +34,7 @@ exports.createBlog = async (req, res) => {
       title,
       mainHeading,
       slug,
+      date,
       description,
       category: finalCategory, // Now guaranteed to be a string
       coverImage: {
@@ -43,7 +44,9 @@ exports.createBlog = async (req, res) => {
       contentBlocks: typeof contentBlocks === 'string' ? JSON.parse(contentBlocks) : contentBlocks,
       author: req.user.id, 
       tags: tags ? (tags.startsWith('[') ? JSON.parse(tags) : tags.split(',')) : [],
+      // date: date ? new Date(date) : undefined,
       status: 'published'
+      
     });
 
     await newBlog.save();
@@ -137,7 +140,7 @@ exports.deleteContentImage = async (req, res) => {
 exports.updateBlog = async (req, res) => {
   try {
     const { id } = req.params;
-    let { title,mainHeading, slug, description, contentBlocks, tags, category } = req.body;
+    let { title,mainHeading, slug, description,date, contentBlocks, tags, category } = req.body;
 
     // 1. Fetch the EXISTING blog from DB to compare
     const blog = await BlogPost.findById(id);
@@ -216,6 +219,7 @@ exports.updateBlog = async (req, res) => {
       title,
       mainHeading,
       slug,
+      date,
       description,
       category,
       coverImage: { url: coverImageUrl, altText: title },

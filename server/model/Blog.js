@@ -29,6 +29,10 @@ const blogSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
+  date: {
+    type: Date,
+    default: Date.now // Defaults to today if not provided
+  },
   mainHeading: { type: String, trim: true }, // <--- NEW FIELD
   slug: {
     type: String,

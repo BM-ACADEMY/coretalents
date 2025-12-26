@@ -12,9 +12,17 @@ import BlogPreview from "./BlogPreview";
 const BlogCreate = ({ switchToView, editingBlog }) => {
   const { user, loading: authLoading } = useAuth();
 
+  // 1. ADD 'date' to State
   const [meta, setMeta] = useState({
-    title: "", mainHeading: "", slug: "", description: "", tags: "", category: "",
+    title: "", 
+    mainHeading: "", 
+    slug: "", 
+    description: "", 
+    tags: "", 
+    category: "",
+    date: "" // New Date Field
   });
+  
   const [coverImage, setCoverImage] = useState(null);
   const [coverPreview, setCoverPreview] = useState(null);
 
@@ -40,6 +48,8 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
         description: editingBlog.description || "",
         tags: Array.isArray(editingBlog.tags) ? editingBlog.tags.join(",") : editingBlog.tags || "",
         category: editingBlog.category || "",
+        // Format Date for Input (YYYY-MM-DD)
+        date: editingBlog.date ? new Date(editingBlog.date).toISOString().split('T')[0] : "" 
       });
 
       if (editingBlog.coverImage && editingBlog.coverImage.url) {
@@ -75,6 +85,7 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
     }
   };
 
+  // ... (Standard Helpers: addItem, updateItem, etc. - No changes needed here) ...
   const addItemToSection = (type) => {
     const activeIdx = sections.findIndex(s => !s.isCompleted);
     if (activeIdx === -1) return;
@@ -201,6 +212,8 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
       formData.append("slug", meta.slug);
       formData.append("description", meta.description);
       formData.append("tags", meta.tags);
+      // 2. Append Date to Form Data
+      formData.append("date", meta.date); 
       formData.append("contentBlocks", JSON.stringify(processedBlocks)); 
       formData.append("category", meta.category);
 
@@ -257,9 +270,16 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
             </div>
 
             <div className="space-y-4">
-                <div>
-                   <label className="text-xs font-bold text-gray-500 uppercase">Internal Title</label>
-                   <input name="title" value={meta.title} onChange={handleMetaChange} placeholder="Internal Name (e.g. Draft 1)" className="w-full border p-2 rounded text-sm"/>
+                <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <label className="text-xs font-bold text-gray-500 uppercase">Internal Title</label>
+                        <input name="title" value={meta.title} onChange={handleMetaChange} placeholder="Internal Name" className="w-full border p-2 rounded text-sm"/>
+                    </div>
+                    {/* 3. Date Input Field */}
+                    <div>
+                        <label className="text-xs font-bold text-gray-500 uppercase">Publish Date</label>
+                        <input type="date" name="date" value={meta.date} onChange={handleMetaChange} className="w-full border p-2 rounded text-sm text-gray-600"/>
+                    </div>
                 </div>
 
                 <div>
@@ -287,13 +307,11 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
             <div key={section.id} className={`transition-all duration-300 rounded-lg overflow-hidden ${section.isCompleted ? 'bg-white border border-gray-200 shadow-sm opacity-80 hover:opacity-100' : 'bg-white border-2 border-blue-500 shadow-xl ring-4 ring-blue-50'}`}>
                 <div className={`flex justify-between items-center p-3 ${section.isCompleted ? 'bg-gray-50' : 'bg-blue-600 text-white'}`}>
                 
-                {/* Section Header Left */}
                 <div className="flex items-center gap-2">
                     <span className="font-bold text-sm uppercase flex items-center gap-2"><Layers size={16}/> Section {sIdx + 1}</span>
                     {section.isCompleted && <span className="text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded-full">{section.items.length} Items</span>}
                 </div>
 
-                {/* Section Header Right (Controls) */}
                 <div className="flex gap-2 items-center">
                     {section.isCompleted ? (
                     <>
