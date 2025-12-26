@@ -138,32 +138,94 @@ exports.updateBlog = async (req, res) => {
     const { id } = req.params;
     let { title, slug, description, contentBlocks, tags, category } = req.body;
 
+    // 1. Fetch the EXISTING blog from DB to compare
     const blog = await BlogPost.findById(id);
     if (!blog) return res.status(404).json({ message: "Blog not found" });
 
+    // ---------------------------------------------------------
+    //  LOGIC A: Handle Cover Image Replacement
+    // ---------------------------------------------------------
     let coverImageUrl = blog.coverImage.url;
 
-    // If a new cover image is uploaded, replace the old one
     if (req.file) {
+      // User uploaded a NEW cover image
       const serverUrl = process.env.SERVER_URL || `${req.protocol}://${req.get('host')}`;
       coverImageUrl = `${serverUrl}/uploads/blog/${slug}/${req.file.filename}`;
-      
-      // Optional: Delete the old physical file here if needed
+
+      // DELETE THE OLD COVER IMAGE FILE
+      try {
+        const oldUrl = blog.coverImage.url;
+        if (oldUrl && oldUrl.includes('/uploads/blog/')) {
+          const relativePath = oldUrl.split('/uploads/blog/')[1];
+          const oldFilePath = path.join(__dirname, '../uploads/blog', relativePath);
+          if (fs.existsSync(oldFilePath)) {
+            fs.unlinkSync(oldFilePath);
+            console.log("Deleted old cover image:", relativePath);
+          }
+        }
+      } catch (err) {
+        console.error("Error deleting old cover image:", err);
+      }
     }
 
+    // ---------------------------------------------------------
+    //  LOGIC B: Handle Content Blocks Image Cleanup
+    // ---------------------------------------------------------
+    // Parse the NEW content blocks (incoming from frontend)
+    const newBlocks = typeof contentBlocks === 'string' ? JSON.parse(contentBlocks) : contentBlocks;
+    
+    // Get the OLD content blocks (currently in DB)
+    const oldBlocks = blog.contentBlocks;
+
+    // Helper: Extract all image URLs from a list of blocks
+    const extractImageUrls = (blocks) => {
+      return blocks
+        .filter(block => block.type === 'image' && block.data.url)
+        .map(block => block.data.url);
+    };
+
+    const oldImageUrls = extractImageUrls(oldBlocks);
+    const newImageUrls = extractImageUrls(newBlocks);
+
+    // Find images that exist in OLD but NOT in NEW (The Orphans)
+    const imagesToDelete = oldImageUrls.filter(url => !newImageUrls.includes(url));
+
+    // DELETE ORPHANED IMAGES
+    imagesToDelete.forEach(url => {
+      try {
+        if (url.includes('/uploads/blog/')) {
+          const relativePath = url.split('/uploads/blog/')[1];
+          // DecodeURI handles spaces/special chars in filenames
+          const filePath = path.join(__dirname, '../uploads/blog', decodeURIComponent(relativePath));
+          
+          if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+            console.log("Deleted unused content image:", relativePath);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to delete orphan image:", err);
+      }
+    });
+
+    // ---------------------------------------------------------
+    //  LOGIC C: Update Database
+    // ---------------------------------------------------------
     const updatedData = {
       title,
       slug,
       description,
       category,
       coverImage: { url: coverImageUrl, altText: title },
-      contentBlocks: typeof contentBlocks === 'string' ? JSON.parse(contentBlocks) : contentBlocks,
+      contentBlocks: newBlocks, // Save the new structure
       tags: tags ? (typeof tags === 'string' ? tags.split(',') : tags) : [],
     };
 
     const updatedBlog = await BlogPost.findByIdAndUpdate(id, updatedData, { new: true });
-    res.status(200).json({ success: true, message: "Blog updated!", data: updatedBlog });
+    res.status(200).json({ success: true, message: "Blog updated and cleaned!", data: updatedBlog });
+
   } catch (error) {
+    console.error("Update Error:", error);
     res.status(500).json({ message: error.message });
   }
 };
