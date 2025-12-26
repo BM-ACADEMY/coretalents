@@ -155,7 +155,7 @@ const BlogDetails = () => {
                   </div>
                 )}
                 <h1 className="text-4xl md:text-4xl font-bold text-gray-900 leading-tight mb-6">
-                  {blog.title}
+                  {blog.mainHeading}
                 </h1>
 
                 <div className="flex flex-wrap items-center gap-6 text-sm text-gray-600 border-b border-gray-200 pb-8">
@@ -170,7 +170,7 @@ const BlogDetails = () => {
                 </div>
               </header>
 
-              <motion.div
+              {/* <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="mb-12 rounded-2xl overflow-hidden shadow-2xl"
@@ -186,7 +186,7 @@ const BlogDetails = () => {
                   alt={blog.title}
                   className="w-full h-96 md:h-[500px] object-cover"
                 />
-              </motion.div>
+              </motion.div> */}
 
               <article className="prose prose-lg max-w-none text-gray-700 leading-relaxed">
                 {blog.contentBlocks.map((block, index) => (

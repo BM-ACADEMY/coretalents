@@ -29,6 +29,7 @@ const blogSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
+  mainHeading: { type: String, trim: true }, // <--- NEW FIELD
   slug: {
     type: String,
     required: true,

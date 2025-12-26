@@ -5,15 +5,16 @@ import { useAuth } from "@/Context/Authcontext";
 import {
   Type, List as ListIcon, Trash2, Plus, X, Image as ImageIcon,
   CheckCircle, Edit2, ChevronDown, Save, Loader, Layers,
-  Quote, Link, ChevronUp, Circle
+  Quote, Link, Circle, Upload, ArrowUp, ArrowDown // Added Arrows
 } from "lucide-react";
 import BlogPreview from "./BlogPreview";
 
 const BlogCreate = ({ switchToView, editingBlog }) => {
   const { user, loading: authLoading } = useAuth();
 
+  // 1. ADD mainHeading to State
   const [meta, setMeta] = useState({
-    title: "", slug: "", description: "", tags: "", category: "",
+    title: "", mainHeading: "", slug: "", description: "", tags: "", category: "",
   });
   const [coverImage, setCoverImage] = useState(null);
   const [coverPreview, setCoverPreview] = useState(null);
@@ -26,10 +27,6 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
   const [uploadingImg, setUploadingImg] = useState({ sectionIdx: null, itemIdx: null });
   const activeSectionIndex = sections.findIndex(s => !s.isCompleted);
 
-  // ... [KEEP ALL YOUR EXISTING useEffects AND HELPER FUNCTIONS HERE] ...
-  // (handleMetaChange, handleCoverImageChange, addItemToSection, toggleListType, addNewSection, etc.)
-  // Ensure the functions like editSection, removeSection, updateItemData, removeItem etc are present.
-
   useEffect(() => {
     if (!authLoading && !user) showToast("Login required", "error");
   }, [user, authLoading]);
@@ -39,6 +36,7 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
     if (editingBlog) {
       setMeta({
         title: editingBlog.title || "",
+        mainHeading: editingBlog.mainHeading || "", // Populate Main Heading
         slug: editingBlog.slug || "",
         description: editingBlog.description || "",
         tags: Array.isArray(editingBlog.tags) ? editingBlog.tags.join(",") : editingBlog.tags || "",
@@ -62,6 +60,7 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
   const handleMetaChange = (e) => {
     const { name, value } = e.target;
     setMeta((prev) => ({ ...prev, [name]: value }));
+    // Auto-generate slug from TITLE (not main heading)
     if (name === "title" && !meta.slug && !editingBlog) {
       setMeta((prev) => ({
         ...prev,
@@ -77,9 +76,21 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
       setCoverPreview(URL.createObjectURL(file));
     }
   };
-  
-  // ... [Insert all your addItem, removeItem, updateItem functions here as they were] ...
 
+  // --- RE-ARRANGE SECTIONS LOGIC ---
+  const moveSection = (index, direction) => {
+    const newSections = [...sections];
+    if (direction === 'up' && index > 0) {
+      // Swap with previous
+      [newSections[index], newSections[index - 1]] = [newSections[index - 1], newSections[index]];
+    } else if (direction === 'down' && index < sections.length - 1) {
+      // Swap with next
+      [newSections[index], newSections[index + 1]] = [newSections[index + 1], newSections[index]];
+    }
+    setSections(newSections);
+  };
+
+  // ... (Keep existing helpers: addItemToSection, updateItemData, removeItem, handleImageSelect, etc.)
   const addItemToSection = (type) => {
     const activeIdx = sections.findIndex(s => !s.isCompleted);
     if (activeIdx === -1) return;
@@ -113,18 +124,15 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
     const preview = URL.createObjectURL(file);
     updateItemData(sIdx, iIdx, 'file', file);
     updateItemData(sIdx, iIdx, 'preview', preview);
-    updateItemData(sIdx, iIdx, 'url', preview); // Shows blob initially for preview
+    updateItemData(sIdx, iIdx, 'url', preview);
   };
 
-  // Keep this for manual "Done" clicks, but handleSubmit will double-check
   const markSectionCompleted = async (sectionIdx) => {
     const newSections = [...sections];
     newSections[sectionIdx].isCompleted = true;
     setSections(newSections);
   };
   
-  // ... [Other helper functions: addNewSection, editSection, removeSection, updateListItem, addListItem, removeListItem, toggleListType] ...
-  // Ensure these are defined as in your original code.
   const addNewSection = () => {
     if (activeSectionIndex !== -1) return showToast("Please complete the current section first.", "error");
     setSections([...sections, { id: Date.now(), isCompleted: false, items: [] }]);
@@ -160,9 +168,6 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
     setSections(newSections);
   };
 
-  // =========================================================================
-  //  🔥 UPDATED SUBMIT LOGIC: Handles Image Uploads Before Sending to DB 🔥
-  // =========================================================================
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!meta.title || !meta.slug) return showToast("Missing Title or Slug", "error");
@@ -171,55 +176,33 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
     setSubmitting(true);
 
     try {
-      // 1. Process all sections to upload any pending images
       const processedBlocks = [];
-
-      // Iterate through every section
       for (const section of sections) {
-        // Iterate through every item in the section
         for (const item of section.items) {
-          // Clone the item data to avoid mutating state directly yet
           let itemData = { ...item.data };
-
-          // CHECK: Is this an image AND does it have a raw file pending?
           if (item.type === 'image' && itemData.file) {
             const imageFormData = new FormData();
             imageFormData.append("slug", meta.slug || "temp-uploads");
             imageFormData.append("image", itemData.file);
-
             try {
-              // Upload to Server
               const uploadRes = await axiosInstance.post("/blogs/upload-image", imageFormData, {
                 headers: { "Content-Type": "multipart/form-data" },
                 withCredentials: true
               });
-
               if (uploadRes.data.success) {
-                // REPLACE blob url with SERVER url
                 itemData.url = uploadRes.data.url;
-                
-                // Clean up temporary file objects so they don't get sent to DB
                 delete itemData.file;
                 delete itemData.preview;
               }
             } catch (err) {
-              console.error("Image upload failed for item:", err);
-              showToast("Failed to upload an image inside content", "error");
               setSubmitting(false);
-              return; // Stop submission if upload fails
+              return showToast("Image upload failed", "error");
             }
-          } 
-          // If it's an image but has no file (already uploaded), clean up leftovers just in case
-          else if (item.type === 'image' && !itemData.file) {
+          } else if (item.type === 'image' && !itemData.file) {
              delete itemData.file;
              delete itemData.preview;
           }
-
-          // Add to the final array that goes to DB
-          processedBlocks.push({
-            type: item.type,
-            data: itemData
-          });
+          processedBlocks.push({ type: item.type, data: itemData });
         }
       }
 
@@ -228,13 +211,12 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
         return showToast("Blog has no content!", "error");
       }
 
-      // 2. Prepare Final Form Data
       const formData = new FormData();
       formData.append("title", meta.title);
+      formData.append("mainHeading", meta.mainHeading); // <--- APPEND MAIN HEADING
       formData.append("slug", meta.slug);
       formData.append("description", meta.description);
       formData.append("tags", meta.tags);
-      // Send the PROCESSED blocks with Server URLs
       formData.append("contentBlocks", JSON.stringify(processedBlocks)); 
       formData.append("category", meta.category);
 
@@ -242,13 +224,12 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
         formData.append("coverImage", coverImage);
       }
 
-      // 3. Send to API
       if (editingBlog) {
         await axiosInstance.put(`/blogs/${editingBlog._id}`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
           withCredentials: true
         });
-        showToast("Blog Updated Successfully!", "success");
+        showToast("Blog Updated!", "success");
       } else {
         await axiosInstance.post("/blogs", formData, {
           headers: { "Content-Type": "multipart/form-data" },
@@ -259,7 +240,6 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
       switchToView();
 
     } catch (error) {
-      console.error(error);
       showToast(error.response?.data?.message || "Error saving blog", "error");
     } finally {
       setSubmitting(false);
@@ -268,33 +248,54 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[calc(100vh-150px)]">
-      {/* ... [KEEP THE REST OF YOUR JSX EXACTLY THE SAME] ... */}
       <div className="flex flex-col h-full overflow-y-auto pr-2 custom-scrollbar">
-        {/* Meta */}
+        {/* Meta Header Section */}
         <div className="bg-white p-5 rounded-lg shadow-sm border mb-6">
             <h2 className="text-lg font-bold mb-4">{editingBlog ? "Edit Blog" : "Create New Blog"}</h2>
-            <div className="flex gap-4 mb-4">
-            <div className="w-24 h-24 flex-shrink-0 bg-gray-100 border-dashed border-2 rounded-lg flex items-center justify-center relative overflow-hidden cursor-pointer hover:border-blue-400 group">
-                {coverPreview ? <img src={coverPreview} className="w-full h-full object-cover" alt="Cover" /> : <ImageIcon className="text-gray-400"/>}
-                <div className="absolute inset-0 bg-black/30 hidden group-hover:flex items-center justify-center text-white text-xs">Change</div>
-                <input type="file" onChange={handleCoverImageChange} className="absolute inset-0 opacity-0 cursor-pointer"/>
+            
+            {/* UPDATED: Cover Image Input Style */}
+            <div className="mb-6">
+                <label className="block w-full h-40 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-colors relative group overflow-hidden bg-gray-50">
+                    <input type="file" onChange={handleCoverImageChange} className="hidden" accept="image/*" />
+                    {coverPreview ? (
+                        <>
+                            <img src={coverPreview} className="w-full h-full object-cover" alt="Cover" />
+                            <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-white font-medium">
+                                <span className="flex items-center gap-2"><Edit2 size={16}/> Change Cover</span>
+                            </div>
+                        </>
+                    ) : (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-400">
+                            <ImageIcon size={32} className="mb-2"/>
+                            <span className="text-sm font-medium">Click to upload Cover Image</span>
+                        </div>
+                    )}
+                </label>
             </div>
-            <div className="flex-grow space-y-2">
-                <input name="title" value={meta.title} onChange={handleMetaChange} placeholder="Enter Blog Title..." className="w-full font-bold text-xl border-b border-gray-300 focus:border-blue-500 outline-none pb-1 placeholder:font-normal"/>
-                <input name="slug" value={meta.slug} onChange={handleMetaChange} placeholder="url-slug" className="w-full text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded border-none"/>
-            </div>
-            </div>
-            <textarea name="description" value={meta.description} onChange={handleMetaChange} placeholder="Short description..." className="w-full border rounded p-2 text-sm h-16 resize-none focus:ring-1 ring-blue-200 outline-none"/>
-            <div className="mt-4">
-            <label className="text-[10px] font-bold text-gray-500 uppercase">Category Name</label>
-            <input
-                type="text"
-                name="category"
-                value={meta.category}
-                onChange={handleMetaChange}
-                placeholder="e.g. Technology, Personal, Charity"
-                className="w-full border rounded-md p-2 text-sm bg-gray-50 outline-none focus:ring-1 ring-blue-400 focus:border-blue-400"
-            />
+
+            <div className="space-y-4">
+                <div>
+                   <label className="text-xs font-bold text-gray-500 uppercase">Internal Title</label>
+                   <input name="title" value={meta.title} onChange={handleMetaChange} placeholder="Internal Name (e.g. Draft 1)" className="w-full border p-2 rounded text-sm"/>
+                </div>
+
+                {/* NEW: Main Heading Input */}
+                <div>
+                   <label className="text-xs font-bold text-gray-500 uppercase text-blue-600">Main Heading (H1)</label>
+                   <input name="mainHeading" value={meta.mainHeading} onChange={handleMetaChange} placeholder="The Big Display Title" className="w-full text-xl font-bold border-b-2 border-blue-100 focus:border-blue-500 outline-none py-1"/>
+                </div>
+
+                <div>
+                   <label className="text-xs font-bold text-gray-500 uppercase">Slug</label>
+                   <input name="slug" value={meta.slug} onChange={handleMetaChange} placeholder="url-slug" className="w-full text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded border-none"/>
+                </div>
+
+                <textarea name="description" value={meta.description} onChange={handleMetaChange} placeholder="Short description..." className="w-full border rounded p-2 text-sm h-16 resize-none focus:ring-1 ring-blue-200 outline-none"/>
+                
+                <div>
+                    <label className="text-[10px] font-bold text-gray-500 uppercase">Category</label>
+                    <input type="text" name="category" value={meta.category} onChange={handleMetaChange} placeholder="Category" className="w-full border rounded-md p-2 text-sm bg-gray-50 outline-none focus:ring-1 ring-blue-400"/>
+                </div>
             </div>
         </div>
 
@@ -303,11 +304,22 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
             {sections.map((section, sIdx) => (
             <div key={section.id} className={`transition-all duration-300 rounded-lg overflow-hidden ${section.isCompleted ? 'bg-white border border-gray-200 shadow-sm opacity-80 hover:opacity-100' : 'bg-white border-2 border-blue-500 shadow-xl ring-4 ring-blue-50'}`}>
                 <div className={`flex justify-between items-center p-3 ${section.isCompleted ? 'bg-gray-50' : 'bg-blue-600 text-white'}`}>
+                
+                {/* Section Header Left */}
                 <div className="flex items-center gap-2">
                     <span className="font-bold text-sm uppercase flex items-center gap-2"><Layers size={16}/> Section {sIdx + 1}</span>
                     {section.isCompleted && <span className="text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded-full">{section.items.length} Items</span>}
                 </div>
-                <div className="flex gap-2">
+
+                {/* Section Header Right (Controls) */}
+                <div className="flex gap-2 items-center">
+                    {/* NEW: Re-arrange Buttons */}
+                    <div className="flex bg-black/10 rounded mr-2">
+                        <button onClick={(e) => {e.stopPropagation(); moveSection(sIdx, 'up')}} disabled={sIdx === 0} className="p-1 hover:bg-black/20 text-white disabled:opacity-30"><ArrowUp size={14}/></button>
+                        <div className="w-[1px] bg-black/10"></div>
+                        <button onClick={(e) => {e.stopPropagation(); moveSection(sIdx, 'down')}} disabled={sIdx === sections.length - 1} className="p-1 hover:bg-black/20 text-white disabled:opacity-30"><ArrowDown size={14}/></button>
+                    </div>
+
                     {section.isCompleted ? (
                     <>
                         <button onClick={()=>editSection(sIdx)} className="p-1 hover:bg-white hover:text-blue-600 rounded text-gray-500"><Edit2 size={16}/></button>
@@ -324,67 +336,49 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
                     <div className="space-y-4 mb-6">
                     {section.items.map((item, iIdx) => (
                         <div key={iIdx} className="bg-white p-3 rounded shadow-sm border relative group animate-in slide-in-from-bottom-2 fade-in">
-                        <button onClick={()=>removeItem(sIdx, iIdx)} className="absolute top-2 right-2 text-gray-300 hover:text-red-500"><X size={14}/></button>
+                        <button onClick={()=>removeItem(sIdx, iIdx)} className="absolute top-2 right-2 text-gray-300 hover:text-red-500 z-10"><X size={14}/></button>
                         
-                        {item.type === 'heading' && (
-                            <input placeholder="Heading Text" value={item.data.text} onChange={(e)=>updateItemData(sIdx, iIdx, 'text', e.target.value)} className="w-full font-bold text-lg outline-none border-b border-transparent focus:border-blue-300 placeholder:text-gray-300"/>
-                        )}
-                        
-                        {item.type === 'paragraph' && (
-                            <textarea placeholder="Write paragraph..." value={item.data.text} onChange={(e)=>updateItemData(sIdx, iIdx, 'text', e.target.value)} className="w-full min-h-[80px] text-sm outline-none resize-y placeholder:text-gray-300"/>
-                        )}
+                        {/* Heading & Paragraph inputs remain same... */}
+                        {item.type === 'heading' && <input placeholder="Heading Text" value={item.data.text} onChange={(e)=>updateItemData(sIdx, iIdx, 'text', e.target.value)} className="w-full font-bold text-lg outline-none border-b border-transparent focus:border-blue-300 placeholder:text-gray-300"/>}
+                        {item.type === 'paragraph' && <textarea placeholder="Write paragraph..." value={item.data.text} onChange={(e)=>updateItemData(sIdx, iIdx, 'text', e.target.value)} className="w-full min-h-[80px] text-sm outline-none resize-y placeholder:text-gray-300"/>}
 
+                        {/* UPDATED: Content Image Input Style */}
                         {item.type === 'image' && (
                             <div className="space-y-2">
                             {item.data.url ? (
-                                <div className="relative">
-                                {/* Use URL directly. If it's a blob (newly added), it shows. If it's server url (edited), it shows. */}
-                                <img src={item.data.url} className="h-32 object-contain bg-gray-100 rounded" alt={item.data.alt || 'preview'}/>
-                                <button onClick={()=>updateItemData(sIdx, iIdx, 'url', '')} className="absolute top-1 left-1 bg-red-500 text-white text-[10px] px-2 py-1 rounded">Remove</button>
+                                <div className="relative group/img">
+                                    <img src={item.data.url} className="h-40 w-full object-contain bg-gray-100 rounded border" alt={item.data.alt || 'preview'}/>
+                                    <button onClick={()=>updateItemData(sIdx, iIdx, 'url', '')} className="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded opacity-0 group-hover/img:opacity-100 transition-opacity shadow">Change Image</button>
                                 </div>
                             ) : (
-                                <div className="flex items-center gap-2">
-                                <div className="bg-gray-100 p-2 rounded-full"><ImageIcon size={18} className="text-gray-400"/></div>
-                                <input type="file" onChange={(e)=>handleImageSelect(sIdx, iIdx, e.target.files[0])} className="text-xs text-gray-500"/>
-                                {(uploadingImg.sectionIdx === sIdx && uploadingImg.itemIdx === iIdx) && <Loader className="animate-spin text-blue-500" size={14}/>}
-                                </div>
+                                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-blue-50 hover:border-blue-400 transition-all">
+                                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                        {(uploadingImg.sectionIdx === sIdx && uploadingImg.itemIdx === iIdx) ? (
+                                            <Loader className="animate-spin text-blue-500 mb-2" size={24}/>
+                                        ) : (
+                                            <Upload className="w-8 h-8 text-gray-400 mb-2" />
+                                        )}
+                                        <p className="text-xs text-gray-500 font-semibold">Click to upload image</p>
+                                    </div>
+                                    <input type="file" className="hidden" onChange={(e)=>handleImageSelect(sIdx, iIdx, e.target.files[0])} accept="image/*" />
+                                </label>
                             )}
-                            <input 
-                                type="text" 
-                                placeholder="Image Alt Text (SEO)" 
-                                value={item.data.alt || ""} 
-                                onChange={(e)=>updateItemData(sIdx, iIdx, 'alt', e.target.value)} 
-                                className="w-full text-xs p-1 border rounded bg-gray-50 focus:bg-white outline-none"
-                            />
+                            <input type="text" placeholder="Image Alt Text (SEO)" value={item.data.alt || ""} onChange={(e)=>updateItemData(sIdx, iIdx, 'alt', e.target.value)} className="w-full text-xs p-2 border rounded bg-white focus:ring-1 ring-blue-200 outline-none"/>
                             </div>
                         )}
 
+                        {/* ... (Keep List, Quote, Button, Accordion logic exactly as is) ... */}
                         {item.type === 'list' && (
                             <div className="space-y-4">
                                 <div className="flex justify-between items-center">
-                                <input
-                                placeholder="Optional heading"
-                                value={item.data.heading || ""}
-                                onChange={(e) => updateItemData(sIdx, iIdx, 'heading', e.target.value)}
-                                className="w-full font-bold text-lg outline-none border-b border-transparent focus:border-blue-300 placeholder:text-gray-300"
-                                />
-                                <button
-                                onClick={() => toggleListType(sIdx, iIdx)}
-                                className="ml-4 p-2 bg-gray-100 rounded hover:bg-gray-200 transition"
-                                >
-                                {item.data.listType === 'checklist' ? <CheckCircle size={18} className="text-green-600"/> : <Circle size={18} className="text-gray-500"/>}
-                                </button>
+                                <input placeholder="Optional heading" value={item.data.heading || ""} onChange={(e) => updateItemData(sIdx, iIdx, 'heading', e.target.value)} className="w-full font-bold text-lg outline-none border-b border-transparent focus:border-blue-300 placeholder:text-gray-300"/>
+                                <button onClick={() => toggleListType(sIdx, iIdx)} className="ml-4 p-2 bg-gray-100 rounded hover:bg-gray-200 transition">{item.data.listType === 'checklist' ? <CheckCircle size={18} className="text-green-600"/> : <Circle size={18} className="text-gray-500"/>}</button>
                             </div>
                             <div className="space-y-2 pl-4">
                                 {item.data.items.map((listItem, listIdx) => (
                                 <div key={listIdx} className="flex gap-3 items-center">
                                     {item.data.listType === 'checklist' ? <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0"/> : <div className="w-1.5 h-1.5 bg-gray-400 rounded-full flex-shrink-0"/>}
-                                    <input
-                                    value={listItem}
-                                    onChange={(e) => updateListItem(sIdx, iIdx, listIdx, e.target.value)}
-                                    className="flex-1 text-sm border-b border-gray-100 focus:border-blue-300 outline-none"
-                                    placeholder="List item"
-                                    />
+                                    <input value={listItem} onChange={(e) => updateListItem(sIdx, iIdx, listIdx, e.target.value)} className="flex-1 text-sm border-b border-gray-100 focus:border-blue-300 outline-none" placeholder="List item"/>
                                     <button onClick={() => removeListItem(sIdx, iIdx, listIdx)} className="text-gray-300 hover:text-red-500"><X size={12}/></button>
                                 </div>
                                 ))}
@@ -424,6 +418,7 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
 
                     <div className="flex items-center justify-between border-t border-gray-200 pt-4 flex-wrap gap-2">
                     <div className="flex gap-2 flex-wrap">
+                        {/* Tool Buttons */}
                         <SmallToolBtn icon={<Type size={14}/>} label="Heading" onClick={()=>addItemToSection('heading')}/>
                         <SmallToolBtn icon={<Type size={12}/>} label="Para" onClick={()=>addItemToSection('paragraph')}/>
                         <SmallToolBtn icon={<ImageIcon size={14}/>} label="Img" onClick={()=>addItemToSection('image')}/>
@@ -448,6 +443,8 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
             </div>
             )}
         </div>
+        
+        {/* Submit Button */}
         {activeSectionIndex === -1 && (
             <div className="sticky bottom-4 bg-white/80 backdrop-blur p-4 border-t shadow-lg rounded-t-xl">
             <button onClick={handleSubmit} disabled={submitting} className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-lg font-bold shadow-md hover:shadow-xl transition transform hover:-translate-y-1 flex justify-center items-center gap-2">

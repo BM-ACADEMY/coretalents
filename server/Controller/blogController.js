@@ -7,7 +7,7 @@ const path = require('path');
 // --- 1. CREATE BLOG (Updated for Category Robustness) ---
 exports.createBlog = async (req, res) => {
   try {
-    let { title, slug, description, contentBlocks, tags, category } = req.body;
+    let { title,mainHeading, slug, description, contentBlocks, tags, category } = req.body;
 
     if (!req.file) return res.status(400).json({ message: "Cover image is required" });
 
@@ -32,6 +32,7 @@ exports.createBlog = async (req, res) => {
 
     const newBlog = new BlogPost({
       title,
+      mainHeading,
       slug,
       description,
       category: finalCategory, // Now guaranteed to be a string
@@ -136,7 +137,7 @@ exports.deleteContentImage = async (req, res) => {
 exports.updateBlog = async (req, res) => {
   try {
     const { id } = req.params;
-    let { title, slug, description, contentBlocks, tags, category } = req.body;
+    let { title,mainHeading, slug, description, contentBlocks, tags, category } = req.body;
 
     // 1. Fetch the EXISTING blog from DB to compare
     const blog = await BlogPost.findById(id);
@@ -213,6 +214,7 @@ exports.updateBlog = async (req, res) => {
     // ---------------------------------------------------------
     const updatedData = {
       title,
+      mainHeading,
       slug,
       description,
       category,
