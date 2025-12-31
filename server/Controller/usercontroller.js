@@ -3,7 +3,7 @@ const User = require("../model/usermodel");
 // Get all users
 exports.getAllUsers = async (req, res) => {
   try {
-    const users = await User.find().select("-password"); // hide password
+    const users = await User.find().select("-password");
     res.json(users);
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
@@ -24,10 +24,14 @@ exports.getUserById = async (req, res) => {
 // Update user
 exports.updateUser = async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name, phone, role } = req.body; // Added phone to updates
+
+    // Optional: Security check to ensure only Admins can update 'role'
+    // if (role && req.user.role !== 'admin') { return res.status(403)... }
+
     const user = await User.findByIdAndUpdate(
       req.params.id,
-      { name },
+      { name, phone, role },
       { new: true }
     ).select("-password");
 

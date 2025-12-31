@@ -22,7 +22,6 @@ const navItems = [
   },
   { title: 'Blog', to: '/blog' },
   { title: 'Contact', to: '/contact' },
-  { title: 'Privacy Policy', to: '/privacy-policy' },
 ];
 
 // ==========================================

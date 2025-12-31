@@ -4,8 +4,15 @@ const userSchema = new mongoose.Schema(
   {
     name: { type: String, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true },
-    password: { type: String, required: true },
-    isAdmin: { type: Boolean, default: false }, // Add isAdmin field
+    phone: { type: String, default: "" }, // Optional for Google users initially
+    password: { type: String }, // Optional for Google users
+    googleId: { type: String }, // To identify Google users
+    avatar: { type: String }, // Store profile picture
+    role: { 
+      type: String, 
+      enum: ["user", "admin"], 
+      default: "user" 
+    },
   },
   { timestamps: true }
 );

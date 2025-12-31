@@ -1,24 +1,20 @@
-// src/Context/PublicRoute.jsx
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { useAuth } from "./Authcontext";
 
-const PublicRoute = ({ children, restrictToLoggedIn = true }) => {
+const PublicRoute = ({ children }) => {
   const { user, loading } = useAuth();
-  const location = useLocation();
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  if (loading) return <div>Loading...</div>;
 
-  if (user && restrictToLoggedIn) {
-    // If user is logged in, redirect based on role
-    if (user.isAdmin) {
-      return <Navigate to="/admin/gallery" replace />;
+  if (user) {
+    if (user.role === "admin") {
+      // ✅ FIX: Redirect to /admin (which auto-redirects to /admin/gallery)
+      return <Navigate to="/admin" replace />;
     }
-    return <Navigate to="/" replace />;
+    // Normal user redirect
+    return <Navigate to="/user/dashboard" replace />;
   }
 
-  // Not logged in → allow access to public page (like /login)
   return children;
 };
 

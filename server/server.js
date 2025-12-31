@@ -18,6 +18,7 @@ const imageRoutes = require("./Routes/imageRoutes");
 const bannerRoutes = require("./Routes/bannerRoutes");
 const emailRoutes = require("./Routes/emailRoutes");
 const blogRoutes = require("./Routes/blogRoutes");
+const resumeRoutes = require("./Routes/resumeRoutes");
 
 const app = express();
 
@@ -68,6 +69,7 @@ app.use("/api/gallery", imageRoutes);
 app.use("/api/banners", bannerRoutes);
 app.use("/api/email", emailRoutes);
 app.use("/api/blogs", blogRoutes);
+app.use("/api/resume", resumeRoutes);
 
 // ================== START SERVER ==================
 connectDB();

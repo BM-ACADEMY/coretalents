@@ -1,15 +1,17 @@
 const express = require("express");
 const router = express.Router();
 const userController = require("../Controller/usercontroller");
-const { verifyToken } = require("../middleware/auth");
+const { verifyToken, authorizeRoles } = require("../middleware/auth");
 
-// Protect all user routes
+// Protect all routes with token verification
 router.use(verifyToken);
 
-// CRUD
-router.get("/", userController.getAllUsers);          // Get all users
-router.get("/:id", userController.getUserById);      // Get single user
-router.put("/:id", userController.updateUser);       // Update user
-router.delete("/:id", userController.deleteUser);    // Delete user
+// Admin Only Routes
+router.get("/", authorizeRoles("admin"), userController.getAllUsers); 
+router.delete("/:id", authorizeRoles("admin"), userController.deleteUser);
+
+// User or Admin can access these
+router.get("/:id", userController.getUserById);      
+router.put("/:id", userController.updateUser);       
 
 module.exports = router;

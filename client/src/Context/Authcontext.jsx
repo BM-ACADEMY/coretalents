@@ -12,17 +12,17 @@ export const AuthProvider = ({ children }) => {
   const loadUser = async () => {
     try {
       const res = await axiosInstance.get("/auth/me");
-      console.log("User loaded from /me:", res.data); // Debug log
-
-      // Ensure the user object always has expected fields
+      // Ensure we capture the role and phone correctly
       setUser({
         id: res.data.id || res.data._id,
-        name: res.data.name || "",
-        email: res.data.email || "",
-        isAdmin: res.data.isAdmin || false, // Critical: explicitly set isAdmin
+        name: res.data.name,
+        email: res.data.email,
+        phone: res.data.phone,
+        role: res.data.role, // "admin" or "user"
       });
     } catch (err) {
-      console.log("No user logged in or error:", err.response?.data || err.message);
+      console.log(err);
+      
       setUser(null);
     } finally {
       setLoading(false);
@@ -33,9 +33,10 @@ export const AuthProvider = ({ children }) => {
     loadUser();
   }, []);
 
-  const register = async (name, email, password) => {
+  // Updated to include phone
+  const register = async (name, email, password, phone) => {
     try {
-      const res = await axiosInstance.post("/auth/register", { name, email, password });
+      const res = await axiosInstance.post("/auth/register", { name, email, password, phone });
       showToast("success", res.data.message || "Registered successfully");
       await loadUser();
       return res.data;
@@ -50,7 +51,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const res = await axiosInstance.post("/auth/login", { email, password });
       showToast("success", res.data.message || "Login successful");
-      await loadUser(); // This will fetch full user with isAdmin
+      await loadUser();
       return res.data;
     } catch (err) {
       const msg = err.response?.data?.message || "Login failed";
@@ -65,12 +66,41 @@ export const AuthProvider = ({ children }) => {
       setUser(null);
       showToast("success", "Logged out successfully");
     } catch (err) {
+      console.log(err);
+      
       showToast("error", "Logout failed");
+    }
+  };
+const googleLoginHandler = async (credentialResponse) => {
+    try {
+      const res = await axiosInstance.post("/auth/google", {
+        token: credentialResponse.credential, // Send Google token to backend
+      });
+      
+      showToast("success", "Google Login successful");
+      
+      setUser({
+        id: res.data.user.id,
+        name: res.data.user.name,
+        email: res.data.user.email,
+        phone: res.data.user.phone,
+        role: res.data.user.role,
+        avatar: res.data.user.avatar,
+      });
+
+      return res.data;
+    } catch (err) {
+      const msg = err.response?.data?.message || "Google Login failed";
+      showToast("error", msg);
+      throw err;
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, setUser, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ 
+       user, setUser, loading, login, register, logout, 
+       googleLoginHandler // Export this
+    }}>
       {children}
     </AuthContext.Provider>
   );
