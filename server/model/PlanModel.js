@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 
 const planSchema = new mongoose.Schema({
-  name: { type: String, required: true }, // e.g., "Pro Plan"
-  price: { type: Number, required: true }, // e.g., 499
-  resumeLimit: { type: Number, required: true }, // e.g., 10 or 100
-  durationInDays: { type: Number, default: 30 }, // Validity
+  name: { type: String, required: true },
+  price: { type: Number, required: true },
+  resumeLimit: { type: Number, required: true },
+  durationInDays: { type: Number, required: true },
   description: { type: String },
   isActive: { type: Boolean, default: true }
 }, { timestamps: true });

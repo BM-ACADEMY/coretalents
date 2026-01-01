@@ -12,17 +12,19 @@ export const AuthProvider = ({ children }) => {
   const loadUser = async () => {
     try {
       const res = await axiosInstance.get("/auth/me");
-      // Ensure we capture the role and phone correctly
+
       setUser({
         id: res.data.id || res.data._id,
         name: res.data.name,
         email: res.data.email,
         phone: res.data.phone,
-        role: res.data.role, // "admin" or "user"
+        role: res.data.role,
+        avatar: res.data.avatar,
+        // 👇 CRITICAL FIX: Save subscription to state
+        subscription: res.data.subscription
       });
     } catch (err) {
       console.log(err);
-      
       setUser(null);
     } finally {
       setLoading(false);
@@ -33,7 +35,6 @@ export const AuthProvider = ({ children }) => {
     loadUser();
   }, []);
 
-  // Updated to include phone
   const register = async (name, email, password, phone) => {
     try {
       const res = await axiosInstance.post("/auth/register", { name, email, password, phone });
@@ -60,33 +61,17 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = async () => {
-    try {
-      await axiosInstance.post("/auth/logout");
-      setUser(null);
-      showToast("success", "Logged out successfully");
-    } catch (err) {
-      console.log(err);
-      
-      showToast("error", "Logout failed");
-    }
-  };
-const googleLoginHandler = async (credentialResponse) => {
+  const googleLoginHandler = async (credentialResponse) => {
     try {
       const res = await axiosInstance.post("/auth/google", {
-        token: credentialResponse.credential, // Send Google token to backend
+        token: credentialResponse.credential,
       });
-      
+
       showToast("success", "Google Login successful");
-      
-      setUser({
-        id: res.data.user.id,
-        name: res.data.user.name,
-        email: res.data.user.email,
-        phone: res.data.user.phone,
-        role: res.data.user.role,
-        avatar: res.data.user.avatar,
-      });
+
+      // We should ideally call loadUser() here to ensure we get the subscription
+      // But if we set it manually, include subscription if the backend sends it
+      await loadUser();
 
       return res.data;
     } catch (err) {
@@ -96,10 +81,21 @@ const googleLoginHandler = async (credentialResponse) => {
     }
   };
 
+  const logout = async () => {
+    try {
+      await axiosInstance.post("/auth/logout");
+      setUser(null);
+      showToast("success", "Logged out successfully");
+    } catch (err) {
+      console.log(err);
+      showToast("error", "Logout failed");
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ 
-       user, setUser, loading, login, register, logout, 
-       googleLoginHandler // Export this
+    <AuthContext.Provider value={{
+       user, setUser, loading, login, register, logout, googleLoginHandler,
+       checkUser: loadUser // 👈 EXPORT THIS so we can refresh after payment
     }}>
       {children}
     </AuthContext.Provider>

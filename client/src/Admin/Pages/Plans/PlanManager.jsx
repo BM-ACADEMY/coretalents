@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getAllPlans, createPlan, updatePlan, deletePlan } from "@/services/adminPlanService";
 import { toast } from "react-toastify";
-import { Trash2, Edit, Plus, History, CheckCircle, XCircle } from "lucide-react";
+import { Trash2, Edit, Plus, History, XCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const PlanManager = () => {
@@ -16,7 +16,7 @@ const PlanManager = () => {
     name: "",
     price: "",
     resumeLimit: "",
-    durationInDays: 30,
+    durationInDays: "", // 👇 CHANGED: Default is now empty
     description: "",
   });
 
@@ -41,7 +41,8 @@ const PlanManager = () => {
 
   const handleOpenCreate = () => {
     setEditingPlan(null);
-    setFormData({ name: "", price: "", resumeLimit: "", durationInDays: 30, description: "" });
+    // 👇 CHANGED: Reset to empty string
+    setFormData({ name: "", price: "", resumeLimit: "", durationInDays: "", description: "" });
     setIsModalOpen(true);
   };
 
@@ -226,7 +227,7 @@ const PlanManager = () => {
   );
 };
 
-// Reusable Input Component for cleaner code
+// Reusable Input Component
 const InputGroup = ({ label, name, type = "text", value, onChange, placeholder }) => (
   <div>
     <label className="block text-sm font-semibold text-gray-700 mb-1.5">{label}</label>

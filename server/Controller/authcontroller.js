@@ -2,6 +2,7 @@ const User = require("../model/usermodel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { OAuth2Client } = require("google-auth-library");
+const Subscription = require("../model/SubscriptionModel");
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -17,7 +18,7 @@ exports.googleLogin = async (req, res) => {
       idToken: token,
       audience: process.env.GOOGLE_CLIENT_ID,
     });
-    
+
     const { name, email, picture, sub: googleId } = ticket.getPayload();
 
     // 2. Check if user exists in DB
@@ -89,14 +90,14 @@ exports.register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Default to 'user' if role not provided (Security: usually restrict 'admin' creation)
-    const userRole = role === "admin" ? "admin" : "user"; 
+    const userRole = role === "admin" ? "admin" : "user";
 
-    const user = await User.create({ 
-      name, 
-      email, 
-      phone, 
-      password: hashedPassword, 
-      role: userRole 
+    const user = await User.create({
+      name,
+      email,
+      phone,
+      password: hashedPassword,
+      role: userRole
     });
 
     res.status(201).json({
@@ -129,15 +130,15 @@ exports.login = async (req, res) => {
       maxAge: 24 * 60 * 60 * 1000,
     });
 
-    res.json({ 
-      message: "Login successful", 
-      user: { 
-        id: user._id, 
-        name: user.name, 
-        email: user.email, 
+    res.json({
+      message: "Login successful",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
         phone: user.phone,
-        role: user.role 
-      } 
+        role: user.role
+      }
     });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
@@ -154,13 +155,23 @@ exports.logout = (req, res) => {
 exports.getMe = async (req, res) => {
   try {
     // req.user is already attached by verifyToken middleware
-    const user = req.user; 
+    const user = req.user;
+
+    // --- NEW LOGIC: Fetch Active Subscription ---
+    const subscription = await Subscription.findOne({
+      user: user._id,
+      status: 'active',
+      endDate: { $gte: new Date() } // Ensure it hasn't expired
+    }).populate('plan'); // Populate plan details (like limit)
+    // ---------------------------------------------
+
     res.json({
       id: user._id,
       name: user.name,
       email: user.email,
       phone: user.phone,
       role: user.role,
+      subscription: subscription || null, // <--- Send subscription data to frontend
     });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });

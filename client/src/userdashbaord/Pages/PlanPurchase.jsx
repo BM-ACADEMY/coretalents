@@ -1,20 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Check, Loader2, CreditCard, Crown } from 'lucide-react';
+import { Check, Loader2, Crown } from 'lucide-react';
 import axiosInstance from '@/api/axiosInstance';
 import { showToast } from '@/utils/customToast';
+import { useAuth } from "@/Context/Authcontext"; // 1. Import AuthContext
 
 const PlanPurchase = () => {
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [processingId, setProcessingId] = useState(null); // Tracks which plan is being bought
+  const [processingId, setProcessingId] = useState(null);
   const navigate = useNavigate();
 
-  // 1. Fetch Plans
+  // 2. GET checkUser FROM CONTEXT
+  // This function forces the app to re-fetch the user profile (including the new subscription)
+  const { checkUser } = useAuth();
+
   useEffect(() => {
     const fetchPlans = async () => {
       try {
-        // Adjust endpoint based on your backend route
         const res = await axiosInstance.get('/plans');
         setPlans(res.data.data || []);
       } catch (error) {
@@ -26,7 +29,6 @@ const PlanPurchase = () => {
     fetchPlans();
   }, []);
 
-  // 2. Load Razorpay Script Helper
   const loadRazorpayScript = () => {
     return new Promise((resolve) => {
       const script = document.createElement('script');
@@ -37,11 +39,9 @@ const PlanPurchase = () => {
     });
   };
 
-  // 3. Handle Buy Action
   const handleBuy = async (plan) => {
     setProcessingId(plan._id);
 
-    // Load Script
     const isScriptLoaded = await loadRazorpayScript();
     if (!isScriptLoaded) {
       showToast('error', 'Razorpay SDK failed to load');
@@ -54,17 +54,17 @@ const PlanPurchase = () => {
       const orderRes = await axiosInstance.post('/payment/create-order', { planId: plan._id });
       const { order } = orderRes.data;
 
-      // B. Razorpay Options
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID, // Ensure this is in your .env file
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount: order.amount,
         currency: order.currency,
         name: "Resume Builder",
         description: `Upgrade to ${plan.name}`,
         order_id: order.id,
+        // --- HANDLER FUNCTION ---
         handler: async function (response) {
           try {
-            // C. Verify Payment
+            // B. Verify Payment
             const verifyRes = await axiosInstance.post('/payment/verify-payment', {
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
@@ -72,15 +72,31 @@ const PlanPurchase = () => {
             });
 
             if (verifyRes.data.success) {
-              showToast('success', 'Upgrade Successful!');
-              navigate('/user/dashboard'); // Redirect to dashboard
+              showToast('success', 'Payment Successful! Activating plan...');
+
+              // C. REFRESH USER DATA (The Critical Step)
+              // We wrap this in a separate try/catch so it doesn't trigger "Payment Failed"
+              try {
+                if (checkUser) {
+                  await checkUser();
+                } else {
+                  console.warn("checkUser function missing in AuthContext");
+                }
+              } catch (refreshError) {
+                console.error("Failed to refresh user data:", refreshError);
+                // Even if refresh fails, we continue to dashboard
+              }
+
+              // D. Navigate
+              navigate('/user/dashboard');
             }
           } catch (error) {
+            console.error("Verification Error:", error);
             showToast('error', 'Payment verification failed');
           }
         },
         prefill: {
-          name: "User", // You can fetch user name from context if available
+          name: "User",
           email: "user@example.com",
         },
         theme: {
@@ -88,13 +104,11 @@ const PlanPurchase = () => {
         },
       };
 
-      // D. Open Modal
       const rzp = new window.Razorpay(options);
-      rzp.open();
-
       rzp.on('payment.failed', function (response){
         showToast('error', response.error.description);
       });
+      rzp.open();
 
     } catch (error) {
       console.error(error);
@@ -107,7 +121,7 @@ const PlanPurchase = () => {
   if (loading) return <div className="h-screen flex items-center justify-center"><Loader2 className="animate-spin text-blue-600 w-10 h-10" /></div>;
 
   return (
-    <div className="min-h-screen bg-slate-50 py-20 px-4">
+    <div className="min-h-screen pt-32 bg-slate-50 py-20 px-4">
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-slate-800 mb-4">Upgrade Your Plan</h1>
@@ -117,7 +131,6 @@ const PlanPurchase = () => {
         <div className="grid md:grid-cols-3 gap-8">
           {plans.map((plan) => (
             <div key={plan._id} className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 hover:shadow-xl transition-shadow relative overflow-hidden flex flex-col">
-              {/* Highlight Badge for Best Value (Optional logic) */}
               {plan.price > 0 && plan.price < 1000 && (
                  <div className="absolute top-0 right-0 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">
                    POPULAR
@@ -134,10 +147,6 @@ const PlanPurchase = () => {
                 <div className="flex items-center gap-3 text-slate-600">
                   <Check className="w-5 h-5 text-green-500" />
                   <span>Create <strong>{plan.resumeLimit}</strong> Resumes</span>
-                </div>
-                <div className="flex items-center gap-3 text-slate-600">
-                   <Check className="w-5 h-5 text-green-500" />
-                   <span>Premium Templates</span>
                 </div>
                 {plan.description && (
                   <div className="flex items-center gap-3 text-slate-600">
