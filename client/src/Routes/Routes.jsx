@@ -4,7 +4,7 @@ import Adminroutes from "./Adminroutes";
 import PrivateRoute from "@/Context/PrivateRoute";
 import PublicRoute from "@/Context/PublicRoute";
 import Login from "@/auth/Login";
-import UserDashboard from "@/userdashbaord/UserDashboard"; // Import the new dashboard
+import UserDashboard from "@/userdashbaord/UserDashboard";
 import Aboutroutes from "./Aboutroutes";
 import Servicesroute from "./Servicesroute";
 import Contactroutes from "./Contactroutes";
@@ -14,6 +14,9 @@ import BlogList from "@/Components/Blog/BlogLis";
 import Navbar from "@/Components/layout/Navbar";
 import Footer from "@/Components/layout/Footer";
 import Userroutes from "./Userroutes";
+import PublicCertificate from "@/Admin/Pages/Certificate/PublicCertificate";
+import CertificateSearch from "@/Components/CertificateSearch/CertificateSearch";
+
 
 const Mainroutes = () => {
   return (
@@ -26,6 +29,14 @@ const Mainroutes = () => {
       <Route path="/thank-you" element={<ThankYou />} />
       <Route path="/blog/*" element={<Blogroute />} />
       <Route path="/blog" element={<BlogList />} />
+
+      {/* ✅ NEW: Public Certificate Route
+        - This is outside any Layout, so NO Navbar/Footer will show.
+        - accessible to anyone (no login required).
+      */}
+      <Route path="/verify-certificate/:id" element={<PublicCertificate />} />
+      <Route path="/verification" element={<CertificateSearch />} />
+
 
       {/* Auth Route (Login/Register) */}
       <Route
@@ -40,7 +51,7 @@ const Mainroutes = () => {
       />
 
       {/* USER Protected Routes */}
-     <Route
+      <Route
         path="/user/*"
         element={
           <PrivateRoute allowedRoles={["user", "admin"]}>
@@ -50,8 +61,6 @@ const Mainroutes = () => {
       />
 
       {/* ADMIN Protected Routes */}
-      {/* Note: In your Adminroutes, ensure you don't repeat the /admin prefix if it's already here, 
-          or adjust accordingly. Assuming Adminroutes handles subpaths. */}
       <Route
         path="/admin/*"
         element={
@@ -60,9 +69,8 @@ const Mainroutes = () => {
           </PrivateRoute>
         }
       />
-      
-      {/* Catch all for Admin Routes if they are defined as /* in original code */}
-      {/* If your Adminroutes file expects to be at root level but protected: */}
+
+      {/* Catch all (Optional: Be careful with this overriding specific routes) */}
        <Route
         path="/*"
         element={

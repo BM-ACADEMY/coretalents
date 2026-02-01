@@ -6,14 +6,14 @@ import Footer from "./Components/layout/Footer";
 import { AuthProvider } from "./Context/Authcontext";
 import { Scrolltotop } from "./scrolltop/Scrolltotop";
 
-
 function AppContent() {
   const location = useLocation();
 
-  // Hide Navbar/Footer on admin routes, login, and 404
+  // ✅ UPDATED: Add "/verify-certificate" to the conditions that hide the layout
   const hideLayout =
     location.pathname.startsWith("/admin") ||
-    location.pathname === "/login"
+    location.pathname === "/login" ||
+    location.pathname.startsWith("/verify-certificate");
 
   return (
     <>
@@ -24,7 +24,6 @@ function AppContent() {
     </>
   );
 }
-
 
 function App() {
   return (

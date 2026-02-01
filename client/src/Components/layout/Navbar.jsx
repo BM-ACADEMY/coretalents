@@ -77,7 +77,7 @@ const Navbar = () => {
   const [isOffcanvasOpen, setIsOffcanvasOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  
+
   // Get Auth State
   const { user, logout } = useAuth();
 
@@ -134,6 +134,7 @@ const Navbar = () => {
       ],
     },
     { title: 'Blog', to: '/blog' },
+    { title: 'Certificate', to: '/verification' },
     { title: 'Contact', to: '/contact' },
   ];
 
@@ -291,7 +292,7 @@ const Navbar = () => {
                   <p className="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
                     Account
                   </p>
-                  
+
                   {user ? (
                     // MOBILE LOGGED IN
                     <>
