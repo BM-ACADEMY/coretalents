@@ -12,9 +12,8 @@ const About = () => {
       </style>
 
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-        
         {/* Left Side: Image - Slides in from the Left */}
-        <motion.div 
+        <motion.div
           className="relative flex justify-center items-center w-full max-w-lg mx-auto lg:max-w-none"
           initial={{ opacity: 0, x: -100 }} // Start invisible and to the left
           whileInView={{ opacity: 1, x: 0 }} // Animate to visible and original position
@@ -32,9 +31,8 @@ const About = () => {
 
         {/* Right Side: Content - Fades Up with Staggered Delays */}
         <div className="flex flex-col justify-center items-center lg:items-start text-center lg:text-left space-y-6 sm:space-y-8">
-          
           {/* Badge */}
-          <motion.span 
+          <motion.span
             className="bg-indigo-100 text-indigo-600 px-4 py-1.5 rounded-full text-sm font-semibold tracking-wide uppercase"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -58,7 +56,7 @@ const About = () => {
           </motion.h2>
 
           {/* Paragraph 1 */}
-          <motion.p 
+          <motion.p
             className="text-gray-500 leading-relaxed text-base sm:text-lg max-w-2xl mb-5 mx-auto lg:mx-0"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -72,7 +70,7 @@ const About = () => {
           </motion.p>
 
           {/* Paragraph 2 */}
-          <motion.p 
+          <motion.p
             className="text-gray-500 leading-relaxed text-base sm:text-lg max-w-2xl mx-auto lg:mx-0"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -104,18 +102,20 @@ const About = () => {
           </motion.p>
 
           {/* Button */}
-          <motion.div 
+          <motion.div
             className="pt-0"
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.6 }}
           >
-            <button className="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold py-3 px-8 sm:px-10 rounded-full shadow-lg hover:shadow-xl transition-all duration-300">
+            <Link
+              to="/about"
+              className="inline-block bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold py-3 px-8 sm:px-10 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+            >
               Discover More
-            </button>
+            </Link>
           </motion.div>
-
         </div>
       </div>
     </section>

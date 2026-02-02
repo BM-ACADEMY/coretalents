@@ -7,6 +7,7 @@ import Others from "@/Admin/Pages/Others";
 import BlogMain from "@/Admin/Pages/Blog/BlogMain";
 import PlanManager from "@/Admin/Pages/Plans/PlanManager";
 import PurchaseHistory from "@/Admin/Pages/Plans/PurchaseHistory";
+import Certificate from "@/Admin/Pages/Certificate/Certificate";
 
 const Adminroutes = () => {
   return (
@@ -24,6 +25,7 @@ const Adminroutes = () => {
         <Route path="others" element={<Others />} />
         <Route path="plans" element={<PlanManager />} />
         <Route path="history" element={<PurchaseHistory />} />
+        <Route path="certificate" element={<Certificate />} />
 
       </Route>
     </Routes>

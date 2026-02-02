@@ -134,6 +134,7 @@ const Navbar = () => {
       ],
     },
     { title: 'Blog', to: '/blog' },
+    { title: 'Certificate', to: '/verification' },
     { title: 'Contact', to: '/contact' },
   ];
 

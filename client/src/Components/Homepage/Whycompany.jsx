@@ -2,6 +2,7 @@ import React from 'react';
 import { Check } from 'lucide-react';
 // Make sure this path is 100% correct based on your folder structure
 import bgImage from '@/assets/vector/choose_bg_1.png'; 
+import { Link } from 'react-router-dom';
 
 
 import Whyimage1 from '@/assets/other/whyimage1.png';
@@ -76,9 +77,12 @@ const WhyChooseUs = () => {
             </div>
 
             <div>
+              <Link to="/services">
               <button className="bg-[#84cc16] hover:bg-[#65a30d] text-white font-semibold px-6 py-3 md:px-8 md:py-4 rounded-full transition-colors duration-300 flex items-center gap-2 shadow-lg shadow-lime-200 text-sm md:text-base">
                 Explore Careers
               </button>
+              </Link>
+              
             </div>
           </div>
 
