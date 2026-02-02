@@ -12,7 +12,7 @@ import {
   TableRow,
 } from "@/Components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
-import { Trash2, Eye, Plus, Loader2, Pencil, X } from "lucide-react";
+import { Trash2, Eye, Plus, Loader2, Pencil, X } from "lucide-react"; 
 import toast from "react-hot-toast";
 
 const Certificate = () => {
@@ -26,7 +26,7 @@ const Certificate = () => {
     studentName: "",
     courseName: "",
     issueDate: "",
-    certificateNumber: "",
+    certificateNumber: "", // Added state for manual entry
   });
 
   const fetchCertificates = async () => {
@@ -58,7 +58,8 @@ const Certificate = () => {
       courseName: cert.courseName,
       // Format date to YYYY-MM-DD for input field
       issueDate: new Date(cert.issueDate).toISOString().split('T')[0],
-      certificateNumber: cert.certificateNumber || ""
+      // Show existing number or empty string
+      certificateNumber: cert.certificateNumber || "" 
     });
     // Scroll to top to see the form
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -71,23 +72,33 @@ const Certificate = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Basic validation
     if (!formData.studentName || !formData.courseName || !formData.issueDate) {
-      toast.error("Please fill in all required fields");
+      toast.error("Please fill in Name, Course, and Date");
       return;
     }
+
+    // Clone data to modify before sending
+    const payload = { ...formData };
+
+    // Important: If certificateNumber is empty string, remove it from payload
+    // so the backend knows to auto-generate it (for Create)
+    if (!payload.certificateNumber || payload.certificateNumber.trim() === "") {
+      delete payload.certificateNumber;
+    }
+
     try {
       let res;
       if (editingId) {
         // UPDATE Existing
-        res = await axiosInstance.put(`/certificates/${editingId}`, formData);
+        res = await axiosInstance.put(`/certificates/${editingId}`, payload);
         if (res.data.success) {
           toast.success("Certificate Updated Successfully!");
         }
       } else {
         // CREATE New
-        // We generally don't send certificateNumber on create so backend auto-generates it, 
-        // unless you specifically want to override it manually.
-        res = await axiosInstance.post("/certificates", formData);
+        res = await axiosInstance.post("/certificates", payload);
         if (res.data.success) {
           toast.success("Certificate Created!");
         }
@@ -144,31 +155,33 @@ const Certificate = () => {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               
-              {/* Certificate Number Input (Disabled on Create, Visible on Edit) */}
+              {/* --- ADDED: Certificate Number Input --- */}
               <div className="space-y-1">
-                <Label>Certificate ID</Label>
+                <Label>Certificate Number</Label>
                 <Input 
                   name="certificateNumber" 
                   value={formData.certificateNumber} 
                   onChange={handleChange} 
-                  placeholder={editingId ? "" : "Auto-generated (e.g. CT2026001)"}
-                  // Disable if creating new, enable if editing so you can fix typos
-                  disabled={!editingId} 
-                  className="bg-slate-100 font-mono text-sm"
+                  placeholder="e.g. CT2026005 (Leave blank to Auto-Generate)" 
                 />
-                {!editingId && <p className="text-xs text-slate-500">System will auto-generate ID upon creation.</p>}
+                <p className="text-[10px] text-slate-500">
+                  {editingId 
+                    ? "Modify to change the ID manually." 
+                    : "Leave empty to auto-generate (e.g. CT2026001)"}
+                </p>
               </div>
+              {/* --------------------------------------- */}
 
               <div className="space-y-1">
-                <Label>Student Name</Label>
+                <Label>Student Name <span className="text-red-500">*</span></Label>
                 <Input name="studentName" value={formData.studentName} onChange={handleChange} placeholder="e.g. Rahini .E" required />
               </div>
               <div className="space-y-1">
-                <Label>Workshop / Course Name</Label>
+                <Label>Workshop / Course Name <span className="text-red-500">*</span></Label>
                 <Input name="courseName" value={formData.courseName} onChange={handleChange} placeholder="e.g. Job Interview Psychology" required />
               </div>
               <div className="space-y-1">
-                <Label>Issue Date</Label>
+                <Label>Issue Date <span className="text-red-500">*</span></Label>
                 <Input type="date" name="issueDate" value={formData.issueDate} onChange={handleChange} required />
               </div>
 
