@@ -6,7 +6,6 @@ import { Loader2, Download } from "lucide-react";
 import toast from "react-hot-toast";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import certificateBg from "@/assets/certificate-template.png";
 
 const PublicCertificate = () => {
   const { id } = useParams();
@@ -31,7 +30,7 @@ const PublicCertificate = () => {
           setCertificate(res.data.data);
         }
       } catch (error) {
-        toast.error("Certificate not found or invalid link.");
+        toast.error("Certificate not found.");
       } finally {
         setLoading(false);
       }
@@ -55,63 +54,44 @@ const PublicCertificate = () => {
     try {
       setDownloading(true);
 
-      // ✅ WAIT FOR FONTS
+      // Wait for fonts
       if (document.fonts && document.fonts.ready) {
         await document.fonts.ready;
       }
-
-      await new Promise((resolve) => setTimeout(resolve, 300));
+      await new Promise((resolve) => setTimeout(resolve, 500)); // Slight extra delay for image load
 
       const canvas = await html2canvas(element, {
         scale: 2,
-        useCORS: true,
+        useCORS: true, // Crucial for the image
         allowTaint: true,
         backgroundColor: "#ffffff",
-        logging: false,
-        foreignObjectRendering: false,
-
+        logging: true, // Set to true to see errors in console
         onclone: (clonedDoc) => {
-          // ✅ FULL TAILWIND + OKLCH KILLER
+           // Fixes generic styling issues during capture
           const style = clonedDoc.createElement("style");
-          style.innerHTML = `
-            * {
-              box-shadow: none !important;
-              text-shadow: none !important;
-              border-color: #000000 !important;
-              outline: none !important;
-            }
-          `;
+          style.innerHTML = `* { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }`;
           clonedDoc.head.appendChild(style);
-        },
+        }
       });
 
-      const imgData = canvas.toDataURL("image/jpeg", 1);
+      const imgData = canvas.toDataURL("image/jpeg", 1.0);
       const pdf = new jsPDF({
         orientation: "landscape",
         unit: "mm",
         format: "a4",
       });
 
-      pdf.addImage(
-        imgData,
-        "JPEG",
-        0,
-        0,
-        pdf.internal.pageSize.getWidth(),
-        pdf.internal.pageSize.getHeight()
-      );
-
+      pdf.addImage(imgData, "JPEG", 0, 0, 297, 210); // A4 Dimensions (297x210mm)
       pdf.save(`${certificate.studentName}_Certificate.pdf`);
       toast.success("Downloaded Successfully!");
 
     } catch (error) {
-      console.error(error);
+      console.error("PDF Error:", error);
       toast.error("Download failed");
     } finally {
       setDownloading(false);
     }
   };
-
 
   if (loading) return <div className="h-screen flex items-center justify-center bg-slate-900"><Loader2 className="w-10 h-10 text-white animate-spin" /></div>;
   if (!certificate) return <div className="h-screen flex items-center justify-center text-white bg-slate-900">Certificate not found.</div>;
@@ -123,29 +103,51 @@ const PublicCertificate = () => {
       <div className="relative shadow-2xl origin-center transition-transform duration-300 ease-in-out
                       scale-[0.35] sm:scale-[0.5] md:scale-[0.7] lg:scale-[0.85] xl:scale-100">
 
-        {/* CERTIFICATE */}
-        <div ref={printRef} data-print-target="true"
+        {/* CERTIFICATE CONTAINER */}
+        <div ref={printRef}
              style={{
                  width: "1123px", height: "794px",
                  minWidth: "1123px", minHeight: "794px",
                  fontFamily: "'Lato', sans-serif",
                  backgroundColor: "#ffffff",
-                 backgroundImage: `url(${certificateBg})`,
-                 backgroundSize: "cover",
-                 backgroundPosition: "center",
                  position: "relative",
                  overflow: "hidden"
              }}>
 
-             {/* ✅ NEW: Certificate Number (Positioned Absolute Top Right) */}
-             <div style={{ position: "absolute", top: "29%", right: "440px", textAlign: "right" }}>
+             {/* ✅ FIX: USE IMG TAG INSTEAD OF BACKGROUND IMAGE
+                 This allows crossOrigin="anonymous" to work properly
+             */}
+             <img
+                src={certificate.templateUrl}
+                alt="Certificate Background"
+                crossOrigin="anonymous"
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  zIndex: 0 // Sends it to the back
+                }}
+             />
+
+             {/* Certificate Number */}
+             <div style={{ position: "absolute", top: "29%", right: "440px", textAlign: "right", zIndex: 10 }}>
                 <p style={{ fontSize: "16px", fontWeight: "bold", color: "#374151", margin: 0 }}>
                     Certificate No: {certificate.certificateNumber}
                 </p>
              </div>
 
              {/* Content Layout */}
-             <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", padding: "6rem 8rem 0", textAlign: "center" }}>
+             <div style={{
+                 position: "relative", // Needed to sit on top of image
+                 zIndex: 10,
+                 width: "100%", height: "100%",
+                 display: "flex", flexDirection: "column",
+                 justifyContent: "center", alignItems: "center",
+                 padding: "6rem 8rem 0", textAlign: "center"
+             }}>
 
                  <p style={{ fontSize: "25px", lineHeight: "3.1rem", fontWeight: "500", color: "#374151", margin: 0, width: "100%" }}>
                      This is to certify that

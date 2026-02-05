@@ -27,8 +27,12 @@ const certificateRoutes = require("./Routes/certificateRoutes");
 const app = express();
 
 // Serve static files
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
+app.use("/uploads", express.static(path.join(__dirname, "uploads"), {
+  setHeaders: function (res, path, stat) {
+    res.set("Access-Control-Allow-Origin", "*");
+    res.set("Cross-Origin-Resource-Policy", "cross-origin");
+  }
+}));
 
 
 // ================== MIDDLEWARE ==================

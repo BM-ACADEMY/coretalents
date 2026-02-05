@@ -9,11 +9,12 @@ const CertificateSearch = () => {
   const [certId, setCertId] = useState("");
   const navigate = useNavigate();
 
-  const handleSearch = (e) => {
+ const handleSearch = (e) => {
     e.preventDefault();
     if (certId.trim()) {
-      // Navigate to the public certificate view with the entered ID/Number
-      navigate(`/verify-certificate/${certId.trim()}`);
+      // ✅ LOGIC CHANGE: Open in new tab using window.open
+      const url = `/verify-certificate/${certId.trim()}`;
+      window.open(url, "_blank", "noopener,noreferrer");
     }
   };
 

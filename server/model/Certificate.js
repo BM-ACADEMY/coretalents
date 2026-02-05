@@ -19,13 +19,18 @@ const certificateSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    uppercase: true, // Ensures CT2026001 is always uppercase
+    uppercase: true,
     trim: true
+  },
+  // ✅ NEW FIELD: Stores the selected background template
+  templateUrl: {
+    type: String,
+    required: true
   },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: false // Optional: to track which admin created it
+    required: false
   }
 }, { timestamps: true });
 
