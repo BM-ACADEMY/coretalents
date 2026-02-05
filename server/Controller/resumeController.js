@@ -1,51 +1,74 @@
 const Resume = require("../model/ResumeModel");
-const Subscription = require("../model/SubscriptionModel"); // Ensure you import this
+const Subscription = require("../model/SubscriptionModel");
 
-// Helper: Check if user is allowed to create more resumes
-const checkResumeLimit = async (userId) => {
-  // 1. Count how many resumes this user ALREADY has
-  const resumeCount = await Resume.countDocuments({ user: userId });
-
-  // 2. Check for an ACTIVE subscription (Paid Plan)
+// --- HELPER: CHECK IF SPECIFIC RESUME IS ACCESSIBLE ---
+const isResumeAccessAllowed = async (userId, resumeId) => {
+  // 1. Check for Active Subscription
   const activeSub = await Subscription.findOne({
     user: userId,
     status: 'active',
-    endDate: { $gte: new Date() } // Must not be expired
+    endDate: { $gte: new Date() }
   }).populate('plan');
 
-  // 3. SET THE LIMITS
-  let limit = 2; // <--- DEFAULT FREE LIMIT IS 2
-
+  // 2. Determine Limit
+  let limit = 2; // Default Free Limit
   if (activeSub && activeSub.plan) {
-    limit = activeSub.plan.resumeLimit; // Use the limit from the paid plan (e.g., 10 or 20)
+    limit = activeSub.plan.resumeLimit;
   }
 
-  // 4. Return result
-  return {
-    allowed: resumeCount < limit,
-    currentCount: resumeCount,
-    maxLimit: limit
-  };
+  // If Limit is high enough (e.g., 100), just return true to save DB calls
+  if (limit > 50) return { allowed: true, limit }; 
+
+  // 3. Get ALL user's resumes sorted by CREATION DATE (Oldest First)
+  // We need to know where this specific resumeId sits in the timeline
+  const allResumes = await Resume.find({ user: userId })
+    .sort({ createdAt: 1 }) // Oldest first
+    .select('_id');
+
+  // 4. Find the index of the requested resume
+  const index = allResumes.findIndex(r => r._id.toString() === resumeId.toString());
+
+  // 5. If resume not found (deleted?), return false
+  if (index === -1) return { allowed: false, limit };
+
+  // 6. Check if index is within limit (e.g., if limit is 2, indices 0 and 1 are allowed)
+  const isAllowed = index < limit;
+
+  return { allowed: isAllowed, limit };
 };
 
-// --- MAIN FUNCTION ---
+
+// --- MAIN CONTROLLER FUNCTIONS ---
+
 exports.createResume = async (req, res) => {
   try {
-    // A. CHECK LIMIT BEFORE CREATING
-    const check = await checkResumeLimit(req.user.id);
+    // 1. Check Total Count vs Limit
+    const userId = req.user.id;
+    
+    // Check Subscription
+    const activeSub = await Subscription.findOne({
+      user: userId,
+      status: 'active',
+      endDate: { $gte: new Date() }
+    }).populate('plan');
 
-    if (!check.allowed) {
+    let limit = 2;
+    if (activeSub && activeSub.plan) limit = activeSub.plan.resumeLimit;
+
+    const resumeCount = await Resume.countDocuments({ user: userId });
+
+    if (resumeCount >= limit) {
       return res.status(403).json({
         success: false,
-        isLimitReached: true, // <--- Flag for Frontend
-        message: `Free limit reached (${check.maxLimit} resumes). Please upgrade to create more.`
+        isLimitReached: true,
+        message: `Free limit reached. You can only maintain ${limit} resumes.`
       });
     }
 
-    // B. If allowed, proceed to create
+    // 2. Create
     const { title } = req.body;
     const newResume = await Resume.create({
-      user: req.user.id,
+      user: userId,
       title: title || "Untitled Resume",
       personalInfo: {},
       experience: [],
@@ -54,38 +77,71 @@ exports.createResume = async (req, res) => {
       skills: []
     });
 
-    res.status(201).json({
-      success: true,
-      message: "Resume created successfully",
-      data: newResume
-    });
+    res.status(201).json({ success: true, data: newResume });
 
   } catch (error) {
-    console.error(error);
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-// 2. Get All Resumes for Dashboard
+// GET ALL: Returns access status for each resume so Frontend knows what to lock
 exports.getAllResumes = async (req, res) => {
   try {
-    // Select specific fields to make the dashboard load faster
-    const resumes = await Resume.find({ user: req.user.id })
-      .select("title updatedAt personalInfo.fullName personalInfo.profession themeColor")
-      .sort({ updatedAt: -1 });
+    const userId = req.user.id;
+
+    // 1. Get Subscription Logic
+    const activeSub = await Subscription.findOne({
+      user: userId,
+      status: 'active',
+      endDate: { $gte: new Date() }
+    }).populate('plan');
+
+    let limit = 2;
+    if (activeSub && activeSub.plan) limit = activeSub.plan.resumeLimit;
+
+    // 2. Get Resumes sorted by CREATION DATE first (to determine locks)
+    // We fetch everything needed for dashboard + createdAt
+    let resumes = await Resume.find({ user: userId })
+      .select("title updatedAt createdAt personalInfo.fullName personalInfo.profession themeColor personalInfo.image")
+      .sort({ createdAt: 1 }); // Oldest first to apply logic
+
+    // 3. Map resumes to add 'isLocked' flag
+    const resumesWithStatus = resumes.map((resume, index) => {
+      // Convert mongoose doc to plain object
+      const doc = resume.toObject();
+      // It is locked if its index (based on creation time) is greater than or equal to limit
+      doc.isLocked = index >= limit; 
+      return doc;
+    });
+
+    // 4. Finally, sort by UpdatedAt DESC for the User Interface (Show recently edited first)
+    resumesWithStatus.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
 
     res.status(200).json({
       success: true,
-      data: resumes
+      data: resumesWithStatus,
+      limit: limit
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-// 3. Get Specific Resume by ID (For the Builder Page)
+// GET BY ID: Enforce Security
 exports.getResumeById = async (req, res) => {
   try {
+    // 1. Check Access Permission first
+    const accessCheck = await isResumeAccessAllowed(req.user.id, req.params.id);
+
+    if (!accessCheck.allowed) {
+      return res.status(403).json({ 
+        success: false, 
+        message: "This resume is locked due to plan expiry. Upgrade to access.",
+        isLocked: true 
+      });
+    }
+
+    // 2. Retrieve Data
     const resume = await Resume.findOne({
       _id: req.params.id,
       user: req.user.id
@@ -101,27 +157,33 @@ exports.getResumeById = async (req, res) => {
   }
 };
 
-// 4. Save/Update Resume
+// SAVE/UPDATE: Enforce Security
 exports.saveResume = async (req, res) => {
   try {
     const { resumeId, ...resumeData } = req.body;
 
-    // Handle Image Upload if exists
-    if (req.file) {
-      // NOTE: Here you would upload to Cloudinary/S3.
-      // For now, assuming you return a URL or path
-      const imageUrl = `/uploads/${req.file.filename}`; // Adjust based on your uploadConfig
-
-      // Parse personalInfo string back to object to update image
-      let personalInfo = JSON.parse(resumeData.personalInfo || '{}');
-      personalInfo.image = imageUrl;
-      resumeData.personalInfo = personalInfo; // Assign back object (Mongoose handles object vs string if schema matches)
-    } else {
-      // Parse JSON strings back to objects
-      if (typeof resumeData.personalInfo === 'string') resumeData.personalInfo = JSON.parse(resumeData.personalInfo);
+    // 1. Check Access Permission first
+    const accessCheck = await isResumeAccessAllowed(req.user.id, resumeId);
+    
+    if (!accessCheck.allowed) {
+      return res.status(403).json({ 
+        success: false, 
+        message: "Cannot save changes. This resume is locked.",
+        isLocked: true 
+      });
     }
 
-    // Parse other arrays
+    // ... (Rest of your existing image handling code) ...
+    if (req.file) {
+      const imageUrl = `/uploads/${req.file.filename}`; 
+      let personalInfo = JSON.parse(resumeData.personalInfo || '{}');
+      personalInfo.image = imageUrl;
+      resumeData.personalInfo = personalInfo; 
+    } else {
+      if (typeof resumeData.personalInfo === 'string') resumeData.personalInfo = JSON.parse(resumeData.personalInfo);
+    }
+    
+    // Parse arrays
     if (typeof resumeData.experience === 'string') resumeData.experience = JSON.parse(resumeData.experience);
     if (typeof resumeData.education === 'string') resumeData.education = JSON.parse(resumeData.education);
     if (typeof resumeData.projects === 'string') resumeData.projects = JSON.parse(resumeData.projects);
@@ -144,9 +206,9 @@ exports.saveResume = async (req, res) => {
   }
 };
 
-// 5. Delete Resume
 exports.deleteResume = async (req, res) => {
   try {
+    // We usually ALLOW deleting locked resumes so users can free up space
     const deleted = await Resume.findOneAndDelete({
       _id: req.params.id,
       user: req.user.id

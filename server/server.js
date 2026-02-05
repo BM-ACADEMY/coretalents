@@ -24,7 +24,6 @@ const paymentRoutes = require("./Routes/paymentRoutes");
 const certificateRoutes = require("./Routes/certificateRoutes");
 
 
-
 const app = express();
 
 // Serve static files

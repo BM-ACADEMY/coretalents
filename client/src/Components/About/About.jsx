@@ -82,13 +82,19 @@ const About = () => {
             className="mt-8 max-w-md"
           >
              <motion.button
-               type="submit"
-               whileHover={{ scale: 1.05 }}
-               whileTap={{ scale: 0.95 }}
-               className="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold py-3 px-8 rounded-full transition-colors duration-300 whitespace-nowrap shadow-lg"
-             >
-               Get started
-             </motion.button>
+  type="button"
+  whileHover={{ scale: 1.05 }}
+  whileTap={{ scale: 0.95 }}
+  onClick={() => {
+    document
+      .getElementById("about-core-talents")
+      ?.scrollIntoView({ behavior: "smooth" });
+  }}
+  className="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold py-3 px-8 rounded-full transition-colors duration-300 whitespace-nowrap shadow-lg"
+>
+  Get started
+</motion.button>
+
           </motion.div>
         </motion.div>
 

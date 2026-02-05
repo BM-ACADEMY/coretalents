@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Plus, CloudUpload, FileText, Trash2, X, Loader2,
-  Crown, Lock
+  Plus,
+  CloudUpload,
+  FileText,
+  Trash2,
+  X,
+  Loader2,
+  Crown,
+  Lock
 } from "lucide-react";
 import Navbar from "@/Components/layout/Navbar";
 import { useAuth } from "@/Context/Authcontext";
@@ -11,7 +17,7 @@ import { showToast } from "@/utils/customToast";
 
 const UserDashboard = () => {
   const navigate = useNavigate();
-  const { user } = useAuth(); // The 'user' object now contains 'subscription' data from backend
+  const { user } = useAuth(); // Contains user.subscription and user.role
 
   // --- State Management ---
   const [savedResumes, setSavedResumes] = useState([]);
@@ -23,22 +29,25 @@ const UserDashboard = () => {
   const [isCreating, setIsCreating] = useState(false);
 
   // --- PREMIUM & LIMIT LOGIC ---
-  const FREE_LIMIT = 2;
-
-  // Check if user is Premium (Active Subscription or Admin)
-  // This relies on the Backend Controller sending { subscription: { status: 'active' } }
+  // 1. Check if user is Premium (Active Subscription or Admin)
   const isPremium = user?.subscription?.status === 'active' || user?.role === 'admin';
 
-  // Check if Free Limit is Reached (Not Premium AND Count >= 2)
-  const isLimitReached = !isPremium && savedResumes.length >= FREE_LIMIT;
+  // 2. Define Free Limit (Display purposes only, backend enforces strictly)
+  const FREE_LIMIT = 2;
+
+  // 3. Check if 'Create' button should be disabled/warned
+  // Note: We count total resumes. If >= 2 and not premium, we block CREATION.
+  const isCreateLimitReached = !isPremium && savedResumes.length >= FREE_LIMIT;
 
   // --- Fetch Saved Resumes ---
   useEffect(() => {
     const fetchResumes = async () => {
       try {
+        // The Backend now returns data sorted by UpdatedAt, 
+        // but with an 'isLocked' flag calculated based on CreatedAt.
         const res = await axiosInstance.get("/resume/all");
-        if(res.data && res.data.data) {
-           setSavedResumes(res.data.data);
+        if (res.data && res.data.data) {
+          setSavedResumes(res.data.data);
         }
       } catch (error) {
         console.error("Error fetching resumes:", error);
@@ -78,7 +87,7 @@ const UserDashboard = () => {
 
       // --- BACKEND SAFETY CHECK ---
       // If user bypassed frontend check, backend sends 403
-      if (error.response && error.response.status === 403 && error.response.data.isLimitReached) {
+      if (error.response && error.response.status === 403) {
         showToast("info", "Free limit reached. Please upgrade to create more.");
         setIsModalOpen(false);
         navigate("/user/plans");
@@ -94,11 +103,11 @@ const UserDashboard = () => {
   // --- Handle Delete Resume ---
   const handleDeleteResume = async (id, e) => {
     e.stopPropagation(); // Stop click from triggering card navigation
-    if(!window.confirm("Are you sure you want to delete this resume?")) return;
+    if (!window.confirm("Are you sure you want to delete this resume?")) return;
 
     try {
       await axiosInstance.delete(`/resume/${id}`);
-      setSavedResumes(prev => prev.filter(r => r._id !== id));
+      setSavedResumes((prev) => prev.filter((r) => r._id !== id));
       showToast("success", "Resume deleted");
     } catch (error) {
       showToast("error", "Failed to delete");
@@ -107,7 +116,7 @@ const UserDashboard = () => {
 
   // --- Handle Click on "Create New" Card ---
   const handleCreateCardClick = () => {
-    if (isLimitReached) {
+    if (isCreateLimitReached) {
       // If limit reached, direct to Pricing
       navigate("/user/plans");
       showToast("info", "Upgrade to create unlimited resumes!");
@@ -122,19 +131,26 @@ const UserDashboard = () => {
       <Navbar />
       <div className="min-h-screen pt-32 pb-12 bg-gray-50 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
-
           {/* --- HEADER --- */}
           <div className="mb-8 text-left flex flex-col sm:flex-row justify-between sm:items-end gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-800">Welcome, {user?.name}</h1>
-              <p className="text-gray-500 mt-2">Manage your professional resumes</p>
+              <h1 className="text-3xl font-bold text-gray-800">
+                Welcome, {user?.name}
+              </h1>
+              <p className="text-gray-500 mt-2">
+                Manage your professional resumes
+              </p>
             </div>
 
             {/* Show Limit Counter if User is NOT Premium */}
             {!isPremium && (
               <div className="text-sm font-medium text-gray-600 bg-white px-4 py-2 rounded-lg border border-gray-200 shadow-sm flex items-center gap-2">
                 <span>Free Plan Usage:</span>
-                <span className={`${isLimitReached ? 'text-red-500' : 'text-green-600'} font-bold text-lg`}>
+                <span
+                  className={`${
+                    isCreateLimitReached ? "text-red-500" : "text-green-600"
+                  } font-bold text-lg`}
+                >
                   {savedResumes.length}
                 </span>
                 <span className="text-gray-400">/ {FREE_LIMIT}</span>
@@ -151,32 +167,44 @@ const UserDashboard = () => {
 
           {/* --- TOP ACTIONS --- */}
           <div className="flex flex-wrap justify-start items-start gap-8 mt-8">
-
             {/* CARD 1: Create Resume (Dynamic Appearance) */}
             <div
               onClick={handleCreateCardClick}
               className={`group flex flex-col items-center justify-center w-64 h-64 p-8 bg-white rounded-3xl border-2 border-dashed cursor-pointer transition-all duration-300 ease-in-out transform hover:-translate-y-1 shadow-sm hover:shadow-xl
-                ${isLimitReached
-                  ? 'border-amber-300 hover:border-amber-500'
-                  : 'border-indigo-200 hover:border-indigo-500'}`}
+                ${
+                  isCreateLimitReached
+                    ? "border-amber-300 hover:border-amber-500"
+                    : "border-indigo-200 hover:border-indigo-500"
+                }`}
             >
-              <div className={`w-16 h-16 rounded-full flex items-center justify-center shadow-lg mb-6 group-hover:scale-110 transition-transform duration-300
-                ${isLimitReached
-                  ? 'bg-gradient-to-br from-amber-400 to-orange-500'
-                  : 'bg-gradient-to-br from-blue-400 to-indigo-600'}`}
+              <div
+                className={`w-16 h-16 rounded-full flex items-center justify-center shadow-lg mb-6 group-hover:scale-110 transition-transform duration-300
+                ${
+                  isCreateLimitReached
+                    ? "bg-gradient-to-br from-amber-400 to-orange-500"
+                    : "bg-gradient-to-br from-blue-400 to-indigo-600"
+                }`}
               >
-                {isLimitReached ? (
+                {isCreateLimitReached ? (
                   <Crown className="w-8 h-8 text-white" strokeWidth={2.5} />
                 ) : (
                   <Plus className="w-8 h-8 text-white" strokeWidth={2.5} />
                 )}
               </div>
-              <h3 className={`text-lg font-semibold transition-colors text-center
-                ${isLimitReached ? 'text-gray-800 group-hover:text-amber-600' : 'text-gray-700 group-hover:text-indigo-600'}`}>
-                {isLimitReached ? "Upgrade to Create" : "Create New Resume"}
+              <h3
+                className={`text-lg font-semibold transition-colors text-center
+                ${
+                  isCreateLimitReached
+                    ? "text-gray-800 group-hover:text-amber-600"
+                    : "text-gray-700 group-hover:text-indigo-600"
+                }`}
+              >
+                {isCreateLimitReached ? "Upgrade to Create" : "Create New Resume"}
               </h3>
               <p className="text-xs text-gray-400 mt-2 text-center">
-                {isLimitReached ? `Limit reached (${FREE_LIMIT}/${FREE_LIMIT})` : "Start from scratch"}
+                {isCreateLimitReached
+                  ? `Limit reached (${FREE_LIMIT}/${FREE_LIMIT})`
+                  : "Start from scratch"}
               </p>
             </div>
 
@@ -186,12 +214,17 @@ const UserDashboard = () => {
               className="group flex flex-col items-center justify-center w-64 h-64 p-8 bg-white rounded-3xl border-2 border-dashed border-purple-200 cursor-pointer hover:border-purple-500 hover:shadow-xl transition-all duration-300 ease-in-out transform hover:-translate-y-1"
             >
               <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center shadow-lg mb-6 group-hover:scale-110 transition-transform duration-300">
-                <CloudUpload className="w-8 h-8 text-white" strokeWidth={2.5} />
+                <CloudUpload
+                  className="w-8 h-8 text-white"
+                  strokeWidth={2.5}
+                />
               </div>
               <h3 className="text-lg font-semibold text-gray-700 group-hover:text-purple-600 transition-colors text-center">
                 Upload Existing
               </h3>
-              <p className="text-xs text-gray-400 mt-2 text-center">Edit your current resume</p>
+              <p className="text-xs text-gray-400 mt-2 text-center">
+                Edit your current resume
+              </p>
             </div>
           </div>
 
@@ -203,16 +236,16 @@ const UserDashboard = () => {
 
             {isLoading ? (
               <div className="flex items-center gap-2 text-gray-500">
-                 <Loader2 className="animate-spin w-5 h-5"/> Loading...
+                <Loader2 className="animate-spin w-5 h-5" /> Loading...
               </div>
             ) : savedResumes.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {savedResumes.map((resume, index) => {
-
-                  // LOCKING LOGIC:
-                  // If user is NOT premium AND this is the 3rd (index 2) resume or higher...
-                  // Lock it visually.
-                  const isLocked = !isPremium && index >= FREE_LIMIT;
+                {savedResumes.map((resume) => {
+                  
+                  // LOGIC: Use the backend flag. 
+                  // The backend calculates 'isLocked' based on creation date (Oldest 2 are free).
+                  // Even if this list is sorted by UpdatedAt, the flag stays correct for that specific resume.
+                  const isLocked = resume.isLocked; 
 
                   return (
                     <div
@@ -220,15 +253,17 @@ const UserDashboard = () => {
                       onClick={() => {
                         if (isLocked) {
                           navigate("/user/plans");
-                          showToast("info", "Unlock this resume by upgrading!");
+                          showToast("info", "This resume is locked. Upgrade to access.");
                         } else {
                           navigate(`/user/create-resume/${resume._id}`);
                         }
                       }}
                       className={`relative group bg-white rounded-xl shadow-sm border p-5 transition-all cursor-pointer
-                        ${isLocked
-                          ? 'border-gray-200 opacity-80 hover:border-amber-300'
-                          : 'border-gray-100 hover:shadow-md hover:border-indigo-200'}`}
+                        ${
+                          isLocked
+                            ? "border-gray-200 opacity-80 hover:border-amber-300"
+                            : "border-gray-100 hover:shadow-md hover:border-indigo-200"
+                        }`}
                     >
                       {/* LOCKED OVERLAY */}
                       {isLocked && (
@@ -237,7 +272,7 @@ const UserDashboard = () => {
                             <Lock className="w-6 h-6 text-amber-600" />
                           </div>
                           <span className="text-xs font-bold text-amber-700 uppercase tracking-wide bg-amber-100 px-3 py-1 rounded-full">
-                            Premium Lock
+                            Plan Expired
                           </span>
                         </div>
                       )}
@@ -245,7 +280,11 @@ const UserDashboard = () => {
                       {/* RESUME PREVIEW (Placeholder or Image) */}
                       <div className="h-32 bg-gray-100 rounded-lg mb-4 flex items-center justify-center overflow-hidden">
                         {resume.personalInfo?.image ? (
-                          <img src={resume.personalInfo.image} alt="resume" className="w-full h-full object-cover opacity-80" />
+                          <img
+                            src={resume.personalInfo.image}
+                            alt="resume"
+                            className="w-full h-full object-cover opacity-80"
+                          />
                         ) : (
                           <FileText className="text-gray-300 w-12 h-12" />
                         )}
@@ -253,36 +292,42 @@ const UserDashboard = () => {
 
                       <div className="flex justify-between items-start">
                         <div className="overflow-hidden">
-                          <h4 className="font-semibold text-gray-800 truncate pr-2" title={resume.title}>
-                            {resume.title || resume.personalInfo?.fullName || "Untitled Resume"}
+                          <h4
+                            className="font-semibold text-gray-800 truncate pr-2"
+                            title={resume.title}
+                          >
+                            {resume.title ||
+                              resume.personalInfo?.fullName ||
+                              "Untitled Resume"}
                           </h4>
                           <p className="text-xs text-gray-400 mt-1">
-                            Edited: {new Date(resume.updatedAt).toLocaleDateString()}
+                            Edited:{" "}
+                            {new Date(resume.updatedAt).toLocaleDateString()}
                           </p>
                         </div>
 
-                        {/* DELETE BUTTON (Hide if Locked to prevent accidental deletion of locked content) */}
-                        {!isLocked && (
-                          <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button
-                              onClick={(e) => handleDeleteResume(resume._id, e)}
-                              className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
-                              title="Delete Resume"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          </div>
-                        )}
+                        {/* DELETE BUTTON */}
+                        {/* We allow deleting locked resumes so users can free up space */}
+                        {/* <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                          <button
+                            onClick={(e) => handleDeleteResume(resume._id, e)}
+                            className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
+                            title="Delete Resume"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div> */}
                       </div>
                     </div>
                   );
                 })}
               </div>
             ) : (
-              <div className="text-gray-500 italic">No saved resumes found. Create one above!</div>
+              <div className="text-gray-500 italic">
+                No saved resumes found. Create one above!
+              </div>
             )}
           </div>
-
         </div>
       </div>
 
@@ -297,20 +342,26 @@ const UserDashboard = () => {
               <X className="w-6 h-6" />
             </button>
 
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">Name your Resume</h2>
-            <p className="text-gray-500 mb-6 text-sm">Give your resume a name to help you identify it later.</p>
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">
+              Name your Resume
+            </h2>
+            <p className="text-gray-500 mb-6 text-sm">
+              Give your resume a name to help you identify it later.
+            </p>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Resume Name</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Resume Name
+                </label>
                 <input
                   type="text"
                   value={resumeTitle}
                   onChange={(e) => setResumeTitle(e.target.value)}
-                  placeholder="e.g. Software Engineer Role, Google App"
+                  placeholder="e.g. Software Engineer Role"
                   className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
                   autoFocus
-                  onKeyDown={(e) => e.key === 'Enter' && handleCreateResume()}
+                  onKeyDown={(e) => e.key === "Enter" && handleCreateResume()}
                 />
               </div>
 
@@ -326,7 +377,9 @@ const UserDashboard = () => {
                   disabled={isCreating}
                   className="px-6 py-2.5 rounded-xl bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition-colors disabled:opacity-70 flex items-center gap-2"
                 >
-                  {isCreating && <Loader2 className="w-4 h-4 animate-spin" />}
+                  {isCreating && (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  )}
                   {isCreating ? "Creating..." : "Create Resume"}
                 </button>
               </div>

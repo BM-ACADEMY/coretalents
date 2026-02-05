@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Check, Loader2, Crown } from 'lucide-react';
+import { Check, Loader2, Crown, Zap, ShieldCheck } from 'lucide-react';
 import axiosInstance from '@/api/axiosInstance';
 import { showToast } from '@/utils/customToast';
-import { useAuth } from "@/Context/Authcontext"; // 1. Import AuthContext
+import { useAuth } from "@/Context/Authcontext";
 
 const PlanPurchase = () => {
   const [plans, setPlans] = useState([]);
@@ -11,9 +11,7 @@ const PlanPurchase = () => {
   const [processingId, setProcessingId] = useState(null);
   const navigate = useNavigate();
 
-  // 2. GET checkUser FROM CONTEXT
-  // This function forces the app to re-fetch the user profile (including the new subscription)
-  const { checkUser } = useAuth();
+  const { checkUser } = useAuth(); //
 
   useEffect(() => {
     const fetchPlans = async () => {
@@ -50,7 +48,6 @@ const PlanPurchase = () => {
     }
 
     try {
-      // A. Create Order
       const orderRes = await axiosInstance.post('/payment/create-order', { planId: plan._id });
       const { order } = orderRes.data;
 
@@ -61,10 +58,8 @@ const PlanPurchase = () => {
         name: "Resume Builder",
         description: `Upgrade to ${plan.name}`,
         order_id: order.id,
-        // --- HANDLER FUNCTION ---
         handler: async function (response) {
           try {
-            // B. Verify Payment
             const verifyRes = await axiosInstance.post('/payment/verify-payment', {
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
@@ -73,21 +68,13 @@ const PlanPurchase = () => {
 
             if (verifyRes.data.success) {
               showToast('success', 'Payment Successful! Activating plan...');
-
-              // C. REFRESH USER DATA (The Critical Step)
-              // We wrap this in a separate try/catch so it doesn't trigger "Payment Failed"
               try {
                 if (checkUser) {
                   await checkUser();
-                } else {
-                  console.warn("checkUser function missing in AuthContext");
                 }
               } catch (refreshError) {
                 console.error("Failed to refresh user data:", refreshError);
-                // Even if refresh fails, we continue to dashboard
               }
-
-              // D. Navigate
               navigate('/user/dashboard');
             }
           } catch (error) {
@@ -100,7 +87,7 @@ const PlanPurchase = () => {
           email: "user@example.com",
         },
         theme: {
-          color: "#3b82f6",
+          color: "#4F46E5", // Updated to Indigo-600 to match new UI
         },
       };
 
@@ -118,65 +105,144 @@ const PlanPurchase = () => {
     }
   };
 
-  if (loading) return <div className="h-screen flex items-center justify-center"><Loader2 className="animate-spin text-blue-600 w-10 h-10" /></div>;
+  if (loading) return (
+    <div className="h-screen flex items-center justify-center bg-slate-50">
+      <div className="flex flex-col items-center gap-4">
+        <Loader2 className="animate-spin text-indigo-600 w-12 h-12" />
+        <p className="text-slate-500 font-medium">Loading premium plans...</p>
+      </div>
+    </div>
+  );
 
   return (
-    <div className="min-h-screen pt-32 bg-slate-50 py-20 px-4">
-      <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-slate-800 mb-4">Upgrade Your Plan</h1>
-          <p className="text-slate-600">Unlock more resumes and premium features</p>
+    <div className="min-h-screen pt-28 pb-20 px-4 bg-[#F8FAFC] relative overflow-hidden">
+      
+      {/* Background Decorative Elements */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[500px] bg-indigo-100/40 blur-[100px] rounded-full -z-10 pointer-events-none" />
+
+      <div className="max-w-6xl mx-auto">
+        {/* Header Section */}
+        <div className="text-center mb-16 max-w-2xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-600 text-sm font-semibold mb-6">
+            <Crown size={16} /> Premium Access
+          </div>
+          <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6 tracking-tight">
+            Invest in your <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">Career</span>
+          </h1>
+          <p className="text-lg text-slate-500 leading-relaxed">
+            Unlock professional templates, unlimited resumes, and AI-powered tools to land your dream job faster.
+          </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {plans.map((plan) => (
-            <div key={plan._id} className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 hover:shadow-xl transition-shadow relative overflow-hidden flex flex-col">
-              {plan.price > 0 && plan.price < 1000 && (
-                 <div className="absolute top-0 right-0 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">
-                   POPULAR
-                 </div>
-              )}
+        {/* Plans Grid */}
+        <div className="grid md:grid-cols-3 gap-8 items-start">
+          {plans.map((plan) => {
+            // Logic to determine if this is the "Popular" plan
+            // (Using the logic from your original code: price > 0 and price < 1000)
+            const isPopular = plan.price > 0 && plan.price < 1000;
+            const isFree = plan.price === 0;
 
-              <h3 className="text-xl font-bold text-slate-800 mb-2">{plan.name}</h3>
-              <div className="text-4xl font-bold text-blue-600 mb-6">
-                ₹{plan.price}
-                <span className="text-sm text-slate-400 font-normal"> / {plan.durationInDays} days</span>
-              </div>
-
-              <div className="space-y-4 mb-8 flex-1">
-                <div className="flex items-center gap-3 text-slate-600">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span>Create <strong>{plan.resumeLimit}</strong> Resumes</span>
-                </div>
-                {plan.description && (
-                  <div className="flex items-center gap-3 text-slate-600">
-                    <Check className="w-5 h-5 text-green-500" />
-                    <span>{plan.description}</span>
+            return (
+              <div 
+                key={plan._id} 
+                className={`relative group flex flex-col h-full p-8 rounded-3xl transition-all duration-300 
+                  ${isPopular 
+                    ? 'bg-white shadow-2xl shadow-indigo-200 border-2 border-indigo-500 scale-105 z-10' 
+                    : 'bg-white/80 backdrop-blur-sm shadow-xl border border-slate-200 hover:border-indigo-200 hover:bg-white'
+                  }`}
+              >
+                {/* Popular Badge */}
+                {isPopular && (
+                  <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-sm font-bold px-4 py-1.5 rounded-full shadow-lg flex items-center gap-1">
+                    <Zap size={14} fill="currentColor" /> MOST POPULAR
                   </div>
                 )}
-              </div>
 
-              <button
-                onClick={() => handleBuy(plan)}
-                disabled={processingId === plan._id}
-                className={`w-full py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all ${
-                  processingId === plan._id
-                    ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                    : 'bg-slate-900 text-white hover:bg-slate-800 hover:scale-[1.02]'
-                }`}
-              >
-                {processingId === plan._id ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                  <>
-                    {plan.price === 0 ? "Get Started" : <Crown className="w-5 h-5" />}
-                    {plan.price === 0 ? "Free" : "Upgrade Now"}
-                  </>
-                )}
-              </button>
-            </div>
-          ))}
+                {/* Plan Header */}
+                <div className="mb-8">
+                  <h3 className={`text-lg font-bold mb-2 ${isPopular ? 'text-indigo-600' : 'text-slate-800'}`}>
+                    {plan.name}
+                  </h3>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-4xl font-extrabold text-slate-900">
+                      ₹{plan.price}
+                    </span>
+                    <span className="text-slate-400 font-medium">
+                      / {plan.durationInDays} days
+                    </span>
+                  </div>
+                </div>
+
+                {/* Divider */}
+                <div className="w-full h-px bg-slate-100 mb-8" />
+
+                {/* Features List */}
+                <ul className="space-y-4 mb-8 flex-1">
+                  {/* Hardcoded Limit Feature */}
+                  <li className="flex items-start gap-3">
+                    <div className={`mt-1 p-0.5 rounded-full ${isPopular ? 'bg-indigo-100 text-indigo-600' : 'bg-slate-100 text-slate-500'}`}>
+                      <Check size={14} strokeWidth={3} />
+                    </div>
+                    <span className="text-slate-600 text-sm">
+                      Create <strong className="text-slate-900">{plan.resumeLimit}</strong> Resumes
+                    </span>
+                  </li>
+
+                  {/* Dynamic Description Feature */}
+                  {plan.description && (
+                    <li className="flex items-start gap-3">
+                       <div className={`mt-1 p-0.5 rounded-full ${isPopular ? 'bg-indigo-100 text-indigo-600' : 'bg-slate-100 text-slate-500'}`}>
+                        <Check size={14} strokeWidth={3} />
+                      </div>
+                      <span className="text-slate-600 text-sm">{plan.description}</span>
+                    </li>
+                  )}
+                  
+                  {/* Placeholder Features to make the card look fuller */}
+                  <li className="flex items-start gap-3">
+                     <div className={`mt-1 p-0.5 rounded-full ${isPopular ? 'bg-indigo-100 text-indigo-600' : 'bg-slate-100 text-slate-500'}`}>
+                      <Check size={14} strokeWidth={3} />
+                    </div>
+                    <span className="text-slate-600 text-sm">PDF Downloads</span>
+                  </li>
+                  {!isFree && (
+                     <li className="flex items-start gap-3">
+                     <div className={`mt-1 p-0.5 rounded-full ${isPopular ? 'bg-indigo-100 text-indigo-600' : 'bg-slate-100 text-slate-500'}`}>
+                      <Check size={14} strokeWidth={3} />
+                    </div>
+                    <span className="text-slate-600 text-sm">Premium Templates</span>
+                  </li>
+                  )}
+                </ul>
+
+                {/* Action Button */}
+                <button
+                  onClick={() => handleBuy(plan)}
+                  disabled={processingId === plan._id}
+                  className={`w-full py-4 rounded-xl font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2
+                    ${isPopular 
+                      ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:scale-[1.02]' 
+                      : 'bg-slate-900 text-white hover:bg-slate-800 hover:shadow-lg'
+                    }
+                    ${processingId === plan._id ? 'opacity-75 cursor-not-allowed' : ''}
+                  `}
+                >
+                  {processingId === plan._id ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <>
+                      {isFree ? "Get Started Free" : "Upgrade Now"}
+                      {!isFree && <ShieldCheck size={18} />}
+                    </>
+                  )}
+                </button>
+              </div>
+            );
+          })}
         </div>
+        
+  
+
       </div>
     </div>
   );

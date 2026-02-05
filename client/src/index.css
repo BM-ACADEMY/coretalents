@@ -4,6 +4,10 @@
 
 @import "tw-animate-css";
 
+#about-core-talents {
+  scroll-margin-top: 80px; /* match navbar height */
+}
+
 @custom-variant dark (&:is(.dark *));
 :root{
   --font-poppins: 'Poppins', sans-serif;
