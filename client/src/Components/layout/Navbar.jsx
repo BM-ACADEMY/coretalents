@@ -188,17 +188,15 @@ const Navbar = () => {
             {/* ======================================= */}
             {/* LOGIN / PROFILE DROPDOWN (DYNAMIC)      */}
             {/* ======================================= */}
-            <div className="relative group pb-2 pt-2 ml-4">
+            {/* <div className="relative group pb-2 pt-2 ml-4">
               <button className={`flex items-center gap-2 font-medium transition-colors px-3 py-2 rounded-full border ${user ? 'border-indigo-200 bg-indigo-50 text-indigo-700' : 'border-gray-200 text-gray-700 hover:border-indigo-600 hover:text-indigo-600'}`}>
                 <FiUser className="w-5 h-5" />
-                {/* Show Name if logged in, else "Account" */}
                 <span className="max-w-[100px] truncate">{user ? user.name : "Account"}</span>
                 <ChevronDown />
               </button>
 
               <div className="absolute right-0 top-full z-10 mt-0 w-48 border-t-2 border-[#615fff] bg-white rounded-b-lg shadow-xl overflow-hidden opacity-0 invisible transform scale-95 group-hover:opacity-100 group-hover:visible group-hover:scale-100 transition-all duration-200 ease-in-out">
                 {user ? (
-                  // LOGGED IN MENU
                   <>
                      <div className="px-5 py-3 text-xs text-gray-400 uppercase font-semibold border-b border-gray-100">
                       Signed in as <br/> <span className="text-gray-700 normal-case">{user.email}</span>
@@ -219,7 +217,6 @@ const Navbar = () => {
                     </button>
                   </>
                 ) : (
-                  // GUEST MENU
                   <>
                     <Link
                       to="/login"
@@ -231,7 +228,7 @@ const Navbar = () => {
                   </>
                 )}
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -288,13 +285,12 @@ const Navbar = () => {
                 ))}
 
                 {/* Mobile Login / User Links */}
-                <div className="mt-6 pt-6 border-t border-gray-100">
+                {/* <div className="mt-6 pt-6 border-t border-gray-100">
                   <p className="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
                     Account
                   </p>
 
                   {user ? (
-                    // MOBILE LOGGED IN
                     <>
                       <div className="px-4 mb-4 flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold">
@@ -323,7 +319,6 @@ const Navbar = () => {
                       </button>
                     </>
                   ) : (
-                    // MOBILE GUEST
                     <>
                       <Link
                         to="/login"
@@ -343,7 +338,7 @@ const Navbar = () => {
                       </Link>
                     </>
                   )}
-                </div>
+                </div> */}
               </div>
             </motion.div>
           </>

@@ -221,10 +221,10 @@ const Footer = () => {
                 Core Talents – AI-powered recruitment with 48-hour delivery, 95% fit rate, and hire-first-pay-later model. Trusted by 25+ corporates.
               </p>
               <div className="flex gap-4">
-                <SocialIcon icon={<Facebook size={18} />} href="https://facebook.com" />
-                <SocialIcon icon={<Instagram size={18} />} href="https://instagram.com" />
-                <SocialIcon icon={<Linkedin size={18} />} href="https://linkedin.com" />
-                <SocialIcon icon={<Youtube size={18} />} href="https://youtube.com" />
+                <SocialIcon icon={<Facebook size={18} />} href="https://www.facebook.com/profile.php?id=61581767384156" />
+                <SocialIcon icon={<Instagram size={18} />} href="https://www.instagram.com/core_talents/" />
+                <SocialIcon icon={<Linkedin size={18} />} href="https://www.linkedin.com/in/core-talents-417129389/" />
+                <SocialIcon icon={<Youtube size={18} />} href="https://www.youtube.com/channel/UCM542AZm8Lrf5mPmoLkO0kQ" />
               </div>
             </div>
 

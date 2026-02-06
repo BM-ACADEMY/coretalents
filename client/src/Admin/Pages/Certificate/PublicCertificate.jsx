@@ -3,9 +3,11 @@ import { useParams } from "react-router-dom";
 import axiosInstance from "@/api/axiosInstance";
 import { Button } from "@/Components/ui/button";
 import { Loader2, Download } from "lucide-react";
-import toast from "react-hot-toast";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+
+// ✅ IMPORT CUSTOM TOAST
+import { showToast } from "@/utils/customToast";
 
 const PublicCertificate = () => {
   const { id } = useParams();
@@ -30,7 +32,7 @@ const PublicCertificate = () => {
           setCertificate(res.data.data);
         }
       } catch (error) {
-        toast.error("Certificate not found.");
+        showToast("error", "Certificate not found.");
       } finally {
         setLoading(false);
       }
@@ -58,16 +60,15 @@ const PublicCertificate = () => {
       if (document.fonts && document.fonts.ready) {
         await document.fonts.ready;
       }
-      await new Promise((resolve) => setTimeout(resolve, 500)); // Slight extra delay for image load
+      await new Promise((resolve) => setTimeout(resolve, 500)); 
 
       const canvas = await html2canvas(element, {
         scale: 2,
-        useCORS: true, // Crucial for the image
+        useCORS: true, 
         allowTaint: true,
         backgroundColor: "#ffffff",
-        logging: true, // Set to true to see errors in console
+        logging: true,
         onclone: (clonedDoc) => {
-           // Fixes generic styling issues during capture
           const style = clonedDoc.createElement("style");
           style.innerHTML = `* { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }`;
           clonedDoc.head.appendChild(style);
@@ -81,13 +82,13 @@ const PublicCertificate = () => {
         format: "a4",
       });
 
-      pdf.addImage(imgData, "JPEG", 0, 0, 297, 210); // A4 Dimensions (297x210mm)
+      pdf.addImage(imgData, "JPEG", 0, 0, 297, 210); 
       pdf.save(`${certificate.studentName}_Certificate.pdf`);
-      toast.success("Downloaded Successfully!");
+      showToast("success", "Downloaded Successfully!");
 
     } catch (error) {
       console.error("PDF Error:", error);
-      toast.error("Download failed");
+      showToast("error", "Download failed");
     } finally {
       setDownloading(false);
     }
@@ -114,23 +115,27 @@ const PublicCertificate = () => {
                  overflow: "hidden"
              }}>
 
-             {/* ✅ FIX: USE IMG TAG INSTEAD OF BACKGROUND IMAGE
-                 This allows crossOrigin="anonymous" to work properly
-             */}
-             <img
-                src={certificate.templateUrl}
-                alt="Certificate Background"
-                crossOrigin="anonymous"
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  zIndex: 0 // Sends it to the back
-                }}
-             />
+             {/* ✅ CHECK IF TEMPLATE EXISTS (Accessed via .templateId object) */}
+             {certificate.templateId ? (
+                <img
+                  src={certificate.templateId.imageUrl}
+                  alt="Certificate Background"
+                  crossOrigin="anonymous"
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    zIndex: 0 
+                  }}
+                />
+             ) : (
+                <div className="absolute inset-0 bg-gray-200 flex items-center justify-center text-gray-500 z-0">
+                   Background Template Not Found
+                </div>
+             )}
 
              {/* Certificate Number */}
              <div style={{ position: "absolute", top: "29%", right: "440px", textAlign: "right", zIndex: 10 }}>
@@ -141,7 +146,7 @@ const PublicCertificate = () => {
 
              {/* Content Layout */}
              <div style={{
-                 position: "relative", // Needed to sit on top of image
+                 position: "relative", 
                  zIndex: 10,
                  width: "100%", height: "100%",
                  display: "flex", flexDirection: "column",

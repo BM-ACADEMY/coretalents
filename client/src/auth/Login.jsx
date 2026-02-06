@@ -79,14 +79,12 @@ const Login = () => {
             </button>
         </form>
 
-        {/* --- DIVIDER --- */}
-        <div className="relative flex py-2 items-center mt-6 mb-4">
+        {/* <div className="relative flex py-2 items-center mt-6 mb-4">
             <div className="flex-grow border-t border-gray-300"></div>
             <span className="flex-shrink-0 mx-4 text-gray-400 text-sm">OR</span>
             <div className="flex-grow border-t border-gray-300"></div>
         </div>
 
-        {/* --- GOOGLE BUTTON (Bottom) --- */}
         <div className="flex justify-center mb-6">
            <GoogleLogin
               onSuccess={onGoogleSuccess}
@@ -111,7 +109,8 @@ const Login = () => {
           >
             Click here
           </button>
-        </p>
+        </p> */}
+        
       </div>
     </div>
   );

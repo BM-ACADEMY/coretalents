@@ -1,6 +1,6 @@
 // src/Admin/ResponsiveDashboard.jsx
 import React, { useState, useEffect } from 'react';
-import { Outlet, NavLink, useNavigate } from 'react-router-dom';
+import { Outlet, NavLink, useNavigate, Link } from 'react-router-dom';
 import { 
   Menu, 
   Bell, 
@@ -62,10 +62,10 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           {/* Header */}
           <div className="h-24 flex items-center px-8">
             <div className="flex items-center gap-3">
-              <div>
+              <Link to="/">
                 <h1 className={`font-bold text-xl tracking-tight ${THEME.text}`}>Admin</h1>
                 <p className={`text-[11px] font-semibold uppercase tracking-widest ${THEME.textMuted}`}>CoreTalents</p>
-              </div>
+              </Link>
             </div>
           </div>
 

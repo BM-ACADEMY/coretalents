@@ -2,30 +2,39 @@ const express = require("express");
 const router = express.Router();
 const certificateController = require("../Controller/certificateController");
 const templateController = require("../Controller/certificateTemplateController");
-const upload = require("../Config/multer"); // ✅ USING YOUR CONFIG
+const upload = require("../Config/multer"); 
 const { verifyToken, authorizeRoles } = require("../middleware/auth");
 
 // ==========================================
-// 1. TEMPLATE ROUTES (Must be defined FIRST)
+// 1. TEMPLATE ROUTES 
 // ==========================================
 
-// Upload a new template background (Admin Only)
+// Create Template
 router.post(
   "/templates",
   verifyToken,
   authorizeRoles("admin"),
-  upload.single("image"), // Field name in frontend must be "image"
+  upload.single("image"), 
   templateController.uploadTemplate
 );
 
-// Get all available templates
+// Get All Templates
 router.get(
   "/templates",
   verifyToken,
   templateController.getAllTemplates
 );
 
-// Delete a template (Admin Only)
+// ✅ NEW: Update Template Route
+router.put(
+  "/templates/:id",
+  verifyToken,
+  authorizeRoles("admin"),
+  upload.single("image"), // Allows updating the image
+  templateController.updateTemplate
+);
+
+// Delete Template
 router.delete(
   "/templates/:id",
   verifyToken,
@@ -37,14 +46,12 @@ router.delete(
 // 2. CERTIFICATE ROUTES
 // ==========================================
 
-// Public Route: Verify Certificate by ID or Number
-// (Must come after /templates so "templates" isn't treated as an ID)
+router.get("/next-id", verifyToken, certificateController.getNextCertificateNumber);
+
 router.get("/:id", certificateController.getCertificateById);
 
-// Get All Certificates (Admin/Staff)
 router.get("/", verifyToken, certificateController.getAllCertificates);
 
-// Create Certificate (Admin Only)
 router.post(
   "/",
   verifyToken,
@@ -52,7 +59,6 @@ router.post(
   certificateController.createCertificate
 );
 
-// Update Certificate (Admin Only)
 router.put(
   "/:id",
   verifyToken,
@@ -60,7 +66,6 @@ router.put(
   certificateController.updateCertificate
 );
 
-// Delete Certificate (Admin Only)
 router.delete(
   "/:id",
   verifyToken,

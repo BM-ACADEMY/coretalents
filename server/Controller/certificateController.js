@@ -23,20 +23,29 @@ const generateCertificateNumber = async (issueDate) => {
   return `CT${year}${String(nextSequence).padStart(3, '0')}`;
 };
 
+// ✅ NEW: Endpoint to get the next number for Frontend display
+exports.getNextCertificateNumber = async (req, res) => {
+  try {
+    // Default to today's date for generating the number
+    const nextId = await generateCertificateNumber(new Date());
+    res.status(200).json({ success: true, nextId });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 // Create Certificate
 exports.createCertificate = async (req, res) => {
   try {
-    let { studentName, courseName, issueDate, certificateNumber, templateUrl } = req.body;
+    let { studentName, courseName, issueDate, certificateNumber, templateId } = req.body;
 
-    // 1. Validation
-    if (!studentName || !courseName || !issueDate || !templateUrl) {
+    if (!studentName || !courseName || !issueDate || !templateId) {
       return res.status(400).json({
         success: false,
         message: "Student Name, Course Name, Issue Date, and Template are required."
       });
     }
 
-    // 2. Handle Certificate Number
     if (certificateNumber) {
       const existingCert = await Certificate.findOne({ certificateNumber });
       if (existingCert) {
@@ -49,13 +58,12 @@ exports.createCertificate = async (req, res) => {
       certificateNumber = await generateCertificateNumber(issueDate);
     }
 
-    // 3. Create Record
     const certificate = await Certificate.create({
       studentName,
       courseName,
       issueDate,
       certificateNumber,
-      templateUrl, // ✅ Saving the selected template
+      templateId, 
       createdBy: req.user ? req.user.id : null
     });
 
@@ -69,71 +77,51 @@ exports.createCertificate = async (req, res) => {
   }
 };
 
-// Get All Certificates
+// ... (Keep getAllCertificates, getCertificateById, updateCertificate, deleteCertificate as they are) ...
 exports.getAllCertificates = async (req, res) => {
   try {
-    const certificates = await Certificate.find().sort({ createdAt: -1 });
+    const certificates = await Certificate.find()
+      .populate('templateId', 'name imageUrl')
+      .sort({ createdAt: -1 }); 
     res.status(200).json({ success: true, data: certificates });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-// Get Single Certificate
 exports.getCertificateById = async (req, res) => {
   try {
     const { id } = req.params;
-    let certificate;
-
+    let query = {};
     if (mongoose.Types.ObjectId.isValid(id)) {
-      certificate = await Certificate.findById(id);
+      query = { _id: id };
+    } else {
+      query = { certificateNumber: { $regex: `^${id}$`, $options: "i" } };
     }
-
-    if (!certificate) {
-      certificate = await Certificate.findOne({
-        certificateNumber: { $regex: `^${id}$`, $options: "i" }
-      });
-    }
-
-    if (!certificate) {
-      return res.status(404).json({ success: false, message: "Certificate not found" });
-    }
-
+    const certificate = await Certificate.findOne(query).populate('templateId', 'name imageUrl');
+    if (!certificate) return res.status(404).json({ success: false, message: "Certificate not found" });
     res.status(200).json({ success: true, data: certificate });
-
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-// Update Certificate
 exports.updateCertificate = async (req, res) => {
   try {
     const certificate = await Certificate.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    );
-
-    if (!certificate) {
-      return res.status(404).json({ success: false, message: "Certificate not found" });
-    }
-
+      req.params.id, req.body, { new: true, runValidators: true }
+    ).populate('templateId');
+    if (!certificate) return res.status(404).json({ success: false, message: "Certificate not found" });
     res.status(200).json({ success: true, data: certificate });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-// Delete Certificate
 exports.deleteCertificate = async (req, res) => {
   try {
     const certificate = await Certificate.findByIdAndDelete(req.params.id);
-
-    if (!certificate) {
-      return res.status(404).json({ success: false, message: "Certificate not found" });
-    }
-
+    if (!certificate) return res.status(404).json({ success: false, message: "Certificate not found" });
     res.status(200).json({ success: true, message: "Certificate deleted successfully" });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

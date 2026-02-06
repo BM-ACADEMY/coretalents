@@ -22,9 +22,10 @@ const certificateSchema = new mongoose.Schema({
     uppercase: true,
     trim: true
   },
-  // ✅ NEW FIELD: Stores the selected background template
-  templateUrl: {
-    type: String,
+  // ✅ CHANGED: Store Reference ID instead of URL string
+  templateId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'CertificateTemplate',
     required: true
   },
   createdBy: {

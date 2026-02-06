@@ -6,9 +6,9 @@ import MissionVision from '@/Components/Homepage/Mission&vissison'
 import ServicesSection from '@/Components/Homepage/Servcies'
 import Section from '@/Components/Homepage/Trustbrand'
 import WhyChooseUs from '@/Components/Homepage/Whycompany'
-import TestimonialSlider from '@/Components/Homepage/Testimonials'
+// import TestimonialSlider from '@/Components/Homepage/Testimonials'
 import React from 'react'
-import Gallerysection from '@/Components/Homepage/Gallery'
+// import Gallerysection from '@/Components/Homepage/Gallery'
 import Newspapercard from '@/Components/Homepage/Newspapercard'
 
 const Homeroutes = () => {
@@ -29,8 +29,8 @@ const Homeroutes = () => {
       <MissionVision/>
       <CompanyStatusSection/>
       <WhyChooseUs/>
-      <TestimonialSlider/>
-      <Gallerysection/>
+      {/* <TestimonialSlider/> */}
+      {/* <Gallerysection/> */}
       <Newspapercard/>
     </div>
   )
