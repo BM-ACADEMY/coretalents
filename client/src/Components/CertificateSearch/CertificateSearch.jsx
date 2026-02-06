@@ -37,7 +37,7 @@ const CertificateSearch = () => {
 
         <h1 className="text-2xl font-bold text-slate-800 mb-2">Certificate Verification</h1>
         <p className="text-slate-500 mb-8">
-          Enter your unique certificate ID (e.g., CT2026001) to verify and download your credential.
+          Enter your unique certificate ID (e.g., CTXXXXXXX) to verify and download your credential.
         </p>
 
         <form onSubmit={handleSearch} className="space-y-4">
