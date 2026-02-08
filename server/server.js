@@ -22,6 +22,7 @@ const resumeRoutes = require("./Routes/resumeRoutes");
 const planRoutes = require("./Routes/planRoutes");
 const paymentRoutes = require("./Routes/paymentRoutes");
 const certificateRoutes = require("./Routes/certificateRoutes");
+const certificateContentRoutes = require("./Routes/certificateContentRoutes");
 
 
 const app = express();
@@ -81,6 +82,7 @@ app.use("/api/resume", resumeRoutes);
 app.use("/api/plans", planRoutes);       // New
 app.use("/api/payment", paymentRoutes);  // New
 app.use("/api/certificates", certificateRoutes);
+app.use("/api/certificate-content", certificateContentRoutes);
 
 // ================== START SERVER ==================
 connectDB();

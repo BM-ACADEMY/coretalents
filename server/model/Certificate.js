@@ -1,38 +1,25 @@
 const mongoose = require('mongoose');
 
 const certificateSchema = new mongoose.Schema({
-  studentName: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  courseName: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  issueDate: {
-    type: Date,
-    required: true
-  },
-  certificateNumber: {
-    type: String,
-    required: true,
-    unique: true,
-    uppercase: true,
-    trim: true
-  },
-  // ✅ CHANGED: Store Reference ID instead of URL string
+  studentName: { type: String, required: true, trim: true },
+  courseName: { type: String, required: true, trim: true },
+  issueDate: { type: Date, required: true },
+  certificateNumber: { type: String, required: true, unique: true, uppercase: true, trim: true },
+
   templateId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'CertificateTemplate',
+    ref: 'CertificateTemplate', // Background Image
     required: true
   },
-  createdBy: {
+
+  // ✅ NEW: Reference to the text content
+  contentId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: false
-  }
+    ref: 'CertificateContent',
+    required: true
+  },
+
+  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Certificate', certificateSchema);
