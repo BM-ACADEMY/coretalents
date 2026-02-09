@@ -301,7 +301,8 @@ const Certificate = () => {
           <p className="text-slate-500 mt-1">Manage templates, content layouts & issued certificates</p>
         </div>
         <div className="flex bg-slate-200 rounded-lg p-1">
-          {["certificates", "templates", "content"].map((tab) => (
+          {/* {["certificates", "templates", "content"].map((tab) => ( */}
+          {["certificates", "templates"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
