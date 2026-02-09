@@ -3,9 +3,7 @@ import { FiX, FiUser, FiLogIn, FiUserPlus, FiLogOut, FiLayout } from 'react-icon
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { HiOutlineMenuAlt3 } from 'react-icons/hi';
-import { ChevronDown as ChevronDownIcon } from "lucide-react";
-import { useAuth } from "@/Context/Authcontext"; // Import Auth Context
-
+import { useAuth } from "@/Context/Authcontext"; 
 import Logo from '@/assets/logo/logo.png';
 
 // ==========================================
@@ -17,7 +15,7 @@ const ChevronDown = () => (
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 20 20"
     fill="currentColor"
-    className="w-5 h-5 ml-1"
+    className="w-5 h-5 ml-1 inline-block"
   >
     <path
       fillRule="evenodd"
@@ -27,43 +25,68 @@ const ChevronDown = () => (
   </svg>
 );
 
+// --- FIXED COMPONENT ---
 const MobileNavItem = ({ title, to, dropdownLinks = [], onClick }) => {
   const hasDropdown = dropdownLinks.length > 0;
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleClick = (e) => {
-    if (hasDropdown) {
-      e.preventDefault();
-      setIsOpen(!isOpen);
-    } else {
-      onClick();
-    }
+  const toggleDropdown = (e) => {
+    e.preventDefault(); // Prevent navigation for dropdown toggles
+    setIsOpen(!isOpen);
   };
 
   return (
     <div className="relative">
-      <button
-        onClick={handleClick}
-        className="flex items-center w-full text-left text-gray-700 font-medium hover:text-indigo-600 transition-colors px-4 py-2 rounded-lg"
-      >
-        {title}
-        {hasDropdown && <ChevronDown />}
-      </button>
-
-      {hasDropdown && isOpen && (
-        <div className="mt-1 bg-gray-50 rounded-lg overflow-hidden ml-4 border-l-2 border-gray-200">
-          {dropdownLinks.map((link) => (
-            <Link
-              key={link.label}
-              to={link.to}
-              onClick={onClick}
-              className="block px-4 py-2 text-sm text-gray-600 hover:text-indigo-600"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </div>
+      {hasDropdown ? (
+        // RENDER AS BUTTON (Toggle Dropdown)
+        <button
+          onClick={toggleDropdown}
+          className="flex items-center justify-between w-full text-left text-gray-700 font-medium hover:text-indigo-600 transition-colors px-4 py-2 rounded-lg"
+        >
+          <span>{title}</span>
+          <span className={`transform transition-transform ${isOpen ? 'rotate-180' : ''}`}>
+             <ChevronDown />
+          </span>
+        </button>
+      ) : (
+        // RENDER AS LINK (Navigate)
+        <NavLink
+          to={to}
+          onClick={onClick} // Navigate AND close offcanvas
+          className={({ isActive }) =>
+            `block w-full text-left font-medium transition-colors px-4 py-2 rounded-lg ${
+              isActive ? "text-indigo-600 bg-indigo-50" : "text-gray-700 hover:text-indigo-600"
+            }`
+          }
+        >
+          {title}
+        </NavLink>
       )}
+
+      {/* Dropdown Content */}
+      <AnimatePresence>
+        {hasDropdown && isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="overflow-hidden"
+          >
+            <div className="mt-1 bg-gray-50 rounded-lg ml-4 border-l-2 border-gray-200">
+              {dropdownLinks.map((link) => (
+                <Link
+                  key={link.label}
+                  to={link.to}
+                  onClick={onClick} // Close offcanvas on sub-link click
+                  className="block px-4 py-2 text-sm text-gray-600 hover:text-indigo-600 hover:bg-gray-100 rounded-r-md"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
@@ -198,7 +221,7 @@ const Navbar = () => {
               <div className="absolute right-0 top-full z-10 mt-0 w-48 border-t-2 border-[#615fff] bg-white rounded-b-lg shadow-xl overflow-hidden opacity-0 invisible transform scale-95 group-hover:opacity-100 group-hover:visible group-hover:scale-100 transition-all duration-200 ease-in-out">
                 {user ? (
                   <>
-                     <div className="px-5 py-3 text-xs text-gray-400 uppercase font-semibold border-b border-gray-100">
+                    <div className="px-5 py-3 text-xs text-gray-400 uppercase font-semibold border-b border-gray-100">
                       Signed in as <br/> <span className="text-gray-700 normal-case">{user.email}</span>
                     </div>
                     <Link
@@ -228,7 +251,8 @@ const Navbar = () => {
                   </>
                 )}
               </div>
-            </div> */}
+            </div> 
+            */}
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -338,7 +362,8 @@ const Navbar = () => {
                       </Link>
                     </>
                   )}
-                </div> */}
+                </div> 
+                */}
               </div>
             </motion.div>
           </>

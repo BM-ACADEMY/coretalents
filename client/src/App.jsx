@@ -9,17 +9,19 @@ import { Scrolltotop } from "./scrolltop/Scrolltotop";
 function AppContent() {
   const location = useLocation();
 
-  // ✅ UPDATED: Add "/verify-certificate" to the conditions that hide the layout
-  const hideLayout =
+  const hideFullLayout =
     location.pathname.startsWith("/admin") ||
     location.pathname === "/login" ||
     location.pathname.startsWith("/verify-certificate");
 
+  const isLandingPage = location.pathname.startsWith("/chennai-banking-jobs");
+
+  
   return (
     <>
-      {!hideLayout && <Navbar />}
+      {!hideFullLayout && !isLandingPage && <Navbar />}
       <Mainroutes />
-      {!hideLayout && <Footer />}
+      {!hideFullLayout && <Footer />}
       <ToastContainer />
     </>
   );

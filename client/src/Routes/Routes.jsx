@@ -16,6 +16,8 @@ import Footer from "@/Components/layout/Footer";
 import Userroutes from "./Userroutes";
 import PublicCertificate from "@/Admin/Pages/Certificate/PublicCertificate";
 import CertificateSearch from "@/Components/CertificateSearch/CertificateSearch";
+import LandingPage from "@/Landing/Chennaibankingjobs/Chennaibankingjobs";
+import ApplicationSuccess from "@/Landing/Chennaibankingjobs/ApplicationSuccess";
 
 
 const Mainroutes = () => {
@@ -36,6 +38,8 @@ const Mainroutes = () => {
       */}
       <Route path="/verify-certificate/:id" element={<PublicCertificate />} />
       <Route path="/verification" element={<CertificateSearch />} />
+      <Route path="/chennai-banking-jobs" element={<LandingPage />} />
+      <Route path="/application-success" element={<ApplicationSuccess />} />
 
 
       {/* Auth Route (Login/Register) */}

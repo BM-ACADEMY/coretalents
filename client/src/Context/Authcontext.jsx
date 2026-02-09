@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
         subscription: res.data.subscription
       });
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       setUser(null);
     } finally {
       setLoading(false);
