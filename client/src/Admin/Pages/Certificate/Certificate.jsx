@@ -52,7 +52,7 @@ const Certificate = () => {
   const [contentFormData, setContentFormData] = useState({
     name: "",
     type: "regular",
-    bodyText: "This is to certify that {studentName} has actively participated in the “{courseName}” Workshop Conducted on {date} Organised by Core Talents.",
+    bodyText: "This is to certify that {studentName} has actively participated in the {courseName} Workshop Conducted on {date} Organised by Core Talents.",
     subText: "Your enthusiasm, dedication and involvement throughout the session are sincerely appreciated."
   });
   const [submittingContent, setSubmittingContent] = useState(false);
@@ -301,8 +301,8 @@ const Certificate = () => {
           <p className="text-slate-500 mt-1">Manage templates, content layouts & issued certificates</p>
         </div>
         <div className="flex bg-slate-200 rounded-lg p-1">
-          {/* {["certificates", "templates", "content"].map((tab) => ( */}
-          {["certificates", "templates"].map((tab) => (
+          {["certificates", "templates", "content"].map((tab) => (
+
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -858,7 +858,7 @@ const Certificate = () => {
                 <div>
                   <Label>Main Body Text *</Label>
                   <p className="text-xs text-slate-500 mb-1.5">
-                    Placeholders: <strong>{"{studentName}"}</strong>, <strong>{"{courseName}"}</strong>,{" "}
+                    Placeholders: <strong>{"{studentName}"}</strong>, <strong>{" {courseName} "}</strong>,{" "}
                     <strong>{"{date}"}</strong>, <strong>{"{certNumber}"}</strong>
                   </p>
                   <Textarea
