@@ -27,9 +27,8 @@ import {
   Check,
 } from "lucide-react";
 import Man from "@/assets/Landing/man.png";
-import Logo from "@/assets/logo/logo.png"; // <--- IMPORTED LOGO
+import Logo from "@/assets/logo/logo.png"; 
 
-// *** ⬇️ PASTE YOUR DEPLOYED GOOGLE SCRIPT URL HERE ⬇️ ***
 const SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbz1qFpSXRF9SXUJwJwH7iYzJYfzofjYaY1bVFgC-lLp0cs7hd1DkN0pwBD2yiUThzMz/exec";
 
@@ -47,6 +46,7 @@ const staggerContainer = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
+    y: 0,
     transition: {
       staggerChildren: 0.1,
       delayChildren: 0.2,
@@ -73,7 +73,6 @@ const LandingPage = () => {
 };
 
 // --- Navbar ---
-// --- Navbar ---
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -91,7 +90,6 @@ const Navbar = () => {
     { name: "Salary", href: "#salary" },
   ];
 
-  // Logic: Navbar is solid white if Scrolled OR if Mobile Menu is Open
   const isSolid = scrolled || isOpen;
 
   return (
@@ -178,7 +176,7 @@ const HeroSection = () => (
     <motion.div
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true }} // Optimizes performance
+      viewport={{ once: true }}
       variants={fadeInUp}
       className="space-y-8 z-10"
     >
@@ -270,8 +268,9 @@ const HeroSection = () => (
 );
 
 // --- Trust Section ---
+// ADDED scroll-mt-32 HERE
 const TrustSection = () => (
-  <section id="process" className="max-w-7xl mx-auto px-6 text-center">
+  <section id="process" className="max-w-7xl mx-auto px-6 text-center scroll-mt-32">
     <motion.div
       initial="hidden"
       whileInView="visible"
@@ -342,6 +341,7 @@ const TrustSection = () => (
 );
 
 // --- Eligibility Section ---
+// ADDED scroll-mt-32 HERE
 const EligibilitySection = () => (
   <motion.section
     initial="hidden"
@@ -349,7 +349,7 @@ const EligibilitySection = () => (
     viewport={{ once: true }}
     variants={fadeInUp}
     id="eligibility"
-    className="max-w-7xl mx-auto px-6 mb-20"
+    className="max-w-7xl mx-auto px-6 mb-20 scroll-mt-32"
   >
     <div className="relative rounded-[3rem] overflow-hidden bg-slate-900">
       <div className="absolute inset-0 bg-gradient-to-br from-violet-900 via-slate-900 to-violet-950"></div>
@@ -452,8 +452,9 @@ const CriteriaCard = ({ icon: Icon, label, value, color }) => (
 );
 
 // --- Salary Section ---
+// ADDED scroll-mt-32 HERE
 const SalarySection = () => (
-  <section id="salary" className="bg-slate-50 py-20">
+  <section id="salary" className="bg-slate-50 py-20 scroll-mt-32">
     <div className="max-w-7xl mx-auto px-6">
       <motion.div 
         initial="hidden"
@@ -609,6 +610,7 @@ const ImportantNoticeSection = () => (
 );
 
 // --- Application Section ---
+// INCREASED scroll-mt to 32 HERE
 const ApplicationSection = ({ navigate }) => {
   const [loading, setLoading] = useState(false);
   const [resumeFile, setResumeFile] = useState(null);
@@ -727,7 +729,7 @@ const ApplicationSection = ({ navigate }) => {
       viewport={{ once: true }}
       variants={fadeInUp}
       id="apply"
-      className="max-w-4xl mx-auto px-6 scroll-mt-24"
+      className="max-w-4xl mx-auto px-6 scroll-mt-32"
     >
       <div className="bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden">
         <div className="bg-slate-900 p-8 text-center relative overflow-hidden">
@@ -1003,6 +1005,5 @@ const Checkbox = ({ label, name, checked, onChange }) => (
     </span>
   </label>
 );
-
 
 export default LandingPage;

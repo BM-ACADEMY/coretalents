@@ -17,7 +17,7 @@ const ApplicationSuccess = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-violet-50 flex items-center justify-center p-6 font-sans">
+    <div className="min-h-screen bg-violet-50 py-35 flex items-center justify-center p-6 font-sans">
       <motion.div 
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
