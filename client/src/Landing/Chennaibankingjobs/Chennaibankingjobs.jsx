@@ -848,7 +848,7 @@ const ApplicationSection = ({ navigate }) => {
             {/* Languages Multi-Select UI */}
             <div>
               <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">
-                Languages Known (Select Multiple)
+                Languages Known (Select Multiple)<span className="text-red-500 ml-1">*</span>
               </label>
               <div className="flex flex-wrap gap-2">
                 {languageOptions.map((lang) => {
@@ -898,7 +898,8 @@ const ApplicationSection = ({ navigate }) => {
             {/* File Upload */}
             <div>
               <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">
-                Attach Resume (PDF/Doc)
+                Attach Resume (PDF/Doc){" "}
+                <span className="text-red-500 ml-1">*</span>
               </label>
               <div className="relative group">
                 <div className="absolute inset-0 bg-violet-100 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -938,6 +939,7 @@ const ApplicationSection = ({ navigate }) => {
               <div>
                 <h4 className="text-sm font-bold text-slate-900 border-b border-slate-200 pb-2 mb-3">
                   Commitment Confirmation
+                  <span className="text-red-500 ml-1">*</span>
                 </h4>
                 <Checkbox
                   label="I confirm my availability for a minimum 3-month commitment"
@@ -987,7 +989,7 @@ const InputGroup = ({
 }) => (
   <div>
     <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">
-      {label}
+      {label} <span className="text-red-500 ml-1">*</span>
     </label>
     <input
       type={type}
@@ -1004,7 +1006,7 @@ const InputGroup = ({
 const SelectGroup = ({ label, options, name, value, onChange }) => (
   <div>
     <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">
-      {label}
+      {label} <span className="text-red-500 ml-1">*</span>
     </label>
     <select
       name={name}
