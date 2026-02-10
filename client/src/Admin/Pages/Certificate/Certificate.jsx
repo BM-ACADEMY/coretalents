@@ -4,10 +4,33 @@ import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
 import { Label } from "@/Components/ui/label";
 import { Textarea } from "@/Components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/Components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/Components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/Components/ui/table";
 import { Card, CardContent } from "@/Components/ui/card";
-import { Trash2, Eye, Plus, Loader2, Pencil, X, Search, CheckCircle, AlertTriangle } from "lucide-react";
+import {
+  Trash2,
+  Eye,
+  Plus,
+  Loader2,
+  Pencil,
+  X,
+  Search,
+  CheckCircle,
+  AlertTriangle,
+} from "lucide-react";
 import { showToast } from "../../../utils/customToast";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -18,6 +41,7 @@ const Certificate = () => {
   const [certificates, setCertificates] = useState([]);
   const [templates, setTemplates] = useState([]);
   const [contents, setContents] = useState([]);
+  const [courses, setCourses] = useState([]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -33,7 +57,7 @@ const Certificate = () => {
     issueDate: "",
     certificateNumber: "",
     templateId: "",
-    contentId: ""
+    contentId: "",
   });
 
   // Template Modal
@@ -42,7 +66,7 @@ const Certificate = () => {
   const [templateFormData, setTemplateFormData] = useState({
     name: "",
     file: null,
-    preview: ""
+    preview: "",
   });
   const [submittingTemplate, setSubmittingTemplate] = useState(false);
 
@@ -52,28 +76,43 @@ const Certificate = () => {
   const [contentFormData, setContentFormData] = useState({
     name: "",
     type: "regular",
-    bodyText: "This is to certify that {studentName} has actively participated in the {courseName} Workshop Conducted on {date} Organised by Core Talents.",
-    subText: "Your enthusiasm, dedication and involvement throughout the session are sincerely appreciated."
+    bodyText:
+      "This is to certify that {studentName} has actively participated in the {courseName} Workshop Conducted on {date} Organised by Core Talents.",
+    subText:
+      "Your enthusiasm, dedication and involvement throughout the session are sincerely appreciated.",
   });
   const [submittingContent, setSubmittingContent] = useState(false);
 
   // Delete Modal
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [deleteConfig, setDeleteConfig] = useState({ id: null, type: null, name: "" });
+  const [deleteConfig, setDeleteConfig] = useState({
+    id: null,
+    type: null,
+    name: "",
+  });
   const [isDeleting, setIsDeleting] = useState(false);
+
+  // Search & Filter
+  const [courseFilter, setCourseFilter] = useState("all");
+
+  // Course State
+  const [newCourseName, setNewCourseName] = useState("");
+  const [isSubmittingCourse, setIsSubmittingCourse] = useState(false);
 
   // FETCH ALL DATA
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [certRes, tempRes, contRes] = await Promise.all([
+      const [certRes, tempRes, contRes, courseRes] = await Promise.all([
         axiosInstance.get("/certificates"),
         axiosInstance.get("/certificates/templates"),
-        axiosInstance.get("/certificate-content")
+        axiosInstance.get("/certificate-content"),
+        axiosInstance.get("/courses"),
       ]);
       setCertificates(certRes.data.success ? certRes.data.data : []);
       setTemplates(tempRes.data.success ? tempRes.data.data : []);
       setContents(contRes.data.success ? contRes.data.data : []);
+      setCourses(courseRes.data.success ? courseRes.data.data : []);
     } catch (error) {
       showToast("error", "Failed to load data");
     } finally {
@@ -97,7 +136,7 @@ const Certificate = () => {
     setTemplateFormData({
       name: template.name,
       file: null,
-      preview: template.imageUrl || ""
+      preview: template.imageUrl || "",
     });
     setIsTemplateModalOpen(true);
   };
@@ -108,14 +147,15 @@ const Certificate = () => {
       setTemplateFormData({
         ...templateFormData,
         file,
-        preview: URL.createObjectURL(file)
+        preview: URL.createObjectURL(file),
       });
     }
   };
 
   const handleTemplateSubmit = async (e) => {
     e.preventDefault();
-    if (!templateFormData.name) return showToast("warn", "Template name is required");
+    if (!templateFormData.name)
+      return showToast("warn", "Template name is required");
 
     if (!editingTemplateId && !templateFormData.file) {
       return showToast("warn", "Please select an image for new template");
@@ -130,13 +170,17 @@ const Certificate = () => {
     setSubmittingTemplate(true);
     try {
       if (editingTemplateId) {
-        await axiosInstance.put(`/certificates/templates/${editingTemplateId}`, formData, {
-          headers: { "Content-Type": "multipart/form-data" }
-        });
+        await axiosInstance.put(
+          `/certificates/templates/${editingTemplateId}`,
+          formData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          },
+        );
         showToast("success", "Template updated");
       } else {
         await axiosInstance.post("/certificates/templates", formData, {
-          headers: { "Content-Type": "multipart/form-data" }
+          headers: { "Content-Type": "multipart/form-data" },
         });
         showToast("success", "Template created");
       }
@@ -153,7 +197,28 @@ const Certificate = () => {
 
   // ── TEMPLATE DELETE PROTECTION ───────────────────────────────────────
   const getTemplateUsageCount = (templateId) => {
-    return certificates.filter(c => c.templateId?._id === templateId).length;
+    return certificates.filter((c) => c.templateId?._id === templateId).length;
+  };
+
+  // ── COURSE HANDLERS ──────────────────────────────────────────────────
+  const handleAddCourse = async () => {
+    if (!newCourseName.trim())
+      return showToast("warn", "Course name is required");
+    setIsSubmittingCourse(true);
+    try {
+      await axiosInstance.post("/courses", { name: newCourseName });
+      showToast("success", "Course added successfully");
+      setNewCourseName("");
+      const res = await axiosInstance.get("/courses");
+      setCourses(res.data.success ? res.data.data : []);
+    } catch (error) {
+      showToast(
+        "error",
+        error.response?.data?.message || "Failed to add course",
+      );
+    } finally {
+      setIsSubmittingCourse(false);
+    }
   };
 
   // ── CONTENT HANDLERS ─────────────────────────────────────────────────
@@ -162,8 +227,10 @@ const Certificate = () => {
     setContentFormData({
       name: "",
       type: "regular",
-      bodyText: "This is to certify that {studentName} has actively participated in the “{courseName}” Workshop Conducted on {date} Organised by Core Talents.",
-      subText: "Your enthusiasm, dedication and involvement throughout the session are sincerely appreciated."
+      bodyText:
+        "This is to certify that {studentName} has actively participated in the “{courseName}” Workshop Conducted on {date} Organised by Core Talents.",
+      subText:
+        "Your enthusiasm, dedication and involvement throughout the session are sincerely appreciated.",
     });
     setIsContentModalOpen(true);
   };
@@ -174,7 +241,7 @@ const Certificate = () => {
       name: content.name,
       type: content.type,
       bodyText: content.bodyText,
-      subText: content.subText || ""
+      subText: content.subText || "",
     });
     setIsContentModalOpen(true);
   };
@@ -187,7 +254,10 @@ const Certificate = () => {
     setSubmittingContent(true);
     try {
       if (editingContentId) {
-        await axiosInstance.put(`/certificate-content/${editingContentId}`, contentFormData);
+        await axiosInstance.put(
+          `/certificate-content/${editingContentId}`,
+          contentFormData,
+        );
         showToast("success", "Content updated");
       } else {
         await axiosInstance.post("/certificate-content", contentFormData);
@@ -218,7 +288,7 @@ const Certificate = () => {
       issueDate: new Date().toISOString().split("T")[0],
       certificateNumber: nextId,
       templateId: templates[0]?._id || "",
-      contentId: contents[0]?._id || ""
+      contentId: contents[0]?._id || "",
     });
     setIsCertModalOpen(true);
   };
@@ -255,7 +325,7 @@ const Certificate = () => {
       if (usage > 0) {
         showToast(
           "error",
-          `Cannot delete — this template is used in ${usage} certificate${usage > 1 ? "s" : ""}.`
+          `Cannot delete — this template is used in ${usage} certificate${usage > 1 ? "s" : ""}.`,
         );
         setIsDeleteModalOpen(false);
         return;
@@ -265,13 +335,23 @@ const Certificate = () => {
     setIsDeleting(true);
     try {
       let url = "";
-      if (deleteConfig.type === "cert") url = `/certificates/${deleteConfig.id}`;
-      if (deleteConfig.type === "template") url = `/certificates/templates/${deleteConfig.id}`;
-      if (deleteConfig.type === "content") url = `/certificate-content/${deleteConfig.id}`;
+      if (deleteConfig.type === "cert")
+        url = `/certificates/${deleteConfig.id}`;
+      if (deleteConfig.type === "template")
+        url = `/certificates/templates/${deleteConfig.id}`;
+      if (deleteConfig.type === "content")
+        url = `/certificate-content/${deleteConfig.id}`;
+      if (deleteConfig.type === "course") url = `/courses/${deleteConfig.id}`;
 
       await axiosInstance.delete(url);
       showToast("success", "Deleted successfully");
-      fetchData();
+
+      // Update local state immediately to avoid full refetch delay
+      if (deleteConfig.type === "course") {
+        setCourses(courses.filter((c) => c._id !== deleteConfig.id));
+      } else {
+        fetchData();
+      }
     } catch (err) {
       showToast("error", "Delete failed");
     } finally {
@@ -283,13 +363,14 @@ const Certificate = () => {
   // ── FILTER & PAGINATION ──────────────────────────────────────────────
   const filteredCertificates = certificates.filter(
     (c) =>
-      c.studentName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      c.certificateNumber?.toLowerCase().includes(searchTerm.toLowerCase())
+      (courseFilter === "all" || c.courseName === courseFilter) &&
+      (c.studentName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        c.certificateNumber?.toLowerCase().includes(searchTerm.toLowerCase())),
   );
 
   const currentCertificates = filteredCertificates.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+    currentPage * itemsPerPage,
   );
 
   return (
@@ -298,11 +379,12 @@ const Certificate = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
           <h1 className="text-3xl font-bold text-slate-900">Certificates</h1>
-          <p className="text-slate-500 mt-1">Manage templates, content layouts & issued certificates</p>
+          <p className="text-slate-500 mt-1">
+            Manage templates, content layouts & issued certificates
+          </p>
         </div>
         <div className="flex bg-slate-200 rounded-lg p-1">
-          {["certificates", "templates", "content"].map((tab) => (
-
+          {["certificates", "courses", "templates", "content"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -312,7 +394,9 @@ const Certificate = () => {
                   : "text-slate-600 hover:text-slate-900"
               }`}
             >
-              {tab === "certificates" ? "Issued" : tab.charAt(0).toUpperCase() + tab.slice(1)}
+              {tab === "certificates"
+                ? "Issued"
+                : tab.charAt(0).toUpperCase() + tab.slice(1)}
             </button>
           ))}
         </div>
@@ -329,19 +413,59 @@ const Certificate = () => {
             className="space-y-6"
           >
             <div className="flex flex-col sm:flex-row justify-between gap-4">
-              <div className="relative max-w-sm w-full">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                <Input
-                  placeholder="Search student or certificate ID..."
-                  className="pl-10"
-                  value={searchTerm}
-                  onChange={(e) => {
-                    setSearchTerm(e.target.value);
-                    setCurrentPage(1);
-                  }}
-                />
+              <div className="flex gap-4 w-full">
+                {/* Stats */}
+                <div className="hidden md:flex gap-4 items-center text-sm font-medium text-slate-600 bg-white px-4 py-2 rounded-lg border shadow-sm">
+                  <span>
+                    Total:{" "}
+                    <span className="text-slate-900">
+                      {certificates.length}
+                    </span>
+                  </span>
+                  <span className="h-4 w-px bg-slate-300"></span>
+                  <span>
+                    Filtered:{" "}
+                    <span className="text-slate-900">
+                      {filteredCertificates.length}
+                    </span>
+                  </span>
+                </div>
+
+                <div className="relative max-w-sm w-full">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <Input
+                    placeholder="Search student or certificate ID..."
+                    className="pl-10 bg-white"
+                    value={searchTerm}
+                    onChange={(e) => {
+                      setSearchTerm(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                  />
+                </div>
+
+                {/* Course Filter */}
+                <div className="w-56">
+                  <Select value={courseFilter} onValueChange={setCourseFilter}>
+                    <SelectTrigger className="bg-white">
+                      <SelectValue placeholder="Filter by Course" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Courses</SelectItem>
+                      {courses.map((course) => (
+                        <SelectItem key={course._id} value={course.name}>
+                          {course.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-              <Button onClick={openCreateCertModal} className="bg-slate-900 hover:bg-slate-800">
+
+              <Button
+                onClick={openCreateCertModal}
+                className="bg-slate-900 hover:bg-slate-800 shrink-0"
+              >
                 <Plus className="w-4 h-4 mr-2" /> Issue Certificate
               </Button>
             </div>
@@ -361,8 +485,12 @@ const Certificate = () => {
                   <TableBody>
                     {currentCertificates.map((cert) => (
                       <TableRow key={cert._id}>
-                        <TableCell className="font-mono text-xs">{cert.certificateNumber}</TableCell>
-                        <TableCell className="font-medium">{cert.studentName}</TableCell>
+                        <TableCell className="font-mono text-xs">
+                          {cert.certificateNumber}
+                        </TableCell>
+                        <TableCell className="font-medium">
+                          {cert.studentName}
+                        </TableCell>
                         <TableCell>{cert.courseName}</TableCell>
                         <TableCell>
                           <span
@@ -380,7 +508,12 @@ const Certificate = () => {
                             <Button
                               variant="ghost"
                               size="icon"
-                              onClick={() => window.open(`/verify-certificate/${cert._id}`, "_blank")}
+                              onClick={() =>
+                                window.open(
+                                  `/verify-certificate/${cert._id}`,
+                                  "_blank",
+                                )
+                              }
                             >
                               <Eye className="h-4 w-4 text-blue-600" />
                             </Button>
@@ -391,9 +524,11 @@ const Certificate = () => {
                                 setEditingCertId(cert._id);
                                 setCertFormData({
                                   ...cert,
-                                  issueDate: new Date(cert.issueDate).toISOString().split("T")[0],
+                                  issueDate: new Date(cert.issueDate)
+                                    .toISOString()
+                                    .split("T")[0],
                                   templateId: cert.templateId?._id || "",
-                                  contentId: cert.contentId?._id || ""
+                                  contentId: cert.contentId?._id || "",
                                 });
                                 setIsCertModalOpen(true);
                               }}
@@ -407,7 +542,7 @@ const Certificate = () => {
                                 setDeleteConfig({
                                   id: cert._id,
                                   type: "cert",
-                                  name: cert.studentName
+                                  name: cert.studentName,
                                 });
                                 setIsDeleteModalOpen(true);
                               }}
@@ -420,7 +555,10 @@ const Certificate = () => {
                     ))}
                     {currentCertificates.length === 0 && (
                       <TableRow>
-                        <TableCell colSpan={5} className="text-center py-8 text-slate-500">
+                        <TableCell
+                          colSpan={5}
+                          className="text-center py-8 text-slate-500"
+                        >
                           No certificates found
                         </TableCell>
                       </TableRow>
@@ -429,6 +567,81 @@ const Certificate = () => {
                 </Table>
               </CardContent>
             </Card>
+          </motion.div>
+        )}
+
+        {/* COURSES TAB */}
+        {activeTab === "courses" && (
+          <motion.div
+            key="courses"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            className="space-y-6"
+          >
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-xl shadow-sm border">
+              <div>
+                <h3 className="text-xl font-semibold text-slate-900">
+                  Course Management
+                </h3>
+                <p className="text-sm text-slate-500 mt-1">
+                  Add or remove courses available for certification
+                </p>
+              </div>
+              <div className="flex gap-2 w-full md:w-auto">
+                <Input
+                  placeholder="New Course Name"
+                  value={newCourseName}
+                  onChange={(e) => setNewCourseName(e.target.value)}
+                  className="max-w-xs"
+                />
+                <Button
+                  onClick={handleAddCourse}
+                  disabled={isSubmittingCourse || !newCourseName.trim()}
+                >
+                  {isSubmittingCourse ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Plus className="w-4 h-4 mr-2" />
+                  )}
+                  Add
+                </Button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {courses.map((course) => (
+                <div
+                  key={course._id}
+                  className="bg-white p-4 rounded-lg shadow-sm border flex justify-between items-center group"
+                >
+                  <span className="font-medium text-slate-700">
+                    {course.name}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-slate-400 hover:text-red-600 hover:bg-red-50"
+                    onClick={() => {
+                      setDeleteConfig({
+                        id: course._id,
+                        type: "course",
+                        name: course.name,
+                      });
+                      setIsDeleteModalOpen(true);
+                    }}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </div>
+              ))}
+
+              {courses.length === 0 && (
+                <div className="col-span-full text-center py-10 text-slate-500 bg-slate-100/50 rounded-xl border border-dashed">
+                  No courses added yet.
+                </div>
+              )}
+            </div>
           </motion.div>
         )}
 
@@ -475,7 +688,7 @@ const Certificate = () => {
                           setDeleteConfig({
                             id: temp._id,
                             type: "template",
-                            name: temp.name
+                            name: temp.name,
                           });
                           setIsDeleteModalOpen(true);
                         }}
@@ -520,7 +733,10 @@ const Certificate = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {contents.map((content) => (
-                <Card key={content._id} className="hover:shadow-md transition-shadow">
+                <Card
+                  key={content._id}
+                  className="hover:shadow-md transition-shadow"
+                >
                   <CardContent className="p-6 space-y-4">
                     <div className="flex justify-between items-start gap-4">
                       <div>
@@ -550,7 +766,7 @@ const Certificate = () => {
                             setDeleteConfig({
                               id: content._id,
                               type: "content",
-                              name: content.name
+                              name: content.name,
                             });
                             setIsDeleteModalOpen(true);
                           }}
@@ -601,7 +817,11 @@ const Certificate = () => {
                 <h2 className="text-2xl font-bold">
                   {editingTemplateId ? "Edit Template" : "New Template"}
                 </h2>
-                <Button variant="ghost" size="icon" onClick={() => setIsTemplateModalOpen(false)}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setIsTemplateModalOpen(false)}
+                >
                   <X className="h-5 w-5" />
                 </Button>
               </div>
@@ -612,7 +832,10 @@ const Certificate = () => {
                   <Input
                     value={templateFormData.name}
                     onChange={(e) =>
-                      setTemplateFormData({ ...templateFormData, name: e.target.value })
+                      setTemplateFormData({
+                        ...templateFormData,
+                        name: e.target.value,
+                      })
                     }
                     placeholder="e.g. Modern Blue Certificate"
                   />
@@ -651,14 +874,19 @@ const Certificate = () => {
               </div>
 
               <div className="flex justify-end gap-3 pt-4">
-                <Button variant="outline" onClick={() => setIsTemplateModalOpen(false)}>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsTemplateModalOpen(false)}
+                >
                   Cancel
                 </Button>
                 <Button
                   onClick={handleTemplateSubmit}
                   disabled={submittingTemplate || !templateFormData.name.trim()}
                 >
-                  {submittingTemplate && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {submittingTemplate && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
                   {editingTemplateId ? "Update Template" : "Create Template"}
                 </Button>
               </div>
@@ -686,7 +914,11 @@ const Certificate = () => {
                 <h2 className="text-2xl font-bold">
                   {editingCertId ? "Edit Certificate" : "Issue New Certificate"}
                 </h2>
-                <Button variant="ghost" size="icon" onClick={() => setIsCertModalOpen(false)}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setIsCertModalOpen(false)}
+                >
                   <X className="h-6 w-6" />
                 </Button>
               </div>
@@ -699,18 +931,35 @@ const Certificate = () => {
                     <Input
                       value={certFormData.studentName}
                       onChange={(e) =>
-                        setCertFormData({ ...certFormData, studentName: e.target.value })
+                        setCertFormData({
+                          ...certFormData,
+                          studentName: e.target.value,
+                        })
                       }
                     />
                   </div>
+
                   <div>
-                    <Label>Course / Program Name *</Label>
-                    <Input
+                    <Label className="mb-2 block">
+                      Course / Program Name *
+                    </Label>
+                    <Select
                       value={certFormData.courseName}
-                      onChange={(e) =>
-                        setCertFormData({ ...certFormData, courseName: e.target.value })
+                      onValueChange={(val) =>
+                        setCertFormData({ ...certFormData, courseName: val })
                       }
-                    />
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Course" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {courses.map((c) => (
+                          <SelectItem key={c._id} value={c.name}>
+                            {c.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                   <div>
                     <Label>Issue Date *</Label>
@@ -718,7 +967,10 @@ const Certificate = () => {
                       type="date"
                       value={certFormData.issueDate}
                       onChange={(e) =>
-                        setCertFormData({ ...certFormData, issueDate: e.target.value })
+                        setCertFormData({
+                          ...certFormData,
+                          issueDate: e.target.value,
+                        })
                       }
                     />
                   </div>
@@ -727,7 +979,10 @@ const Certificate = () => {
                     <Input
                       value={certFormData.certificateNumber}
                       onChange={(e) =>
-                        setCertFormData({ ...certFormData, certificateNumber: e.target.value })
+                        setCertFormData({
+                          ...certFormData,
+                          certificateNumber: e.target.value,
+                        })
                       }
                     />
                   </div>
@@ -763,7 +1018,10 @@ const Certificate = () => {
                         <div
                           key={temp._id}
                           onClick={() =>
-                            setCertFormData({ ...certFormData, templateId: temp._id })
+                            setCertFormData({
+                              ...certFormData,
+                              templateId: temp._id,
+                            })
                           }
                           className={`relative rounded-xl overflow-hidden border-2 cursor-pointer transition-all hover:scale-105 ${
                             certFormData.templateId === temp._id
@@ -789,7 +1047,10 @@ const Certificate = () => {
               </div>
 
               <div className="p-6 border-t bg-slate-50 flex justify-end gap-4">
-                <Button variant="outline" onClick={() => setIsCertModalOpen(false)}>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsCertModalOpen(false)}
+                >
                   Cancel
                 </Button>
                 <Button
@@ -797,7 +1058,9 @@ const Certificate = () => {
                   disabled={isSubmittingCert}
                   className="bg-slate-900 hover:bg-slate-800"
                 >
-                  {isSubmittingCert && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {isSubmittingCert && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
                   Save Certificate
                 </Button>
               </div>
@@ -831,7 +1094,10 @@ const Certificate = () => {
                   <Input
                     value={contentFormData.name}
                     onChange={(e) =>
-                      setContentFormData({ ...contentFormData, name: e.target.value })
+                      setContentFormData({
+                        ...contentFormData,
+                        name: e.target.value,
+                      })
                     }
                     placeholder="e.g. Standard Participation, Excellence Award"
                   />
@@ -849,8 +1115,12 @@ const Certificate = () => {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="regular">Regular (date in body)</SelectItem>
-                      <SelectItem value="special">Special (date prominent)</SelectItem>
+                      <SelectItem value="regular">
+                        Regular (date in body)
+                      </SelectItem>
+                      <SelectItem value="special">
+                        Special (date prominent)
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -858,13 +1128,18 @@ const Certificate = () => {
                 <div>
                   <Label>Main Body Text *</Label>
                   <p className="text-xs text-slate-500 mb-1.5">
-                    Placeholders: <strong>{"{studentName}"}</strong>, <strong>{" {courseName} "}</strong>,{" "}
-                    <strong>{"{date}"}</strong>, <strong>{"{certNumber}"}</strong>
+                    Placeholders: <strong>{"{studentName}"}</strong>,{" "}
+                    <strong>{" {courseName} "}</strong>,{" "}
+                    <strong>{"{date}"}</strong>,{" "}
+                    <strong>{"{certNumber}"}</strong>
                   </p>
                   <Textarea
                     value={contentFormData.bodyText}
                     onChange={(e) =>
-                      setContentFormData({ ...contentFormData, bodyText: e.target.value })
+                      setContentFormData({
+                        ...contentFormData,
+                        bodyText: e.target.value,
+                      })
                     }
                     className="min-h-[120px]"
                   />
@@ -875,7 +1150,10 @@ const Certificate = () => {
                   <Textarea
                     value={contentFormData.subText}
                     onChange={(e) =>
-                      setContentFormData({ ...contentFormData, subText: e.target.value })
+                      setContentFormData({
+                        ...contentFormData,
+                        subText: e.target.value,
+                      })
                     }
                     placeholder="e.g. We wish you continued success..."
                   />
@@ -883,14 +1161,19 @@ const Certificate = () => {
               </div>
 
               <div className="flex justify-end gap-3 pt-4">
-                <Button variant="outline" onClick={() => setIsContentModalOpen(false)}>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsContentModalOpen(false)}
+                >
                   Cancel
                 </Button>
                 <Button
                   onClick={handleContentSubmit}
                   disabled={submittingContent}
                 >
-                  {submittingContent && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {submittingContent && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
                   Save Layout
                 </Button>
               </div>
@@ -916,10 +1199,15 @@ const Certificate = () => {
             >
               <AlertTriangle className="h-14 w-14 text-red-600 mx-auto mb-6" />
               <h3 className="text-2xl font-bold mb-3">
-                Delete {deleteConfig.type === "cert" ? "Certificate" : deleteConfig.type}?
+                Delete{" "}
+                {deleteConfig.type === "cert"
+                  ? "Certificate"
+                  : deleteConfig.type}
+                ?
               </h3>
               <p className="text-slate-600 mb-8">
-                Are you sure you want to delete <strong>{deleteConfig.name}</strong>?
+                Are you sure you want to delete{" "}
+                <strong>{deleteConfig.name}</strong>?
                 {deleteConfig.type === "template" &&
                   " This action cannot be undone and may affect existing certificates."}
               </p>

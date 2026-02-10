@@ -6,14 +6,10 @@ const morgan = require("morgan");
 const path = require("path");
 require("dotenv").config();
 
-
-
-
-
 const connectDB = require("./Config/db");
 const userRoutes = require("./Routes/userroutes");
 const authRoutes = require("./Routes/authroutes");
-const review = require("./Routes/Reviewroute")
+const review = require("./Routes/Reviewroute");
 const imageRoutes = require("./Routes/imageRoutes");
 const bannerRoutes = require("./Routes/bannerRoutes");
 const emailRoutes = require("./Routes/emailRoutes");
@@ -23,18 +19,20 @@ const planRoutes = require("./Routes/planRoutes");
 const paymentRoutes = require("./Routes/paymentRoutes");
 const certificateRoutes = require("./Routes/certificateRoutes");
 const certificateContentRoutes = require("./Routes/certificateContentRoutes");
-
+const courseRoutes = require("./Routes/courseRoutes");
 
 const app = express();
 
 // Serve static files
-app.use("/uploads", express.static(path.join(__dirname, "uploads"), {
-  setHeaders: function (res, path, stat) {
-    res.set("Access-Control-Allow-Origin", "*");
-    res.set("Cross-Origin-Resource-Policy", "cross-origin");
-  }
-}));
-
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "uploads"), {
+    setHeaders: function (res, path, stat) {
+      res.set("Access-Control-Allow-Origin", "*");
+      res.set("Cross-Origin-Resource-Policy", "cross-origin");
+    },
+  }),
+);
 
 // ================== MIDDLEWARE ==================
 
@@ -61,9 +59,8 @@ app.use(
       }
     },
     credentials: true, // needed to send cookies
-  })
+  }),
 );
-
 
 // Root route
 app.get("/", (req, res) => {
@@ -73,16 +70,17 @@ app.get("/", (req, res) => {
 // ================== ROUTES ==================
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api/review",review)
+app.use("/api/review", review);
 app.use("/api/gallery", imageRoutes);
 app.use("/api/banners", bannerRoutes);
 app.use("/api/email", emailRoutes);
 app.use("/api/blogs", blogRoutes);
 app.use("/api/resume", resumeRoutes);
-app.use("/api/plans", planRoutes);       // New
-app.use("/api/payment", paymentRoutes);  // New
+app.use("/api/plans", planRoutes); // New
+app.use("/api/payment", paymentRoutes); // New
 app.use("/api/certificates", certificateRoutes);
 app.use("/api/certificate-content", certificateContentRoutes);
+app.use("/api/courses", courseRoutes);
 
 // ================== START SERVER ==================
 connectDB();
