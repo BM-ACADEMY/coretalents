@@ -1,4 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
+import { Suspense, lazy } from "react";
+import { Loader2 } from "lucide-react";
 import Homeroutes from "./Homeroutes";
 import Adminroutes from "./Adminroutes";
 import PrivateRoute from "@/Context/PrivateRoute";
@@ -16,9 +18,19 @@ import Footer from "@/Components/layout/Footer";
 import Userroutes from "./Userroutes";
 import PublicCertificate from "@/Admin/Pages/Certificate/PublicCertificate";
 import CertificateSearch from "@/Components/CertificateSearch/CertificateSearch";
-import LandingPage from "@/Landing/Chennaibankingjobs/Chennaibankingjobs";
-import ApplicationSuccess from "@/Landing/Chennaibankingjobs/ApplicationSuccess";
+const LandingPage = lazy(
+  () => import("@/Landing/Chennaibankingjobs/Chennaibankingjobs"),
+);
+const ApplicationSuccess = lazy(
+  () => import("@/Landing/Chennaibankingjobs/ApplicationSuccess"),
+);
 
+// Fallback Loader Component
+const PageLoader = () => (
+  <div className="flex items-center justify-center min-h-screen bg-white">
+    <Loader2 className="w-10 h-10 text-violet-600 animate-spin" />
+  </div>
+);
 
 const Mainroutes = () => {
   return (
@@ -38,18 +50,31 @@ const Mainroutes = () => {
       */}
       <Route path="/verify-certificate/:id" element={<PublicCertificate />} />
       <Route path="/verification" element={<CertificateSearch />} />
-      <Route path="/chennai-banking-jobs" element={<LandingPage />} />
-      <Route path="/application-success" element={<ApplicationSuccess />} />
-
+      <Route
+        path="/chennai-banking-jobs"
+        element={
+          <Suspense fallback={<PageLoader />}>
+            <LandingPage />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/application-success"
+        element={
+          <Suspense fallback={<PageLoader />}>
+            <ApplicationSuccess />
+          </Suspense>
+        }
+      />
 
       {/* Auth Route (Login/Register) */}
       <Route
         path="/login"
         element={
           <PublicRoute>
-            <Navbar/>
+            <Navbar />
             <Login />
-            <Footer/>
+            <Footer />
           </PublicRoute>
         }
       />
@@ -59,7 +84,7 @@ const Mainroutes = () => {
         path="/user/*"
         element={
           <PrivateRoute allowedRoles={["user", "admin"]}>
-             <Userroutes />
+            <Userroutes />
           </PrivateRoute>
         }
       />
@@ -75,7 +100,7 @@ const Mainroutes = () => {
       />
 
       {/* Catch all (Optional: Be careful with this overriding specific routes) */}
-       <Route
+      <Route
         path="/*"
         element={
           <PrivateRoute allowedRoles={["admin"]}>

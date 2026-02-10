@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
 import {
   Building2,
@@ -27,7 +28,7 @@ import {
   Check,
 } from "lucide-react";
 import Man from "@/assets/Landing/man.png";
-import Logo from "@/assets/logo/logo.png"; 
+import Logo from "@/assets/logo/logo.png";
 
 const SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbz1qFpSXRF9SXUJwJwH7iYzJYfzofjYaY1bVFgC-lLp0cs7hd1DkN0pwBD2yiUThzMz/exec";
@@ -59,6 +60,15 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen bg-white font-sans text-slate-800 selection:bg-violet-200 selection:text-violet-900 overflow-x-hidden">
+      <Helmet>
+        <title>
+          Chennai Banking Jobs | Banking Customer Support Hiring – Core Talents
+        </title>
+        <meta
+          name="description"
+          content="Apply for Chennai banking jobs with Core Talents. Immediate hiring for banking customer support roles with flexible shifts and growth opportunities. Apply now."
+        />
+      </Helmet>
       <Navbar />
       <main className="pt-24 pb-20 space-y-24">
         <HeroSection />
@@ -94,7 +104,7 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 shadow-sm ${
         isSolid ? "bg-white shadow-md py-4" : "bg-transparent py-6"
       }`}
     >
@@ -270,7 +280,10 @@ const HeroSection = () => (
 // --- Trust Section ---
 // ADDED scroll-mt-32 HERE
 const TrustSection = () => (
-  <section id="process" className="max-w-7xl mx-auto px-6 text-center scroll-mt-32">
+  <section
+    id="process"
+    className="max-w-7xl mx-auto px-6 text-center scroll-mt-32"
+  >
     <motion.div
       initial="hidden"
       whileInView="visible"
@@ -395,9 +408,9 @@ const EligibilitySection = () => (
             </div>
           </div>
         </div>
-        
+
         {/* Animated Grid using Stagger */}
-        <motion.div 
+        <motion.div
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
@@ -456,7 +469,7 @@ const CriteriaCard = ({ icon: Icon, label, value, color }) => (
 const SalarySection = () => (
   <section id="salary" className="bg-slate-50 py-20 scroll-mt-32">
     <div className="max-w-7xl mx-auto px-6">
-      <motion.div 
+      <motion.div
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
@@ -470,15 +483,18 @@ const SalarySection = () => (
           Competitive packages for freshers and experienced candidates.
         </p>
       </motion.div>
-      
-      <motion.div 
+
+      <motion.div
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
         variants={staggerContainer}
         className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto"
       >
-        <motion.div variants={fadeInUp} className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-all">
+        <motion.div
+          variants={fadeInUp}
+          className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-all"
+        >
           <div className="w-12 h-12 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center mb-6">
             <Building2 size={24} />
           </div>
@@ -502,7 +518,10 @@ const SalarySection = () => (
             </li>
           </ul>
         </motion.div>
-        <motion.div variants={fadeInUp} className="bg-white p-8 rounded-3xl border-2 border-violet-100 shadow-xl relative overflow-hidden">
+        <motion.div
+          variants={fadeInUp}
+          className="bg-white p-8 rounded-3xl border-2 border-violet-100 shadow-xl relative overflow-hidden"
+        >
           <div className="w-12 h-12 bg-violet-100 text-violet-600 rounded-xl flex items-center justify-center mb-6">
             <Star size={24} />
           </div>
@@ -526,7 +545,10 @@ const SalarySection = () => (
             </li>
           </ul>
         </motion.div>
-        <motion.div variants={fadeInUp} className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-all">
+        <motion.div
+          variants={fadeInUp}
+          className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-all"
+        >
           <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mb-6">
             <UserPlus size={24} />
           </div>
@@ -774,7 +796,7 @@ const ApplicationSection = ({ navigate }) => {
                 placeholder="Eg: john@gmail.com"
                 type="email"
               />
-              <SelectGroup
+              {/* <SelectGroup
                 label="Location"
                 name="location"
                 value={formData.location}
@@ -784,6 +806,13 @@ const ApplicationSection = ({ navigate }) => {
                   "Chennai - Other",
                   "Outside Chennai",
                 ]}
+              /> */}
+              <InputGroup
+                label="Location"
+                name="location"
+                value={formData.location}
+                onChange={handleChange}
+                placeholder="Eg: Chennai"
               />
             </div>
 
@@ -819,7 +848,7 @@ const ApplicationSection = ({ navigate }) => {
             {/* Languages Multi-Select UI */}
             <div>
               <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">
-                Languages Known (Select Multiple)
+                Languages Known (Select Multiple)<span className="text-red-500 ml-1">*</span>
               </label>
               <div className="flex flex-wrap gap-2">
                 {languageOptions.map((lang) => {
@@ -851,6 +880,7 @@ const ApplicationSection = ({ navigate }) => {
                 value={formData.travelTime}
                 onChange={handleChange}
                 options={[
+                  "Not Applicable",
                   "Less than 30 mins",
                   "Less than 1 hr",
                   "More than 1 hr",
@@ -861,14 +891,15 @@ const ApplicationSection = ({ navigate }) => {
                 name="expectedSalary"
                 value={formData.expectedSalary}
                 onChange={handleChange}
-                options={["1 - 3 LPA", "3 - 5 LPA"]}
+                options={["Not Applicable", "1 - 3 LPA", "3 - 5 LPA"]}
               />
             </div>
 
             {/* File Upload */}
             <div>
               <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">
-                Attach Resume (PDF/Doc)
+                Attach Resume (PDF/Doc){" "}
+                <span className="text-red-500 ml-1">*</span>
               </label>
               <div className="relative group">
                 <div className="absolute inset-0 bg-violet-100 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -883,28 +914,40 @@ const ApplicationSection = ({ navigate }) => {
             </div>
 
             {/* Declarations */}
-            <div className="bg-slate-50 p-6 rounded-xl border border-slate-100 space-y-4">
-              <h4 className="text-sm font-bold text-slate-900 border-b border-slate-200 pb-2">
-                Declarations
-              </h4>
-              <Checkbox
-                label="Shift (Day/Night) - Yes"
-                name="shiftOk"
-                checked={formData.shiftOk}
-                onChange={handleChange}
-              />
-              <Checkbox
-                label="3 Month Commitment - Yes *"
-                name="commitmentOk"
-                checked={formData.commitmentOk}
-                onChange={handleChange}
-              />
-              <Checkbox
-                label="Immediate Joiner - Yes"
-                name="immediateJoiner"
-                checked={formData.immediateJoiner}
-                onChange={handleChange}
-              />
+            {/* Declarations */}
+            <div className="bg-slate-50 p-6 rounded-xl border border-slate-100 space-y-6">
+              <div>
+                <h4 className="text-sm font-bold text-slate-900 border-b border-slate-200 pb-2 mb-3">
+                  Applicant Confirmation
+                </h4>
+                <div className="space-y-3">
+                  <Checkbox
+                    label="Shift (Day/Night) – Yes"
+                    name="shiftOk"
+                    checked={formData.shiftOk}
+                    onChange={handleChange}
+                  />
+                  <Checkbox
+                    label="Immediate Joiner – Yes"
+                    name="immediateJoiner"
+                    checked={formData.immediateJoiner}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <h4 className="text-sm font-bold text-slate-900 border-b border-slate-200 pb-2 mb-3">
+                  Commitment Confirmation
+                  <span className="text-red-500 ml-1">*</span>
+                </h4>
+                <Checkbox
+                  label="I confirm my availability for a minimum 3-month commitment"
+                  name="commitmentOk"
+                  checked={formData.commitmentOk}
+                  onChange={handleChange}
+                />
+              </div>
             </div>
 
             <button
@@ -946,7 +989,7 @@ const InputGroup = ({
 }) => (
   <div>
     <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">
-      {label}
+      {label} <span className="text-red-500 ml-1">*</span>
     </label>
     <input
       type={type}
@@ -963,7 +1006,7 @@ const InputGroup = ({
 const SelectGroup = ({ label, options, name, value, onChange }) => (
   <div>
     <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">
-      {label}
+      {label} <span className="text-red-500 ml-1">*</span>
     </label>
     <select
       name={name}
