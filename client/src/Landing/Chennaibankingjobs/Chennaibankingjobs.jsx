@@ -81,7 +81,7 @@ const LandingPage = () => {
             'https://connect.facebook.net/en_US/fbevents.js');
             fbq('init', '25645784465090426');
             fbq('track', 'PageView');
-            fbq('track', 'Lead');
+            fbq('track', 'Purchase');
           `}
         </script>
         <noscript>
