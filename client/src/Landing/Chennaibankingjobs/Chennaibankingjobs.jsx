@@ -675,6 +675,16 @@ const ApplicationSection = ({ navigate }) => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+
+    // Phone validation: allow only numbers and max 10 digits
+    if (name === "phone") {
+      const numericValue = value.replace(/\D/g, ""); // Remove non-digits
+      if (numericValue.length <= 10) {
+        setFormData((prev) => ({ ...prev, [name]: numericValue }));
+      }
+      return;
+    }
+
     setFormData((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
