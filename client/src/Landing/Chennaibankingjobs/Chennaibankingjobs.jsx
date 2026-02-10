@@ -28,7 +28,7 @@ import {
   Check,
 } from "lucide-react";
 import Man from "@/assets/Landing/man.png";
-import Logo from "@/assets/logo/logo.png";
+// import Logo from "@/assets/logo/logo.png";
 
 const SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbz1qFpSXRF9SXUJwJwH7iYzJYfzofjYaY1bVFgC-lLp0cs7hd1DkN0pwBD2yiUThzMz/exec";
