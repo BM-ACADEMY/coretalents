@@ -69,7 +69,7 @@ const LandingPage = () => {
           content="Apply for Chennai banking jobs with Core Talents. Immediate hiring for banking customer support roles with flexible shifts and growth opportunities. Apply now."
         />
       </Helmet>
-      <Navbar />
+      {/* <Navbar /> */}
       <main className="pt-24 pb-20 space-y-24">
         <HeroSection />
         <TrustSection />
@@ -83,112 +83,112 @@ const LandingPage = () => {
 };
 
 // --- Navbar ---
-const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+// const Navbar = () => {
+//   const [isOpen, setIsOpen] = useState(false);
+//   const [scrolled, setScrolled] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+//   useEffect(() => {
+//     const handleScroll = () => setScrolled(window.scrollY > 20);
+//     window.addEventListener("scroll", handleScroll);
+//     return () => window.removeEventListener("scroll", handleScroll);
+//   }, []);
 
-  const navLinks = [
-    { name: "Home", href: "#" },
-    { name: "Process", href: "#process" },
-    { name: "Eligibility", href: "#eligibility" },
-    { name: "Salary", href: "#salary" },
-  ];
+//   const navLinks = [
+//     { name: "Home", href: "#" },
+//     { name: "Process", href: "#process" },
+//     { name: "Eligibility", href: "#eligibility" },
+//     { name: "Salary", href: "#salary" },
+//   ];
 
-  const isSolid = scrolled || isOpen;
+//   const isSolid = scrolled || isOpen;
 
-  return (
-    <nav
-      className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 shadow-sm ${
-        isSolid ? "bg-white shadow-md py-4" : "bg-transparent py-6"
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between relative z-50">
-        {/* Logo Section */}
-        <div className="flex items-center gap-2">
-          <img
-            src={Logo}
-            alt="Core Talents"
-            className="h-10 w-auto object-contain"
-          />
-        </div>
+//   return (
+//     <nav
+//       className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 shadow-sm ${
+//         isSolid ? "bg-white shadow-md py-4" : "bg-transparent py-6"
+//       }`}
+//     >
+//       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between relative z-50">
+//         {/* Logo Section */}
+//         <div className="flex items-center gap-2">
+//           <img
+//             src={Logo}
+//             alt="Core Talents"
+//             className="h-10 w-auto object-contain"
+//           />
+//         </div>
 
-        {/* Desktop Menu */}
-        <div className="hidden md:flex items-center gap-10 font-medium text-slate-500">
-          {navLinks.map((link) => (
-            <a
-              key={link.name}
-              href={link.href}
-              className="hover:text-violet-600 transition-colors"
-            >
-              {link.name}
-            </a>
-          ))}
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() =>
-                document
-                  .getElementById("apply")
-                  .scrollIntoView({ behavior: "smooth" })
-              }
-              className="px-6 py-2.5 bg-violet-600 hover:bg-violet-700 text-white font-semibold rounded-lg transition-all shadow-lg shadow-violet-200"
-            >
-              Apply Now
-            </button>
-          </div>
-        </div>
+//         {/* Desktop Menu */}
+//         <div className="hidden md:flex items-center gap-10 font-medium text-slate-500">
+//           {navLinks.map((link) => (
+//             <a
+//               key={link.name}
+//               href={link.href}
+//               className="hover:text-violet-600 transition-colors"
+//             >
+//               {link.name}
+//             </a>
+//           ))}
+//           <div className="flex items-center gap-4">
+//             <button
+//               onClick={() =>
+//                 document
+//                   .getElementById("apply")
+//                   .scrollIntoView({ behavior: "smooth" })
+//               }
+//               className="px-6 py-2.5 bg-violet-600 hover:bg-violet-700 text-white font-semibold rounded-lg transition-all shadow-lg shadow-violet-200"
+//             >
+//               Apply Now
+//             </button>
+//           </div>
+//         </div>
 
-        {/* Mobile Toggle Button */}
-        <button
-          className="md:hidden text-slate-900 p-2 focus:outline-none"
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          {isOpen ? <X size={28} /> : <Menu size={28} />}
-        </button>
-      </div>
+//         {/* Mobile Toggle Button */}
+//         <button
+//           className="md:hidden text-slate-900 p-2 focus:outline-none"
+//           onClick={() => setIsOpen(!isOpen)}
+//         >
+//           {isOpen ? <X size={28} /> : <Menu size={28} />}
+//         </button>
+//       </div>
 
-      {/* Mobile Menu Dropdown */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white border-b border-slate-100 overflow-hidden absolute top-full left-0 w-full shadow-xl"
-          >
-            <div className="px-6 py-8 space-y-6 flex flex-col items-center">
-              {navLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  onClick={() => setIsOpen(false)}
-                  className="text-lg font-medium text-slate-600 hover:text-violet-600"
-                >
-                  {link.name}
-                </a>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </nav>
-  );
-};
+//       {/* Mobile Menu Dropdown */}
+//       <AnimatePresence>
+//         {isOpen && (
+//           <motion.div
+//             initial={{ opacity: 0, height: 0 }}
+//             animate={{ opacity: 1, height: "auto" }}
+//             exit={{ opacity: 0, height: 0 }}
+//             className="md:hidden bg-white border-b border-slate-100 overflow-hidden absolute top-full left-0 w-full shadow-xl"
+//           >
+//             <div className="px-6 py-8 space-y-6 flex flex-col items-center">
+//               {navLinks.map((link) => (
+//                 <a
+//                   key={link.name}
+//                   href={link.href}
+//                   onClick={() => setIsOpen(false)}
+//                   className="text-lg font-medium text-slate-600 hover:text-violet-600"
+//                 >
+//                   {link.name}
+//                 </a>
+//               ))}
+//             </div>
+//           </motion.div>
+//         )}
+//       </AnimatePresence>
+//     </nav>
+//   );
+// };
 
 // --- Hero Section ---
 const HeroSection = () => (
-  <section className="relative max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center pt-10">
+  <section className="relative max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-8 items-center pt-6">
     <motion.div
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true }}
       variants={fadeInUp}
-      className="space-y-8 z-10"
+      className="space-y-6 z-10"
     >
       <div className="inline-flex items-center gap-2 bg-violet-50 text-violet-700 px-4 py-2 rounded-full font-bold text-sm uppercase tracking-wide">
         <span className="relative flex h-3 w-3">
@@ -197,9 +197,9 @@ const HeroSection = () => (
         </span>
         Hiring Now in Chennai
       </div>
-      <h1 className="text-4xl font-bold leading-[1.1] text-slate-900">
+      <h1 className="text-3xl font-bold leading-[1.1] text-slate-900">
         Banking Client <span className="text-violet-600">Support</span> Hiring
-        <span className="block text-2xl lg:text-3xl mt-4 text-slate-500 font-medium">
+        <span className="block text-xl lg:text-2xl mt-4 text-slate-500 font-medium">
           Chennai (Velachery Office)
         </span>
       </h1>
@@ -228,11 +228,11 @@ const HeroSection = () => (
               .getElementById("apply")
               .scrollIntoView({ behavior: "smooth" })
           }
-          className="px-8 py-4 bg-violet-600 hover:bg-violet-700 text-white font-bold rounded-xl transition-all shadow-xl shadow-violet-200 flex items-center justify-center gap-2"
+          className="px-6 py-3 bg-violet-600 hover:bg-violet-700 text-white font-bold rounded-xl transition-all shadow-xl shadow-violet-200 flex items-center justify-center gap-2"
         >
           Apply Now <ArrowRight size={20} />
         </button>
-        <div className="px-6 py-4 bg-slate-50 text-slate-500 font-medium rounded-xl flex items-center justify-center border border-slate-100">
+        <div className="px-5 py-3 bg-slate-50 text-slate-500 font-medium rounded-xl flex items-center justify-center border border-slate-100">
           Limited Interview Slots
         </div>
       </div>
@@ -848,7 +848,8 @@ const ApplicationSection = ({ navigate }) => {
             {/* Languages Multi-Select UI */}
             <div>
               <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">
-                Languages Known (Select Multiple)<span className="text-red-500 ml-1">*</span>
+                Languages Known (Select Multiple)
+                <span className="text-red-500 ml-1">*</span>
               </label>
               <div className="flex flex-wrap gap-2">
                 {languageOptions.map((lang) => {

@@ -1,10 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { FiX, FiUser, FiLogIn, FiUserPlus, FiLogOut, FiLayout } from 'react-icons/fi';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { HiOutlineMenuAlt3 } from 'react-icons/hi';
-import { useAuth } from "@/Context/Authcontext"; 
-import Logo from '@/assets/logo/logo.png';
+import React, { useState, useEffect } from "react";
+import {
+  FiX,
+  FiUser,
+  FiLogIn,
+  FiUserPlus,
+  FiLogOut,
+  FiLayout,
+} from "react-icons/fi";
+import { motion, AnimatePresence } from "framer-motion";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { HiOutlineMenuAlt3 } from "react-icons/hi";
+import { useAuth } from "@/Context/Authcontext";
+import Logo from "@/assets/logo/logo.png";
 
 // ==========================================
 // 1. HELPER COMPONENTS
@@ -44,8 +51,10 @@ const MobileNavItem = ({ title, to, dropdownLinks = [], onClick }) => {
           className="flex items-center justify-between w-full text-left text-gray-700 font-medium hover:text-indigo-600 transition-colors px-4 py-2 rounded-lg"
         >
           <span>{title}</span>
-          <span className={`transform transition-transform ${isOpen ? 'rotate-180' : ''}`}>
-             <ChevronDown />
+          <span
+            className={`transform transition-transform ${isOpen ? "rotate-180" : ""}`}
+          >
+            <ChevronDown />
           </span>
         </button>
       ) : (
@@ -55,7 +64,9 @@ const MobileNavItem = ({ title, to, dropdownLinks = [], onClick }) => {
           onClick={onClick} // Navigate AND close offcanvas
           className={({ isActive }) =>
             `block w-full text-left font-medium transition-colors px-4 py-2 rounded-lg ${
-              isActive ? "text-indigo-600 bg-indigo-50" : "text-gray-700 hover:text-indigo-600"
+              isActive
+                ? "text-indigo-600 bg-indigo-50"
+                : "text-gray-700 hover:text-indigo-600"
             }`
           }
         >
@@ -105,13 +116,13 @@ const Navbar = () => {
   const { user, logout } = useAuth();
 
   // Determine Dashboard Path based on Role
-  const dashboardPath = user?.role === 'admin' ? '/admin' : '/user/dashboard';
+  const dashboardPath = user?.role === "admin" ? "/admin" : "/user/dashboard";
 
   // Handle Logout
   const handleLogout = async () => {
     await logout();
     closeOffcanvas();
-    navigate('/');
+    navigate("/");
   };
 
   // Scroll hide/show logic
@@ -127,8 +138,8 @@ const Navbar = () => {
         setIsVisible(true);
       }
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // Smooth scroll
@@ -137,7 +148,7 @@ const Navbar = () => {
       const element = document.querySelector(location.hash);
       if (element) {
         setTimeout(() => {
-          element.scrollIntoView({ behavior: 'smooth' });
+          element.scrollIntoView({ behavior: "smooth" });
         }, 100);
       }
     }
@@ -146,26 +157,35 @@ const Navbar = () => {
   const closeOffcanvas = () => setIsOffcanvasOpen(false);
 
   const navItems = [
-    { title: 'Home', to: '/' },
-    { title: 'About', to: '/about' },
+    { title: "Home", to: "/" },
+    { title: "About", to: "/about" },
     {
-      title: 'Services',
-      to: '/services',
+      title: "Services",
+      to: "/services",
       dropdownLinks: [
-        { to: '/services#ai-advantage', label: 'AI Advantage' },
-        { to: '/services#industries',   label: 'Industries We Serve' },
+        { to: "/services#ai-advantage", label: "AI Advantage" },
+        { to: "/services#industries", label: "Industries We Serve" },
       ],
     },
-    { title: 'Blog', to: '/blog' },
-    { title: 'Certificate', to: '/verification' },
-    { title: 'Contact', to: '/contact' },
+    {
+      title: "Jobs",
+      to: "/chennai-banking-jobs",
+      dropdownLinks: [
+        { to: "/chennai-banking-jobs", label: "Chennai Banking Jobs" },
+      ],
+    },
+    { title: "Blog", to: "/blog" },
+    { title: "Certificate", to: "/verification" },
+    { title: "Contact", to: "/contact" },
   ];
 
   return (
     <>
       <nav
         className={`fixed top-0 left-0 right-0 z-50 bg-white shadow-md transition-all duration-500 ease-in-out ${
-          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full'
+          isVisible
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 -translate-y-full"
         }`}
       >
         <div className="mx-auto px-6 py-4 flex justify-between items-center">
@@ -182,7 +202,7 @@ const Navbar = () => {
                   to={item.to}
                   className={({ isActive }) =>
                     `relative flex items-center text-gray-700 font-medium hover:text-indigo-600 transition-colors px-4 py-2 rounded-lg ${
-                      isActive ? 'text-indigo-600 font-semibold' : ''
+                      isActive ? "text-indigo-600 font-semibold" : ""
                     }`
                   }
                 >
@@ -278,10 +298,10 @@ const Navbar = () => {
             />
 
             <motion.div
-              initial={{ x: '100%' }}
+              initial={{ x: "100%" }}
               animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
               className="fixed right-0 top-0 h-full w-72 bg-white shadow-2xl z-50 md:hidden flex flex-col"
               onClick={(e) => e.stopPropagation()}
             >

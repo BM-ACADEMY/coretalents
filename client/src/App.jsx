@@ -14,16 +14,22 @@ function AppContent() {
     location.pathname === "/login" ||
     location.pathname.startsWith("/verify-certificate");
 
-  const isLandingPage = location.pathname.startsWith("/chennai-banking-jobs");
+  // const isLandingPage = location.pathname.startsWith("/chennai-banking-jobs");
 
   
   return (
     <>
-      {!hideFullLayout && !isLandingPage && <Navbar />}
+      {!hideFullLayout &&  <Navbar />}
       <Mainroutes />
       {!hideFullLayout && <Footer />}
       <ToastContainer />
     </>
+    // <>
+    //   {!hideFullLayout && !isLandingPage && <Navbar />}
+    //   <Mainroutes />
+    //   {!hideFullLayout && <Footer />}
+    //   <ToastContainer />
+    // </>
   );
 }
 
