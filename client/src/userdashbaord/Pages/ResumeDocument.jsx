@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
   },
   profession: {
     fontSize: 14,
-    marginTop: 2,
+    marginTop: 7,
     color: '#64748b',
     marginBottom: 8,
     textAlign: 'center'

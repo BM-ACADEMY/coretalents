@@ -82,7 +82,9 @@ export default function ResumeBuilder() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState(null);
+  const [pageCount, setPageCount] = useState(1);
   const pickerRef = useRef(null);
+  const previewRef = useRef(null);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -93,6 +95,16 @@ export default function ResumeBuilder() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  // Calculate page count based on preview content height
+  useEffect(() => {
+    if (previewRef.current) {
+      const contentHeight = previewRef.current.scrollHeight;
+      const a4HeightInPx = 297 * 3.7795; // 297mm converted to pixels (roughly)
+      const calculatedPages = Math.ceil(contentHeight / a4HeightInPx);
+      setPageCount(calculatedPages);
+    }
+  }, [resumeData, activeColor]);
 
   // Fetch Resume
   useEffect(() => {
@@ -150,7 +162,7 @@ export default function ResumeBuilder() {
     } catch (error) {
       showToast(
         "error",
-        error.response?.data?.message || "Failed to save resume."
+        error.response?.data?.message || "Failed to save resume.",
       );
     } finally {
       setIsSaving(false);
@@ -162,8 +174,12 @@ export default function ResumeBuilder() {
       ...prev,
       personalInfo: { ...prev.personalInfo, [e.target.name]: e.target.value },
     }));
-  const handleSummaryChange = (e) =>
-    setResumeData((prev) => ({ ...prev, summary: e.target.value }));
+  const handleSummaryChange = (e) => {
+    const value = e.target.value;
+    if (value.length <= CHAR_LIMITS.summary) {
+      setResumeData((prev) => ({ ...prev, summary: value }));
+    }
+  };
   const addItem = (section, initialItem) =>
     setResumeData((prev) => ({
       ...prev,
@@ -173,7 +189,7 @@ export default function ResumeBuilder() {
     setResumeData((prev) => ({
       ...prev,
       [section]: prev[section].map((item) =>
-        item.id === id ? { ...item, [field]: value } : item
+        item.id === id ? { ...item, [field]: value } : item,
       ),
     }));
   const deleteItem = (section, id) =>
@@ -183,6 +199,12 @@ export default function ResumeBuilder() {
     }));
 
   const [skillInput, setSkillInput] = useState("");
+
+  // Character limits
+  const CHAR_LIMITS = {
+    summary: 500,
+    description: 300,
+  };
   const addSkill = () => {
     if (skillInput.trim()) {
       setResumeData((prev) => ({
@@ -218,42 +240,49 @@ export default function ResumeBuilder() {
                 label="Full Name"
                 name="fullName"
                 value={resumeData.personalInfo.fullName}
+                placeholder="e.g. John Doe"
                 onChange={handlePersonalInfoChange}
               />
               <InputGroup
                 label="Email Address"
                 name="email"
                 value={resumeData.personalInfo.email}
+                placeholder="e.g. john.doe@example.com"
                 onChange={handlePersonalInfoChange}
               />
               <InputGroup
                 label="Phone Number"
                 name="phone"
                 value={resumeData.personalInfo.phone}
+                placeholder="e.g. +91 98765 43210"
                 onChange={handlePersonalInfoChange}
               />
               <InputGroup
                 label="Location"
                 name="location"
                 value={resumeData.personalInfo.location}
+                placeholder="e.g. Chennai, India"
                 onChange={handlePersonalInfoChange}
               />
               <InputGroup
                 label="Profession"
                 name="profession"
                 value={resumeData.personalInfo.profession}
+                placeholder="e.g. Full Stack Developer"
                 onChange={handlePersonalInfoChange}
               />
               <InputGroup
-                label="LinkedIn URL"
+                label="LinkedIn URL (Optional)"
                 name="linkedin"
                 value={resumeData.personalInfo.linkedin}
+                placeholder="e.g. linkedin.com/in/johndoe"
                 onChange={handlePersonalInfoChange}
               />
               <InputGroup
-                label="Website URL"
+                label="Website URL (Optional)"
                 name="website"
                 value={resumeData.personalInfo.website}
+                placeholder="e.g. johndoe.com"
                 onChange={handlePersonalInfoChange}
               />
             </div>
@@ -265,12 +294,17 @@ export default function ResumeBuilder() {
             <h2 className="text-xl font-bold text-slate-800">
               Professional Summary
             </h2>
-            <textarea
-              value={resumeData.summary}
-              onChange={handleSummaryChange}
-              className="w-full h-48 p-4 border border-slate-200 rounded-lg outline-none resize-none"
-              placeholder="Write a summary..."
-            />
+            <div className="space-y-2">
+              <textarea
+                value={resumeData.summary}
+                onChange={handleSummaryChange}
+                className="w-full h-48 p-4 border border-slate-200 rounded-lg outline-none resize-none focus:ring-2 focus:ring-blue-500"
+                placeholder="e.g. Experienced software engineer with 5+ years in full-stack development..."
+              />
+              <div className="flex justify-end text-xs text-slate-500">
+                {resumeData.summary.length}/{CHAR_LIMITS.summary} characters
+              </div>
+            </div>
           </div>
         );
       case 2:
@@ -309,18 +343,20 @@ export default function ResumeBuilder() {
                   <InputGroup
                     label="Company"
                     value={exp.company}
+                    placeholder="e.g. Google Inc."
                     onChange={(e) =>
                       updateItem(
                         "experience",
                         exp.id,
                         "company",
-                        e.target.value
+                        e.target.value,
                       )
                     }
                   />
                   <InputGroup
                     label="Title"
                     value={exp.title}
+                    placeholder="e.g. Senior Software Engineer"
                     onChange={(e) =>
                       updateItem("experience", exp.id, "title", e.target.value)
                     }
@@ -336,7 +372,7 @@ export default function ResumeBuilder() {
                         "experience",
                         exp.id,
                         "startDate",
-                        e.target.value
+                        e.target.value,
                       )
                     }
                   />
@@ -351,7 +387,7 @@ export default function ResumeBuilder() {
                           "experience",
                           exp.id,
                           "endDate",
-                          e.target.value
+                          e.target.value,
                         )
                       }
                     />
@@ -364,7 +400,7 @@ export default function ResumeBuilder() {
                             "experience",
                             exp.id,
                             "current",
-                            e.target.checked
+                            e.target.checked,
                           )
                         }
                       />{" "}
@@ -372,19 +408,22 @@ export default function ResumeBuilder() {
                     </label>
                   </div>
                 </div>
-                <textarea
-                  value={exp.description}
-                  onChange={(e) =>
-                    updateItem(
-                      "experience",
-                      exp.id,
-                      "description",
-                      e.target.value
-                    )
-                  }
-                  className="w-full p-3 border border-slate-200 rounded-lg text-sm resize-none h-24"
-                  placeholder="Description..."
-                />
+                <div className="space-y-1">
+                  <textarea
+                    value={exp.description}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (value.length <= CHAR_LIMITS.description) {
+                        updateItem("experience", exp.id, "description", value);
+                      }
+                    }}
+                    className="w-full p-3 border border-slate-200 rounded-lg text-sm resize-none h-24 focus:ring-2 focus:ring-blue-500"
+                    placeholder="e.g. Led development of key features, managed team of 5, increased efficiency by 30%..."
+                  />
+                  <div className="flex justify-end text-xs text-slate-400">
+                    {(exp.description || "").length}/{CHAR_LIMITS.description}
+                  </div>
+                </div>
               </div>
             ))}
           </div>
@@ -424,6 +463,7 @@ export default function ResumeBuilder() {
                   <InputGroup
                     label="School"
                     value={edu.school}
+                    placeholder="e.g. Stanford University"
                     onChange={(e) =>
                       updateItem("education", edu.id, "school", e.target.value)
                     }
@@ -431,6 +471,7 @@ export default function ResumeBuilder() {
                   <InputGroup
                     label="Degree"
                     value={edu.degree}
+                    placeholder="e.g. Bachelor of Science"
                     onChange={(e) =>
                       updateItem("education", edu.id, "degree", e.target.value)
                     }
@@ -440,6 +481,7 @@ export default function ResumeBuilder() {
                   <InputGroup
                     label="Field"
                     value={edu.field}
+                    placeholder="e.g. Computer Science"
                     onChange={(e) =>
                       updateItem("education", edu.id, "field", e.target.value)
                     }
@@ -454,8 +496,9 @@ export default function ResumeBuilder() {
                   />
                 </div>
                 <InputGroup
-                  label="GPA"
+                  label="GPA / CGPA (Optional)"
                   value={edu.gpa}
+                  placeholder="e.g. 3.8/4.0 or 8.5/10"
                   onChange={(e) =>
                     updateItem("education", edu.id, "gpa", e.target.value)
                   }
@@ -493,6 +536,7 @@ export default function ResumeBuilder() {
                   <InputGroup
                     label="Name"
                     value={proj.name}
+                    placeholder="e.g. E-Commerce Website"
                     onChange={(e) =>
                       updateItem("projects", proj.id, "name", e.target.value)
                     }
@@ -500,24 +544,28 @@ export default function ResumeBuilder() {
                   <InputGroup
                     label="Type"
                     value={proj.type}
+                    placeholder="e.g. Web Application"
                     onChange={(e) =>
                       updateItem("projects", proj.id, "type", e.target.value)
                     }
                   />
                 </div>
-                <textarea
-                  value={proj.description}
-                  onChange={(e) =>
-                    updateItem(
-                      "projects",
-                      proj.id,
-                      "description",
-                      e.target.value
-                    )
-                  }
-                  className="w-full p-3 border border-slate-200 rounded-lg text-sm resize-none h-20"
-                  placeholder="Description..."
-                />
+                <div className="space-y-1">
+                  <textarea
+                    value={proj.description}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (value.length <= CHAR_LIMITS.description) {
+                        updateItem("projects", proj.id, "description", value);
+                      }
+                    }}
+                    className="w-full p-3 border border-slate-200 rounded-lg text-sm resize-none h-20 focus:ring-2 focus:ring-blue-500"
+                    placeholder="e.g. Built e-commerce platform using React and Node.js with 10k+ monthly users..."
+                  />
+                  <div className="flex justify-end text-xs text-slate-400">
+                    {(proj.description || "").length}/{CHAR_LIMITS.description}
+                  </div>
+                </div>
               </div>
             ))}
           </div>
@@ -531,7 +579,7 @@ export default function ResumeBuilder() {
                 label=""
                 value={skillInput}
                 onChange={(e) => setSkillInput(e.target.value)}
-                placeholder="Add skill"
+                placeholder="e.g. JavaScript, React, Node.js"
                 onKeyDown={(e) => e.key === "Enter" && addSkill()}
               />
               <button
@@ -597,9 +645,9 @@ export default function ResumeBuilder() {
                 </button>
               </div>
 
-              <button className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-lg text-sm font-medium border border-blue-100">
+              {/* <button className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-lg text-sm font-medium border border-blue-100">
                 <LayoutTemplate className="w-4 h-4" /> Template
-              </button>
+              </button> */}
               <button
                 onClick={() => setShowColorPicker(!showColorPicker)}
                 className="flex items-center gap-2 px-4 py-2 hover:bg-slate-50 text-slate-600 rounded-lg text-sm font-medium transition-colors border border-transparent hover:border-slate-200"
@@ -695,8 +743,9 @@ export default function ResumeBuilder() {
         </div>
 
         {/* Right: Preview (HTML) */}
-        <div className="bg-slate-100 rounded-xl flex items-start justify-center overflow-y-auto p-4 lg:p-8 custom-scrollbar">
+        <div className="bg-slate-100 rounded-xl flex flex-col items-center justify-start overflow-y-auto p-4 lg:p-8 custom-scrollbar relative">
           <div
+            ref={previewRef}
             style={{
               backgroundColor: "#ffffff",
               color: "#1e293b",
@@ -881,6 +930,13 @@ export default function ResumeBuilder() {
               </section>
             )}
           </div>
+
+          {/* Page Count Indicator */}
+          {pageCount > 1 && (
+            <div className="mt-4 px-4 py-2 bg-white border border-slate-200 rounded-lg shadow-sm text-sm text-slate-600 font-medium">
+              📄 Total Pages: {pageCount} (Approximate)
+            </div>
+          )}
         </div>
       </main>
       <style jsx global>{`
@@ -903,7 +959,6 @@ export default function ResumeBuilder() {
             opacity: 1;
             transform: translateY(0);
           }
-           
         }
       `}</style>
     </div>
