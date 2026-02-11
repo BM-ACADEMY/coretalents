@@ -156,28 +156,32 @@ const Navbar = () => {
 
   const closeOffcanvas = () => setIsOffcanvasOpen(false);
 
-  const navItems = [
-    { title: "Home", to: "/" },
-    { title: "About", to: "/about" },
-    {
-      title: "Services",
-      to: "/services",
-      dropdownLinks: [
-        { to: "/services#ai-advantage", label: "AI Advantage" },
-        { to: "/services#industries", label: "Industries We Serve" },
-      ],
-    },
-    {
-      title: "Jobs",
-      to: "/chennai-banking-jobs",
-      dropdownLinks: [
-        { to: "/chennai-banking-jobs", label: "Chennai Banking Jobs" },
-      ],
-    },
-    { title: "Blog", to: "/blog" },
-    { title: "Certificate", to: "/verification" },
-    { title: "Contact", to: "/contact" },
-  ];
+ const navItems = [
+  { title: "Home", to: "/" },
+  { title: "About", to: "/about" },
+  {
+    title: "Services",
+    to: "/services",
+    // These links now match the IDs in your CoreTalentsPrograms data
+    dropdownLinks: [
+      { to: "/services#recruitment", label: "Recruitment" },
+      { to: "/services#internship", label: "Internship Program" },
+      { to: "/services#training", label: "Training & Placement" },
+      { to: "/services#workshop", label: "Workshop" },
+      { to: "/services#career", label: "Career Guidelines" },
+    ],
+  },
+  {
+    title: "Jobs",
+    to: "/chennai-banking-jobs",
+    dropdownLinks: [
+      { to: "/chennai-banking-jobs", label: "Chennai Banking Jobs" },
+    ],
+  },
+  { title: "Blog", to: "/blog" },
+  { title: "Certificate", to: "/verification" },
+  { title: "Contact", to: "/contact" },
+];
 
   return (
     <>
@@ -231,7 +235,7 @@ const Navbar = () => {
             {/* ======================================= */}
             {/* LOGIN / PROFILE DROPDOWN (DYNAMIC)      */}
             {/* ======================================= */}
-            {/* <div className="relative group pb-2 pt-2 ml-4">
+            <div className="relative group pb-2 pt-2 ml-4">
               <button className={`flex items-center gap-2 font-medium transition-colors px-3 py-2 rounded-full border ${user ? 'border-indigo-200 bg-indigo-50 text-indigo-700' : 'border-gray-200 text-gray-700 hover:border-indigo-600 hover:text-indigo-600'}`}>
                 <FiUser className="w-5 h-5" />
                 <span className="max-w-[100px] truncate">{user ? user.name : "Account"}</span>
@@ -272,7 +276,7 @@ const Navbar = () => {
                 )}
               </div>
             </div> 
-            */}
+           
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -329,7 +333,7 @@ const Navbar = () => {
                 ))}
 
                 {/* Mobile Login / User Links */}
-                {/* <div className="mt-6 pt-6 border-t border-gray-100">
+                <div className="mt-6 pt-6 border-t border-gray-100">
                   <p className="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
                     Account
                   </p>
@@ -383,7 +387,7 @@ const Navbar = () => {
                     </>
                   )}
                 </div> 
-                */}
+               
               </div>
             </motion.div>
           </>
