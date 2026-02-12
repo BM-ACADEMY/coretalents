@@ -79,7 +79,7 @@ const Login = () => {
             </button>
         </form>
 
-        <div className="relative flex py-2 items-center mt-6 mb-4">
+        {/* <div className="relative flex py-2 items-center mt-6 mb-4">
             <div className="flex-grow border-t border-gray-300"></div>
             <span className="flex-shrink-0 mx-4 text-gray-400 text-sm">OR</span>
             <div className="flex-grow border-t border-gray-300"></div>
@@ -95,9 +95,9 @@ const Login = () => {
               shape="pill"
               text={state === "login" ? "signin_with" : "signup_with"}
            />
-        </div>
+        </div> */}
 
-        <p className="text-gray-500 text-sm">
+        {/* <p className="text-gray-500 text-sm pt-5">
           {state === "login" ? "Don't have an account?" : "Already have an account?"}{" "}
           <button
             type="button"
@@ -109,7 +109,7 @@ const Login = () => {
           >
             Click here
           </button>
-        </p>
+        </p> */}
         
       </div>
     </div>

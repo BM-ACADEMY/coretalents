@@ -4,6 +4,7 @@ import Mainroutes from "./Routes/Routes";
 import { Toaster } from "react-hot-toast";
 import Footer from "./Components/layout/Footer";
 import { AuthProvider } from "./Context/Authcontext";
+import Whatsappfloating from "./Components/WhatsAppWidget";
 import { Scrolltotop } from "./scrolltop/Scrolltotop";
 
 function AppContent() {
@@ -14,6 +15,11 @@ function AppContent() {
     location.pathname === "/login" ||
     location.pathname.startsWith("/verify-certificate");
 
+  // Show WhatsApp button on all pages except admin and login
+  const showWhatsApp =
+    !location.pathname.startsWith("/admin") &&
+    !location.pathname.startsWith("/login");
+
   // const isLandingPage = location.pathname.startsWith("/chennai-banking-jobs");
 
   return (
@@ -21,8 +27,9 @@ function AppContent() {
       {!hideFullLayout && <Navbar />}
       <Mainroutes />
       {!hideFullLayout && <Footer />}
+      {showWhatsApp && <Whatsappfloating />}
       <Toaster
-        position="top-right"
+        position="top-center"
         toastOptions={{
           duration: 3000,
           style: {
@@ -61,7 +68,6 @@ function App() {
       <Router>
         <Scrolltotop />
         <AppContent />
-        {/* <Whatsappfloating/> */}
       </Router>
     </AuthProvider>
   );

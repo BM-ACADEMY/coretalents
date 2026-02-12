@@ -106,7 +106,7 @@ const BlogPreview = ({ meta, coverPreview, sections }) => {
                   <img
                     src={block.data.url}
                     alt="Content"
-                    className="w-full rounded-lg shadow-sm border border-gray-100"
+                    className="w-full aspect-video object-cover object-top rounded-2xl shadow-lg border border-gray-100"
                   />
                 </div>
               ) : null;

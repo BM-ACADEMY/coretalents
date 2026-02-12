@@ -7,9 +7,9 @@ import ServicesSection from "@/Components/Homepage/Servcies";
 import Section from "@/Components/Homepage/Trustbrand";
 import WhyChooseUs from "@/Components/Homepage/Whycompany";
 import WhyChoose from "@/Components/Homepage/Whychoose";
-// import TestimonialSlider from '@/Components/Homepage/Testimonials'
+import TestimonialSlider from '@/Components/Homepage/Testimonials'
 import React from "react";
-// import Gallerysection from '@/Components/Homepage/Gallery'
+import Gallerysection from '@/Components/Homepage/Gallery'
 import Newspapercard from "@/Components/Homepage/Newspapercard";
 import HomePopup from "@/Components/HomePopup/HomePopup";
 import IssuedCertificates from "@/Components/Homepage/IssuedCertificates";
@@ -38,8 +38,8 @@ const Homeroutes = () => {
       <WhyChooseUs />
       <WhyChoose />
       <IssuedCertificates/>
-      {/* <TestimonialSlider/> */}
-      {/* <Gallerysection/> */}
+      <TestimonialSlider/>
+      <Gallerysection/>
       <Newspapercard />
     </div>
   );

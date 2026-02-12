@@ -4,7 +4,7 @@ import axiosInstance from "@/api/axiosInstance";
 import BackgroundImage from "@/assets/other/map.png";
 
 const FixedImage =
-  "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80";
+  "https://www.shutterstock.com/image-photo/positive-customer-feedback-woman-reviews-600nw-2704483753.jpg";
 
 const Testimonial = () => {
   const [testimonials, setTestimonials] = useState([]);

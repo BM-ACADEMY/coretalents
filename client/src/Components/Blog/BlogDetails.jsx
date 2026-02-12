@@ -306,8 +306,9 @@ const BlogDetails = () => {
                         <img
                           src={block.data.url}
                           alt={block.data.alt || "Content"}
-                          className="w-full rounded-2xl shadow-lg"
+                          className="w-full aspect-video object-cover object-top rounded-2xl shadow-lg"
                         />
+
                       </div>
                     )}
 
