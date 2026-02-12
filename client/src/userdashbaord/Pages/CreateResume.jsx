@@ -939,7 +939,9 @@ export default function ResumeBuilder() {
           )}
         </div>
       </main>
-      <style jsx global>{`
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
         .custom-scrollbar::-webkit-scrollbar {
           width: 6px;
         }
@@ -960,7 +962,9 @@ export default function ResumeBuilder() {
             transform: translateY(0);
           }
         }
-      `}</style>
+      `,
+        }}
+      />
     </div>
   );
 }

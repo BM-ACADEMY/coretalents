@@ -1,6 +1,15 @@
 // BlogPreview.jsx (Updated: Author removed from List preview)
 import React, { useState } from "react";
-import { ExternalLink, ChevronDown, ChevronUp, Calendar } from "lucide-react";
+import {
+  ExternalLink,
+  ChevronDown,
+  ChevronUp,
+  Calendar,
+  CheckCircle,
+  ChevronRight,
+  Square,
+  Minus,
+} from "lucide-react";
 
 const BlogPreview = ({ meta, coverPreview, sections }) => {
   const allBlocks = sections
@@ -82,12 +91,13 @@ const BlogPreview = ({ meta, coverPreview, sections }) => {
             }
             if (block.type === "paragraph") {
               return (
-                <p
+                <div
                   key={i}
                   className="text-gray-700 leading-7 whitespace-pre-line"
-                >
-                  {block.data.text || "Paragraph text..."}
-                </p>
+                  dangerouslySetInnerHTML={{
+                    __html: block.data.text || "Paragraph text...",
+                  }}
+                />
               );
             }
             if (block.type === "image") {
@@ -103,16 +113,38 @@ const BlogPreview = ({ meta, coverPreview, sections }) => {
             }
             if (block.type === "list") {
               return (
-                <div key={i} className="my-8">
+                <div key={i} className="my-6">
                   {formatListHeading(block.data.heading)}
-                  <ul className="list-disc pl-6 space-y-3 text-gray-700">
+                  <ul className="grid grid-cols-1 gap-x-1 gap-y-4 bg-gray-50 p-6 rounded-2xl list-none">
                     {block.data.items.map((item, idx) => (
-                      <li key={idx} className="leading-relaxed">
-                        {item || "List item..."}
+                      <li key={idx} className="flex items-start gap-3">
+                        {block.data.listType === "checklist" && (
+                          <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                        )}
+                        {block.data.listType === "arrow" && (
+                          <ChevronRight className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                        )}
+                        {block.data.listType === "star" && (
+                          <div className="w-5 h-5 text-yellow-500 flex-shrink-0 pb-1 text-xl leading-none flex items-center justify-center">
+                            ★
+                          </div>
+                        )}
+                        {block.data.listType === "square" && (
+                          <Square className="w-3 h-3 text-blue-500 flex-shrink-0 mt-1 fill-current" />
+                        )}
+                        {block.data.listType === "dash" && (
+                          <Minus className="w-4 h-4 text-gray-500 flex-shrink-0 mt-0.5" />
+                        )}
+                        {(block.data.listType === "bullet" ||
+                          !block.data.listType) && (
+                          <div className="w-2 h-2 bg-gray-700 rounded-full flex-shrink-0 mt-2" />
+                        )}
+                        <span className="text-gray-700 leading-relaxed">
+                          {item || "List item..."}
+                        </span>
                       </li>
                     ))}
                   </ul>
-                  {/* Author line removed */}
                 </div>
               );
             }

@@ -21,9 +21,12 @@ import {
   ArrowUpRight,
   Plus,
   ChevronDown,
+  Share2,
+  Square,
+  Minus,
 } from "lucide-react";
 import { FaQuoteLeft } from "react-icons/fa";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Helmet } from "react-helmet";
 import axiosInstance from "@/api/axiosInstance.jsx";
 import Logo from "@/assets/logo/logo1.png";
@@ -41,14 +44,12 @@ const BlogDetails = () => {
     location: "Pondicherry",
   });
 
-  const whatsappUrl = "https://wa.me/919944940051?text=Hi%20BM%20Academy...";
-
   useEffect(() => {
     const fetchBlog = async () => {
       try {
         const res = await axiosInstance.get(`/blogs/${slug}`);
         setBlog(res.data);
-      } catch (error) {
+      } catch {
         console.error("Blog not found");
       } finally {
         setLoading(false);
@@ -69,7 +70,7 @@ const BlogDetails = () => {
     const message = `*New Counseling Request*\n*Name:* ${formData.name}\n*Phone:* ${formData.phone}\n*Course:* ${formData.course}\n*Location:* ${formData.location}\n\nFrom Blog: ${blog.title}`;
     window.open(
       `https://wa.me/919944940051?text=${encodeURIComponent(message)}`,
-      "_blank"
+      "_blank",
     );
     setIsModalOpen(false);
   };
@@ -114,8 +115,100 @@ const BlogDetails = () => {
   return (
     <>
       <Helmet>
-        <title>{blog.title}</title>
-        <meta name="description" content={blog.description} />
+        <title>{blog.seo?.metaTitle || blog.title}</title>
+        <meta
+          name="description"
+          content={blog.seo?.metaDescription || blog.description}
+        />
+        {blog.seo?.keywords && (
+          <meta
+            name="keywords"
+            content={
+              Array.isArray(blog.seo.keywords)
+                ? blog.seo.keywords.join(",")
+                : blog.seo.keywords
+            }
+          />
+        )}
+        <link
+          rel="canonical"
+          href={blog.seo?.canonicalUrl || window.location.href}
+        />
+
+        {/* Open Graph */}
+        <meta
+          property="og:title"
+          content={blog.seo?.openGraph?.title || blog.title}
+        />
+        <meta
+          property="og:description"
+          content={blog.seo?.openGraph?.description || blog.description}
+        />
+        {blog.seo?.openGraph?.image && (
+          <meta property="og:image" content={blog.seo.openGraph.image} />
+        )}
+        <meta property="og:type" content="article" />
+        <meta
+          property="og:url"
+          content={blog.seo?.canonicalUrl || window.location.href}
+        />
+        <meta property="og:site_name" content="BM Academy" />
+
+        {/* Schema.org JSON-LD */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": blog.seo?.schema?.articleType || "Article",
+            mainEntityOfPage: {
+              "@type": "WebPage",
+              "@id": blog.seo?.canonicalUrl || window.location.href,
+            },
+            headline: blog.title,
+            image: blog.coverImage?.url,
+            author: {
+              "@type": "Organization",
+              name: "BM Academy",
+            },
+            publisher: {
+              "@type": "Organization",
+              name: "BM Academy",
+              logo: {
+                "@type": "ImageObject",
+                url: "https://blog.thebmacademy.com/logo.png",
+              },
+            },
+            datePublished: blog.date || blog.createdAt,
+            dateModified: blog.updatedAt || blog.date || blog.createdAt,
+            description: blog.description,
+            ...(blog.seo?.schema?.faq?.length > 0 && {
+              mainEntity: {
+                "@type": "FAQPage",
+                mainEntity: blog.seo.schema.faq.map((faq) => ({
+                  "@type": "Question",
+                  name: faq.question,
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: faq.answer,
+                  },
+                })),
+              },
+            }),
+          })}
+        </script>
+
+        {/* GA4 / Custom Scripts */}
+        <script
+          async
+          src={`https://www.googletagmanager.com/gtag/js?id=${blog.seo?.ga4MeasurementId}`}
+        ></script>
+        <script>
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${blog.seo?.ga4MeasurementId}');
+          `}
+        </script>
       </Helmet>
 
       <div className="min-h-screen bg-gray-50 pt-20 md:pt-24 pb-20">
@@ -165,8 +258,11 @@ const BlogDetails = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <Calendar size={18} className="text-indigo-500" />
-                    <span>{blog.date ? new Date(blog.date).toLocaleDateString()
-                : new Date().toLocaleDateString()}</span>
+                    <span>
+                      {blog.date
+                        ? new Date(blog.date).toLocaleDateString()
+                        : new Date().toLocaleDateString()}
+                    </span>
                   </div>
                 </div>
               </header>
@@ -199,16 +295,17 @@ const BlogDetails = () => {
                     )}
 
                     {block.type === "paragraph" && (
-                      <p className="text-lg leading-8 text-gray-700 mb-6">
-                        {block.data.text}
-                      </p>
+                      <div
+                        className="text-lg leading-8 text-gray-700 mb-6"
+                        dangerouslySetInnerHTML={{ __html: block.data.text }}
+                      />
                     )}
 
                     {block.type === "image" && block.data.url && (
                       <div className="my-10">
                         <img
                           src={block.data.url}
-                          alt="Content"
+                          alt={block.data.alt || "Content"}
                           className="w-full rounded-2xl shadow-lg"
                         />
                       </div>
@@ -225,9 +322,25 @@ const BlogDetails = () => {
                         <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-1 gap-y-6 bg-gray-50 p-8 rounded-2xl list-none">
                           {block.data.items.map((item, i) => (
                             <li key={i} className="flex items-start gap-4">
-                              {block.data.listType === "checklist" ? (
+                              {block.data.listType === "checklist" && (
                                 <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
-                              ) : (
+                              )}
+                              {block.data.listType === "arrow" && (
+                                <ChevronRight className="w-5 h-5 text-blue-600 flex-shrink-0 mt-1" />
+                              )}
+                              {block.data.listType === "star" && (
+                                <div className="w-5 h-5 text-yellow-500 flex-shrink-0 mt-1 pb-1 text-xl leading-none">
+                                  ★
+                                </div>
+                              )}
+                              {block.data.listType === "square" && (
+                                <Square className="w-3 h-3 text-blue-500 flex-shrink-0 mt-2 fill-current" />
+                              )}
+                              {block.data.listType === "dash" && (
+                                <Minus className="w-4 h-4 text-gray-500 flex-shrink-0 mt-1.5" />
+                              )}
+                              {(block.data.listType === "list" ||
+                                !block.data.listType) && (
                                 <div className="w-2 h-2 bg-gray-700 rounded-full flex-shrink-0 mt-3" />
                               )}
                               <span className="text-md font-medium text-gray-800 leading-relaxed">
@@ -262,21 +375,45 @@ const BlogDetails = () => {
                     {block.type === "button" && (
                       <div className="text-center my-12">
                         <motion.a
-                          href={block.data.url || "#"}
+                          href={
+                            block.data.actionType === "whatsapp" &&
+                            block.data.phone
+                              ? `https://wa.me/${
+                                  block.data.phone
+                                }?text=${encodeURIComponent(
+                                  block.data.message || "",
+                                )}`
+                              : block.data.url || "#"
+                          }
                           target="_blank"
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
-                          className="relative inline-flex items-center group overflow-hidden bg-indigo-600 text-white 
+                          className={`relative inline-flex items-center group overflow-hidden ${
+                            block.data.style === "primary"
+                              ? "bg-indigo-600 text-white"
+                              : block.data.style === "outline"
+                                ? "border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50"
+                                : block.data.style === "black"
+                                  ? "bg-gray-900 text-white"
+                                  : "bg-indigo-600 text-white"
+                          }
                  px-6 py-2 sm:px-8 sm:py-3 md:px-10 md:py-4 
                  rounded-full font-bold 
                  text-sm sm:text-base md:text-lg lg:text-xl 
-                 shadow-lg transition-all duration-300"
+                 shadow-lg transition-all duration-300`}
                         >
-                          {/* Hover Gradient Overlay */}
-                          <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-700 to-indigo-800 transition-transform duration-300 ease-out transform translate-x-full group-hover:translate-x-0"></span>
+                          {/* Hover Gradient Overlay (Only for primary/black) */}
+                          {block.data.style !== "outline" && (
+                            <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                          )}
 
                           {/* Button Text */}
-                          <span className="relative">{block.data.text}</span>
+                          <div className="flex items-center gap-2 relative">
+                            {block.data.actionType === "whatsapp" && (
+                              <MessageCircle size={20} />
+                            )}
+                            {block.data.text}
+                          </div>
                         </motion.a>
                       </div>
                     )}
@@ -294,7 +431,7 @@ const BlogDetails = () => {
                           <button
                             onClick={() =>
                               setOpenAccordion(
-                                openAccordion === index ? null : index
+                                openAccordion === index ? null : index,
                               )
                             }
                             className="w-full flex items-center justify-between px-8 py-6 text-left outline-none"
@@ -347,150 +484,109 @@ const BlogDetails = () => {
                 ))}
               </article>
 
-              {/* CTA Section */}
-              {/* <section className="mt-20 p-10 md:p-12 bg-gradient-to-br from-indigo-600 via-indigo-700 to-blue-800 rounded-[2.5rem] text-center text-white shadow-2xl relative overflow-hidden">
-                <div className="relative z-10">
-                  <h2 className="text-3xl md:text-4xl font-extrabold mb-6">
-                    Ready to Transform Your Career?
+              {/* Dynamic CTA Section */}
+              {blog.cta && blog.cta.enabled && (
+                <div className="mt-12 p-10 bg-gradient-to-br from-blue-800 via-indigo-800 to-purple-800 rounded-3xl text-white text-center shadow-2xl relative overflow-hidden">
+                  <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+                    <svg
+                      viewBox="0 0 100 100"
+                      className="w-full h-full"
+                      preserveAspectRatio="none"
+                    >
+                      <path d="M0 100 C 20 0 50 0 100 100 Z" fill="white" />
+                    </svg>
+                  </div>
+                  <h2 className="text-3xl md:text-4xl font-extrabold mb-6 relative z-10 leading-tight">
+                    {blog.cta.heading ||
+                      "Ready to unlock your business’s growth potential?"}
                   </h2>
-                  <p className="text-xl text-indigo-100 mb-10 max-w-2xl mx-auto">
-                    Join thousands of students who have launched successful
-                    careers with BM Academy.
+                  <p className="mb-8 text-blue-100 text-lg max-w-2xl mx-auto leading-relaxed relative z-10">
+                    {blog.cta.description ||
+                      "Discover actionable insights and personalized strategies to boost your leads and sales. Get a Free Business Audit from BM Techx today!"}
                   </p>
-                  <div className="flex flex-col sm:flex-row justify-center gap-6">
-                    <motion.button
-                      onClick={toggleModal}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="bg-white text-indigo-700 px-10 py-5 rounded-full font-bold text-lg shadow-xl"
+                  <div className="flex flex-col md:flex-row justify-center gap-4 relative z-10">
+                    <a
+                      href={
+                        blog.cta.buttonUrl ||
+                        "https://docs.google.com/forms/d/1BldHNK6GDfqUA_JhRjt68XxsNiwQWFsUTXLJmhfVGiQ/edit"
+                      }
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex justify-center items-center bg-yellow-400 text-blue-900 px-8 py-4 rounded-full font-bold text-lg hover:bg-yellow-300 transition-all transform hover:-translate-y-1 shadow-[0_4px_14px_0_rgba(234,179,8,0.39)]"
                     >
-                      Free Career Counseling
-                    </motion.button>
-                    <motion.a
-                      href={whatsappUrl}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="bg-green-500 text-white px-10 py-5 rounded-full font-bold text-lg flex items-center justify-center gap-3 shadow-xl"
-                    >
-                      <MessageCircle size={24} /> Chat on WhatsApp
-                    </motion.a>
+                      <i data-lucide="rocket" className="w-6 h-6 mr-2"></i>
+                      {blog.cta.buttonText ||
+                        "Take your Free Business Audit now"}
+                    </a>
                   </div>
                 </div>
-              </section> */}
-              <div class="mt-12 p-10 bg-gradient-to-br from-blue-800 via-indigo-800 to-purple-800 rounded-3xl text-white text-center shadow-2xl relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-full h-full overflow-hidden opacity-10 pointer-events-none">
-                  <svg
-                    viewBox="0 0 100 100"
-                    preserveAspectRatio="none"
-                    class="absolute w-full h-full"
-                  >
-                    <defs>
-                      <pattern
-                        id="grid"
-                        width="8"
-                        height="8"
-                        patternUnits="userSpaceOnUse"
-                      >
-                        <path
-                          d="M 8 0 L 0 0 0 8"
-                          fill="none"
-                          stroke="white"
-                          stroke-width="0.5"
-                        />
-                      </pattern>
-                    </defs>
-                    <rect width="100%" height="100%" fill="url(#grid)" />
-                  </svg>
-                </div>
-
-                <h2 class="text-3xl md:text-4xl font-extrabold mb-6 relative z-10 leading-tight">
-                  Ready to unlock your business’s growth potential?
-                </h2>
-                <p class="mb-8 text-blue-100 text-lg max-w-2xl mx-auto leading-relaxed relative z-10">
-                  Discover actionable insights and personalized strategies to
-                  boost your leads and sales. Get a Free Business Audit from BM
-                  Techx today!
-                </p>
-
-                <div class="flex flex-col md:flex-row justify-center gap-4 relative z-10">
-                  <a
-                    href="https://docs.google.com/forms/d/1BldHNK6GDfqUA_JhRjt68XxsNiwQWFsUTXLJmhfVGiQ/edit"
-                    target="_blank"
-                    class="inline-flex justify-center items-center bg-yellow-400 text-blue-900 px-8 py-4 rounded-full font-bold text-lg hover:bg-yellow-300 transition-all transform hover:-translate-y-1 shadow-[0_4px_14px_0_rgba(234,179,8,0.39)]"
-                  >
-                    <i data-lucide="rocket" class="w-6 h-6 mr-2"></i>
-                    Take your Free Business Audit now
-                  </a>
-                </div>
-              </div>
+              )}
             </main>
 
-            {/* Sidebar remains unchanged */}
+            {/* Sidebar */}
             <aside className="lg:col-span-4">
               <div className="sticky top-28 space-y-6">
                 {/* About Card */}
-                <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-8">
-                  <h3 className="text-[11px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-6">
-                    About Core Talents
-                  </h3>
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="w-16 h-16 rounded-full border border-gray-100 flex items-center justify-center overflow-hidden bg-white shadow-sm">
-                      <img
-                        src={Logo}
-                        alt="Logo"
-                        className="w-full h-full object-contain p-2"
-                      />
+                {blog.sidebar && blog.sidebar.enabled && (
+                  <>
+                    <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-8">
+                      <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-6">
+                        About Core Talents
+                      </h3>
+                      <div className="flex items-center gap-4 mb-6">
+                        <div className="w-16 h-16 rounded-full border border-gray-100 flex items-center justify-center overflow-hidden bg-white shadow-sm p-3">
+                          <img
+                            src={Logo}
+                            alt="Logo"
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
+                        <h4 className="text-xl font-extrabold text-gray-900">
+                          Core Talents
+                        </h4>
+                      </div>
+                      <p className="text-gray-500 text-[15px] leading-relaxed mb-6">
+                        {blog.sidebar.aboutDescription ||
+                          "Core Talents – AI-powered recruitment with 48-hour delivery, 95% fit rate, and hire-first-pay-later model. Trusted by 25+ corporates across India & GCC."}
+                      </p>
+                      {blog.sidebar.tags && blog.sidebar.tags.length > 0 && (
+                        <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-100">
+                          {blog.sidebar.tags.map((tag) => (
+                            <span
+                              key={tag}
+                              className="px-4 py-1.5 bg-gray-50 text-gray-500 text-xs font-medium rounded-full border border-gray-100 hover:bg-gray-100 transition-colors cursor-default"
+                            >
+                              {tag.startsWith("#") ? tag : `#${tag}`}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                    <h4 className="text-xl font-extrabold text-gray-900">
-                      Core Talents
-                    </h4>
-                  </div>
-                  <p className="text-gray-500 text-[15px] leading-relaxed mb-6">
-                    Core Talents – AI-powered recruitment with 48-hour delivery,
-                    95% fit rate, and hire-first-pay-later model. Trusted by 25+
-                    corporates across India & GCC.
-                  </p>
-                  <hr className="border-gray-100 mb-6" />
-                  <div className="flex flex-wrap gap-2">
-                    {[
-                      "#Recruitment",
-                      "#AIHiring",
-                      "#TalentAcquisition",
-                      "#BusinessGrowth",
-                      "#IndiaHiring",
-                      "#CoreTalents",
-                    ].map((tag) => (
-                      <span
-                        key={tag}
-                        className="px-4 py-1.5 bg-gray-50 text-gray-500 text-xs font-medium rounded-full border border-gray-100"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
 
-                {/* Consultation Card */}
-                <div className="bg-[#f0fdf4] rounded-[2rem] p-8 border border-green-100 shadow-sm">
-                  <h3 className="text-xl font-bold text-[#166534] mb-3">
-                    Need a Consultation?
-                  </h3>
-                  <p className="text-[#166534]/80 text-[15px] leading-relaxed mb-8">
-                    Have questions about how we can help your specific business?
-                    Let's chat!
-                  </p>
-                  <button
-                    onClick={toggleModal}
-                    className="w-full bg-[#16a34a] hover:bg-[#15803d] text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all shadow-md hover:shadow-lg active:scale-[0.98]"
-                  >
-                    <MessageCircle
-                      size={22}
-                      fill="currentColor"
-                      className="text-white"
-                    />
-                    Connect on WhatsApp
-                  </button>
-                </div>
+                    {/* Consultation Card */}
+                    <div className="bg-[#f0fdf4] rounded-[2rem] p-8 border border-green-100 shadow-sm relative overflow-hidden">
+                      <h3 className="text-xl font-bold text-[#166534] mb-3 relative z-10">
+                        {blog.sidebar.consultationTitle ||
+                          "Need a Consultation?"}
+                      </h3>
+                      <p className="text-[#166534]/80 text-[15px] leading-relaxed mb-8 relative z-10">
+                        {blog.sidebar.consultationText ||
+                          "Have questions about how we can help your specific business? Let's chat!"}
+                      </p>
+                      <button
+                        onClick={() => setIsModalOpen(true)}
+                        className="w-full bg-[#16a34a] hover:bg-[#15803d] text-white font-bold py-4 rounded-xl flex items-center justify-center gap-3 transition-all shadow-md hover:shadow-lg active:scale-[0.98] relative z-10"
+                      >
+                        <MessageCircle
+                          size={22}
+                          fill="white"
+                          className="text-white"
+                        />
+                        Connect on WhatsApp
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             </aside>
           </div>

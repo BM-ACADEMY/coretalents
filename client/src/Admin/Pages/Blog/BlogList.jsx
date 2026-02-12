@@ -12,27 +12,47 @@ const BlogList = ({ onEdit }) => {
       const res = await axiosInstance.get("/blogs");
       setBlogs(res.data);
     } catch (error) {
-      showToast("Failed to fetch blogs", "error");
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to fetch blogs";
+      showToast(`FetchError: ${errorMessage}`, "error");
     } finally {
       setLoading(false);
     }
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this blog? This cannot be undone.")) return;
+    if (
+      !window.confirm(
+        "Are you sure you want to delete this blog? This cannot be undone.",
+      )
+    )
+      return;
 
     try {
       await axiosInstance.delete(`/blogs/${id}`, { withCredentials: true });
       showToast("Blog deleted successfully", "success");
-      setBlogs(blogs.filter(b => b._id !== id));
+      setBlogs(blogs.filter((b) => b._id !== id));
     } catch (error) {
-      showToast("Error deleting blog", "error");
+      const errorName =
+        error.response?.data?.error || error.name || "DeleteError";
+      const errorMessage =
+        error.response?.data?.message || error.message || "Error deleting blog";
+      showToast(`${errorName}: ${errorMessage}`, "error");
     }
   };
 
-  useEffect(() => { fetchBlogs(); }, []);
+  useEffect(() => {
+    fetchBlogs();
+  }, []);
 
-  if (loading) return <div className="p-20 flex justify-center"><Loader className="animate-spin text-blue-600" size={40}/></div>;
+  if (loading)
+    return (
+      <div className="p-20 flex justify-center">
+        <Loader className="animate-spin text-blue-600" size={40} />
+      </div>
+    );
 
   return (
     <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
@@ -47,13 +67,21 @@ const BlogList = ({ onEdit }) => {
         </thead>
         <tbody className="divide-y divide-gray-100">
           {blogs.length === 0 ? (
-            <tr><td colSpan="4" className="p-20 text-center text-gray-400">No blogs found. Start by creating one!</td></tr>
+            <tr>
+              <td colSpan="4" className="p-20 text-center text-gray-400">
+                No blogs found. Start by creating one!
+              </td>
+            </tr>
           ) : (
             blogs.map((blog) => (
               <tr key={blog._id} className="hover:bg-blue-50/30 transition">
                 <td className="p-4 flex items-center gap-4">
-                  <img 
-                    src={blog.coverImage.url.startsWith('http') ? blog.coverImage.url : `${import.meta.env.VITE_SERVER_URL}${blog.coverImage.url}`} 
+                  <img
+                    src={
+                      blog.coverImage.url.startsWith("http")
+                        ? blog.coverImage.url
+                        : `${import.meta.env.VITE_SERVER_URL}${blog.coverImage.url}`
+                    }
                     className="h-12 w-16 object-cover rounded shadow-sm bg-gray-100"
                     alt=""
                   />
@@ -68,21 +96,21 @@ const BlogList = ({ onEdit }) => {
                   </span>
                 </td>
                 <td className="p-4 text-xs font-semibold text-green-600 capitalize">
-                   {blog.status}
+                  {blog.status}
                 </td>
                 <td className="p-4 text-right">
                   <div className="flex justify-end gap-1">
-                    <button 
+                    <button
                       onClick={() => onEdit(blog)}
                       className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition"
                     >
-                      <Edit size={18}/>
+                      <Edit size={18} />
                     </button>
-                    <button 
+                    <button
                       onClick={() => handleDelete(blog._id)}
                       className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition"
                     >
-                      <Trash2 size={18}/>
+                      <Trash2 size={18} />
                     </button>
                   </div>
                 </td>
