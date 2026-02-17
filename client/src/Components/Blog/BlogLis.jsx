@@ -60,7 +60,7 @@ const BlogList = () => {
                         : `${import.meta.env.VITE_SERVER_URL}${blog.coverImage?.url}`
                     }
                     alt={blog.title}
-                    className="w-full aspect-[16/10] object-cover transition-transform duration-500"
+                    className="w-full aspect-[16/10] object-cover object-top-center transition-transform duration-500"
                     
                   />
                 </div>

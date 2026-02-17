@@ -95,9 +95,9 @@ const Login = () => {
               shape="pill"
               text={state === "login" ? "signin_with" : "signup_with"}
            />
-        </div>
+        </div> */}
 
-        <p className="text-gray-500 text-sm">
+        {/* <p className="text-gray-500 text-sm pt-5">
           {state === "login" ? "Don't have an account?" : "Already have an account?"}{" "}
           <button
             type="button"

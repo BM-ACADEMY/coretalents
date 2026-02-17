@@ -1,14 +1,10 @@
 // src/utils/customToast.js
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
-export const showToast = (type = "info", message = "", options = {}) => {
+export const showToast = (message = "", type = "info", options = {}) => {
   const toastOptions = {
-    position: "top-right",
-    autoClose: 3000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
+    duration: options.autoClose || 3000,
+    position: options.position || "top-center",
     ...options,
   };
 
@@ -20,11 +16,17 @@ export const showToast = (type = "info", message = "", options = {}) => {
       toast.error(message, toastOptions);
       break;
     case "info":
-      toast.info(message, toastOptions);
+      toast(message, {
+        icon: "ℹ️",
+        ...toastOptions,
+      });
       break;
     case "warn":
     case "warning":
-      toast.warn(message, toastOptions);
+      toast(message, {
+        icon: "⚠️",
+        ...toastOptions,
+      });
       break;
     default:
       toast(message, toastOptions);

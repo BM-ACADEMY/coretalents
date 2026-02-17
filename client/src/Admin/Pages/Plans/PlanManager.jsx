@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { getAllPlans, createPlan, updatePlan, deletePlan } from "@/services/adminPlanService";
-import { toast } from "react-toastify";
+import {
+  getAllPlans,
+  createPlan,
+  updatePlan,
+  deletePlan,
+} from "@/services/adminPlanService";
+import toast from "react-hot-toast";
 import { Trash2, Edit, Plus, History, XCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -27,7 +32,11 @@ const PlanManager = () => {
       const res = await getAllPlans();
       if (res.success) setPlans(res.data);
     } catch (error) {
-      toast.error("Failed to load plans");
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to load plans";
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -37,12 +46,19 @@ const PlanManager = () => {
     fetchPlans();
   }, []);
 
-  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleOpenCreate = () => {
     setEditingPlan(null);
     // 👇 CHANGED: Reset to empty string
-    setFormData({ name: "", price: "", resumeLimit: "", durationInDays: "", description: "" });
+    setFormData({
+      name: "",
+      price: "",
+      resumeLimit: "",
+      durationInDays: "",
+      description: "",
+    });
     setIsModalOpen(true);
   };
 
@@ -71,7 +87,10 @@ const PlanManager = () => {
       setIsModalOpen(false);
       fetchPlans();
     } catch (error) {
-      toast.error(error.response?.data?.message || "Operation failed");
+      const errorName = error.response?.data?.error || error.name || "Error";
+      const errorMessage =
+        error.response?.data?.message || error.message || "Operation failed";
+      toast.error(`${errorName}: ${errorMessage}`);
     }
   };
 
@@ -82,7 +101,11 @@ const PlanManager = () => {
         toast.success("Plan deleted");
         fetchPlans();
       } catch (error) {
-        toast.error("Failed to delete plan");
+        const errorMessage =
+          error.response?.data?.message ||
+          error.message ||
+          "Failed to delete plan";
+        toast.error(errorMessage);
       }
     }
   };
@@ -121,35 +144,66 @@ const PlanManager = () => {
           <table className="min-w-full text-left">
             <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
-                <th className="px-6 py-5 font-semibold text-gray-600 text-sm uppercase tracking-wider">Plan Details</th>
-                <th className="px-6 py-5 font-semibold text-gray-600 text-sm uppercase tracking-wider">Price</th>
-                <th className="px-6 py-5 font-semibold text-gray-600 text-sm uppercase tracking-wider">Limits</th>
-                <th className="px-6 py-5 font-semibold text-gray-600 text-sm uppercase tracking-wider">Duration</th>
-                <th className="px-6 py-5 font-semibold text-gray-600 text-sm uppercase tracking-wider text-right">Actions</th>
+                <th className="px-6 py-5 font-semibold text-gray-600 text-sm uppercase tracking-wider">
+                  Plan Details
+                </th>
+                <th className="px-6 py-5 font-semibold text-gray-600 text-sm uppercase tracking-wider">
+                  Price
+                </th>
+                <th className="px-6 py-5 font-semibold text-gray-600 text-sm uppercase tracking-wider">
+                  Limits
+                </th>
+                <th className="px-6 py-5 font-semibold text-gray-600 text-sm uppercase tracking-wider">
+                  Duration
+                </th>
+                <th className="px-6 py-5 font-semibold text-gray-600 text-sm uppercase tracking-wider text-right">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {loading ? (
-                <tr><td colSpan="5" className="p-10 text-center text-gray-500 animate-pulse">Loading plans...</td></tr>
+                <tr>
+                  <td
+                    colSpan="5"
+                    className="p-10 text-center text-gray-500 animate-pulse"
+                  >
+                    Loading plans...
+                  </td>
+                </tr>
               ) : plans.length === 0 ? (
-                <tr><td colSpan="5" className="p-10 text-center text-gray-500">No plans created yet.</td></tr>
+                <tr>
+                  <td colSpan="5" className="p-10 text-center text-gray-500">
+                    No plans created yet.
+                  </td>
+                </tr>
               ) : (
                 plans.map((plan) => (
-                  <tr key={plan._id} className="hover:bg-blue-50/30 transition duration-150">
+                  <tr
+                    key={plan._id}
+                    className="hover:bg-blue-50/30 transition duration-150"
+                  >
                     <td className="px-6 py-4">
                       <div className="flex flex-col">
-                        <span className="font-bold text-gray-800 text-lg">{plan.name}</span>
-                        <span className="text-sm text-gray-500 line-clamp-1">{plan.description}</span>
+                        <span className="font-bold text-gray-800 text-lg">
+                          {plan.name}
+                        </span>
+                        <span className="text-sm text-gray-500 line-clamp-1">
+                          {plan.description}
+                        </span>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                       <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-bold">
-                         ₹{plan.price}
-                       </span>
+                      <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-bold">
+                        ₹{plan.price}
+                      </span>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2 text-gray-700">
-                        <span className="font-semibold">{plan.resumeLimit}</span> Resumes
+                        <span className="font-semibold">
+                          {plan.resumeLimit}
+                        </span>{" "}
+                        Resumes
                       </div>
                     </td>
                     <td className="px-6 py-4 text-gray-600">
@@ -157,10 +211,16 @@ const PlanManager = () => {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex justify-end gap-2">
-                        <button onClick={() => handleEdit(plan)} className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition">
+                        <button
+                          onClick={() => handleEdit(plan)}
+                          className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition"
+                        >
                           <Edit size={18} />
                         </button>
-                        <button onClick={() => handleDelete(plan._id)} className="p-2 text-red-500 hover:bg-red-100 rounded-lg transition">
+                        <button
+                          onClick={() => handleDelete(plan._id)}
+                          className="p-2 text-red-500 hover:bg-red-100 rounded-lg transition"
+                        >
                           <Trash2 size={18} />
                         </button>
                       </div>
@@ -178,22 +238,55 @@ const PlanManager = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
           <div className="bg-white rounded-2xl p-8 w-full max-w-lg shadow-2xl transform transition-all scale-100">
             <div className="flex justify-between items-center mb-6">
-               <h2 className="text-2xl font-bold text-gray-800">{editingPlan ? "Edit Plan" : "Create New Plan"}</h2>
-               <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600"><XCircle size={24}/></button>
+              <h2 className="text-2xl font-bold text-gray-800">
+                {editingPlan ? "Edit Plan" : "Create New Plan"}
+              </h2>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <XCircle size={24} />
+              </button>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
-              <InputGroup label="Plan Name" name="name" value={formData.name} onChange={handleChange} placeholder="e.g. Pro Plan" />
+              <InputGroup
+                label="Plan Name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="e.g. Pro Plan"
+              />
 
               <div className="grid grid-cols-2 gap-5">
-                <InputGroup label="Price (₹)" name="price" type="number" value={formData.price} onChange={handleChange} />
-                <InputGroup label="Resume Limit" name="resumeLimit" type="number" value={formData.resumeLimit} onChange={handleChange} />
+                <InputGroup
+                  label="Price (₹)"
+                  name="price"
+                  type="number"
+                  value={formData.price}
+                  onChange={handleChange}
+                />
+                <InputGroup
+                  label="Resume Limit"
+                  name="resumeLimit"
+                  type="number"
+                  value={formData.resumeLimit}
+                  onChange={handleChange}
+                />
               </div>
 
-              <InputGroup label="Duration (Days)" name="durationInDays" type="number" value={formData.durationInDays} onChange={handleChange} />
+              <InputGroup
+                label="Duration (Days)"
+                name="durationInDays"
+                type="number"
+                value={formData.durationInDays}
+                onChange={handleChange}
+              />
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Description</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                  Description
+                </label>
                 <textarea
                   name="description"
                   value={formData.description}
@@ -228,9 +321,18 @@ const PlanManager = () => {
 };
 
 // Reusable Input Component
-const InputGroup = ({ label, name, type = "text", value, onChange, placeholder }) => (
+const InputGroup = ({
+  label,
+  name,
+  type = "text",
+  value,
+  onChange,
+  placeholder,
+}) => (
   <div>
-    <label className="block text-sm font-semibold text-gray-700 mb-1.5">{label}</label>
+    <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+      {label}
+    </label>
     <input
       type={type}
       name={name}

@@ -26,8 +26,11 @@ const navItems = [
     title: "Services",
     to: "/services",
     dropdownLinks: [
-      { to: "/services#ai-advantage", label: "AI Advantage" },
-      { to: "/services#industries", label: "Industries We Serve" },
+      { to: "/services#recruitment", label: "Recruitment" },
+      { to: "/services#internship", label: "Internship Program" },
+      { to: "/services#training", label: "Training & Placement" },
+      { to: "/services#workshop", label: "Workshop" },
+      { to: "/services#career", label: "Career Guidelines" },
     ],
   },
   { title: "Chennai Banking Jobs", to: "/chennai-banking-jobs" },

@@ -156,28 +156,32 @@ const Navbar = () => {
 
   const closeOffcanvas = () => setIsOffcanvasOpen(false);
 
-  const navItems = [
-    { title: "Home", to: "/" },
-    { title: "About", to: "/about" },
-    {
-      title: "Services",
-      to: "/services",
-      dropdownLinks: [
-        { to: "/services#ai-advantage", label: "AI Advantage" },
-        { to: "/services#industries", label: "Industries We Serve" },
-      ],
-    },
-    {
-      title: "Jobs",
-      to: "/chennai-banking-jobs",
-      dropdownLinks: [
-        { to: "/chennai-banking-jobs", label: "Chennai Banking Jobs" },
-      ],
-    },
-    { title: "Blog", to: "/blog" },
-    { title: "Certificate", to: "/verification" },
-    { title: "Contact", to: "/contact" },
-  ];
+ const navItems = [
+  { title: "Home", to: "/" },
+  { title: "About", to: "/about" },
+  {
+    title: "Services",
+    to: "/services",
+    // These links now match the IDs in your CoreTalentsPrograms data
+    dropdownLinks: [
+      { to: "/services#recruitment", label: "Recruitment" },
+      { to: "/services#internship", label: "Internship Program" },
+      { to: "/services#training", label: "Training & Placement" },
+      { to: "/services#workshop", label: "Workshop" },
+      { to: "/services#career", label: "Career Guidelines" },
+    ],
+  },
+  {
+    title: "Jobs",
+    to: "/chennai-banking-jobs",
+    dropdownLinks: [
+      { to: "/chennai-banking-jobs", label: "Chennai Banking Jobs" },
+    ],
+  },
+  { title: "Blog", to: "/blog" },
+  { title: "Certificate", to: "/verification" },
+  { title: "Contact", to: "/contact" },
+];
 
   return (
     <>
@@ -271,8 +275,8 @@ const Navbar = () => {
                   </>
                 )}
               </div>
-            </div> 
-            */}
+            </div>  */}
+           
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -382,8 +386,8 @@ const Navbar = () => {
                       </Link>
                     </>
                   )}
-                </div> 
-                */}
+                </div>  */}
+               
               </div>
             </motion.div>
           </>
