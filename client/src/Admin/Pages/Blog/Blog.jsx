@@ -192,6 +192,7 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
     else if (type === "accordion")
       baseData = { title: "Accordion Title", content: "" };
     else if (type === "image") baseData = { text: "", url: "", alt: "" };
+    else if (type === "heading") baseData = { text: "", level: "h2" };
     else baseData = { text: "", url: "" };
     const newItem = {
       type: type === "checklist" ? "list" : type,
@@ -1143,14 +1144,30 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
                         </button>
 
                         {item.type === "heading" && (
-                          <input
-                            placeholder="Heading Text"
-                            value={item.data.text}
-                            onChange={(e) =>
-                              updateItemData(sIdx, iIdx, "text", e.target.value)
-                            }
-                            className="w-full font-bold text-lg outline-none border-b border-transparent focus:border-blue-300 placeholder:text-gray-300"
-                          />
+                          <div className="flex gap-2 items-center">
+                            <select
+                              value={item.data.level || "h2"}
+                              onChange={(e) =>
+                                updateItemData(sIdx, iIdx, "level", e.target.value)
+                              }
+                              className="text-xs p-1 border rounded font-bold text-blue-600 outline-none"
+                            >
+                              <option value="h1">H1</option>
+                              <option value="h2">H2</option>
+                              <option value="h3">H3</option>
+                              <option value="h4">H4</option>
+                              <option value="h5">H5</option>
+                              <option value="h6">H6</option>
+                            </select>
+                            <input
+                              placeholder="Heading Text"
+                              value={item.data.text}
+                              onChange={(e) =>
+                                updateItemData(sIdx, iIdx, "text", e.target.value)
+                              }
+                              className="w-full font-bold text-lg outline-none border-b border-transparent focus:border-blue-300 placeholder:text-gray-300"
+                            />
+                          </div>
                         )}
                         {item.type === "paragraph" && (
                           <RichTextEditor
@@ -1587,6 +1604,7 @@ const RichTextEditor = ({ initialValue, onChange }) => {
   const contentEditableRef = React.useRef(null);
   const [isBold, setIsBold] = useState(false);
   const [isLink, setIsLink] = useState(false);
+  const [activeHeading, setActiveHeading] = useState("p");
   const [showLinkModal, setShowLinkModal] = useState(false);
   const [linkUrl, setLinkUrl] = useState("");
   const savedRange = React.useRef(null);
@@ -1611,13 +1629,25 @@ const RichTextEditor = ({ initialValue, onChange }) => {
 
   const checkActiveStates = () => {
     setIsBold(document.queryCommandState("bold"));
+
+    // Check heading level
     const selection = window.getSelection();
     if (selection.rangeCount > 0) {
       let parent = selection.getRangeAt(0).commonAncestorContainer;
       if (parent.nodeType === 3) parent = parent.parentNode;
+
       setIsLink(!!parent.closest("a"));
+
+      // Check for headings
+      const heading = parent.closest("h1, h2, h3, h4, h5, h6");
+      if (heading) {
+        setActiveHeading(heading.tagName.toLowerCase());
+      } else {
+        setActiveHeading("p");
+      }
     } else {
       setIsLink(false);
+      setActiveHeading("p");
     }
   };
 
@@ -1631,6 +1661,16 @@ const RichTextEditor = ({ initialValue, onChange }) => {
     e.preventDefault(); // Prevent losing focus
     document.execCommand("bold");
     checkActiveStates();
+    if (contentEditableRef.current) {
+      isInternalUpdate.current = true;
+      onChange(contentEditableRef.current.innerHTML);
+    }
+  };
+
+  const handleHeadingChange = (e) => {
+    const heading = e.target.value;
+    document.execCommand("formatBlock", false, heading);
+    setActiveHeading(heading);
     if (contentEditableRef.current) {
       isInternalUpdate.current = true;
       onChange(contentEditableRef.current.innerHTML);
@@ -1679,7 +1719,23 @@ const RichTextEditor = ({ initialValue, onChange }) => {
 
   return (
     <div className="space-y-2 relative">
-      <div className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg border">
+      <div className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg border flex-wrap">
+        <select
+          value={activeHeading}
+          onChange={handleHeadingChange}
+          className="px-2 py-1.5 border rounded text-sm font-bold bg-white text-gray-700 hover:bg-gray-100 transition-colors outline-none cursor-pointer"
+        >
+          <option value="p">Normal text</option>
+          <option value="h1">Heading 1</option>
+          <option value="h2">Heading 2</option>
+          <option value="h3">Heading 3</option>
+          <option value="h4">Heading 4</option>
+          <option value="h5">Heading 5</option>
+          <option value="h6">Heading 6</option>
+        </select>
+
+        <div className="w-px h-6 bg-gray-300 mx-1"></div>
+
         <button
           type="button"
           onMouseDown={toggleBold}

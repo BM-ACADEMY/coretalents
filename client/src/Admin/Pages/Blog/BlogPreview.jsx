@@ -80,13 +80,14 @@ const BlogPreview = ({ meta, coverPreview, sections }) => {
 
           {allBlocks.map((block, i) => {
             if (block.type === "heading") {
+              const Tag = block.data.level || "h2";
               return (
-                <h2
+                <Tag
                   key={i}
-                  className="text-2xl font-bold text-gray-900 mt-8 mb-4"
+                  className={`${Tag === 'h1' ? 'text-3xl' : Tag === 'h2' ? 'text-2xl' : Tag === 'h3' ? 'text-xl' : 'text-lg'} font-bold text-gray-900 mt-8 mb-4`}
                 >
                   {block.data.text || "Heading..."}
-                </h2>
+                </Tag>
               );
             }
             if (block.type === "paragraph") {
@@ -137,8 +138,8 @@ const BlogPreview = ({ meta, coverPreview, sections }) => {
                         )}
                         {(block.data.listType === "bullet" ||
                           !block.data.listType) && (
-                          <div className="w-2 h-2 bg-gray-700 rounded-full flex-shrink-0 mt-2" />
-                        )}
+                            <div className="w-2 h-2 bg-gray-700 rounded-full flex-shrink-0 mt-2" />
+                          )}
                         <span className="text-gray-700 leading-relaxed">
                           {item || "List item..."}
                         </span>
