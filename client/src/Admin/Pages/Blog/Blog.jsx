@@ -102,20 +102,20 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
           : "",
         seo: editingBlog.seo
           ? {
-              ...editingBlog.seo,
-              keywords: Array.isArray(editingBlog.seo.keywords)
-                ? editingBlog.seo.keywords.join(",")
-                : editingBlog.seo.keywords || "",
-            }
+            ...editingBlog.seo,
+            keywords: Array.isArray(editingBlog.seo.keywords)
+              ? editingBlog.seo.keywords.join(",")
+              : editingBlog.seo.keywords || "",
+          }
           : {
-              canonicalUrl: "",
-              metaTitle: "",
-              metaDescription: "",
-              keywords: "",
-              schema: { articleType: "Article", faq: [] },
-              ga4MeasurementId: "",
-              customScripts: "",
-            },
+            canonicalUrl: "",
+            metaTitle: "",
+            metaDescription: "",
+            keywords: "",
+            schema: { articleType: "Article", faq: [] },
+            ga4MeasurementId: "",
+            customScripts: "",
+          },
         cta: editingBlog.cta || {
           heading: "",
           description: "",
@@ -125,20 +125,20 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
         },
         sidebar: editingBlog.sidebar
           ? {
-              ...editingBlog.sidebar,
-              tags: Array.isArray(editingBlog.sidebar.tags)
-                ? editingBlog.sidebar.tags.join(",")
-                : editingBlog.sidebar.tags || "",
-            }
+            ...editingBlog.sidebar,
+            tags: Array.isArray(editingBlog.sidebar.tags)
+              ? editingBlog.sidebar.tags.join(",")
+              : editingBlog.sidebar.tags || "",
+          }
           : {
-              aboutTitle: "About Core Talents",
-              aboutDescription: "",
-              tags: "",
-              consultationTitle: "Need a Consultation?",
-              consultationText: "",
-              consultationUrl: "",
-              enabled: true,
-            },
+            aboutTitle: "About Core Talents",
+            aboutDescription: "",
+            tags: "",
+            consultationTitle: "Need a Consultation?",
+            consultationText: "",
+            consultationUrl: "",
+            enabled: true,
+          },
       });
 
       if (editingBlog.coverImage && editingBlog.coverImage.url) {
@@ -192,6 +192,7 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
     else if (type === "accordion")
       baseData = { title: "Accordion Title", content: "" };
     else if (type === "image") baseData = { text: "", url: "", alt: "" };
+    else if (type === "heading") baseData = { text: "", level: "h2" };
     else baseData = { text: "", url: "" };
     const newItem = {
       type: type === "checklist" ? "list" : type,
@@ -633,11 +634,10 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
                   <button
                     key={tab}
                     onClick={() => setActiveSeoTab(tab)}
-                    className={`flex-1 text-xs font-bold px-4 py-2.5 rounded-lg capitalize transition-all duration-300 ${
-                      activeSeoTab === tab
-                        ? "bg-white text-blue-600 shadow-md scale-105"
-                        : "text-gray-600 hover:text-gray-900"
-                    }`}
+                    className={`flex-1 text-xs font-bold px-4 py-2.5 rounded-lg capitalize transition-all duration-300 ${activeSeoTab === tab
+                      ? "bg-white text-blue-600 shadow-md scale-105"
+                      : "text-gray-600 hover:text-gray-900"
+                      }`}
                   >
                     {tab}
                   </button>
@@ -1144,94 +1144,38 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
                         </button>
 
                         {item.type === "heading" && (
-                          <input
-                            placeholder="Heading Text"
-                            value={item.data.text}
-                            onChange={(e) =>
-                              updateItemData(sIdx, iIdx, "text", e.target.value)
-                            }
-                            className="w-full font-bold text-lg outline-none border-b border-transparent focus:border-blue-300 placeholder:text-gray-300"
-                          />
-                        )}
-                        {item.type === "paragraph" && (
-                          <div className="space-y-2">
-                            {/* Toolbar */}
-                            <div className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg border">
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  document.execCommand("bold", false, null);
-                                }}
-                                className="flex items-center gap-1 px-3 py-1.5 bg-white border rounded hover:bg-gray-100 text-sm font-bold"
-                                title="Make text bold"
-                              >
-                                <Type size={14} className="font-bold" />{" "}
-                                <strong>B</strong>
-                              </button>
-
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  const url = prompt("Enter URL:");
-                                  if (url) {
-                                    document.execCommand(
-                                      "createLink",
-                                      false,
-                                      url,
-                                    );
-                                    // Add styling to created link
-                                    const selection = window.getSelection();
-                                    if (selection.anchorNode) {
-                                      const link =
-                                        selection.anchorNode.parentElement;
-                                      if (link.tagName === "A") {
-                                        link.target = "_blank";
-                                        link.className =
-                                          "text-blue-600 hover:underline font-medium";
-                                      }
-                                    }
-                                  }
-                                }}
-                                className="flex items-center gap-1 px-3 py-1.5 bg-white border rounded hover:bg-gray-100 text-sm"
-                                title="Insert link"
-                              >
-                                <Link size={14} /> Link
-                              </button>
-
-                              <div className="ml-auto text-xs text-gray-500">
-                                Select text, then click toolbar buttons
-                              </div>
-                            </div>
-
-                            {/* Rich Text Editor (ContentEditable) */}
-                            <div
-                              id={`para-${sIdx}-${iIdx}`}
-                              contentEditable
-                              suppressContentEditableWarning
-                              onInput={(e) => {
-                                updateItemData(
-                                  sIdx,
-                                  iIdx,
-                                  "text",
-                                  e.currentTarget.innerHTML,
-                                );
-                              }}
-                              onBlur={(e) => {
-                                updateItemData(
-                                  sIdx,
-                                  iIdx,
-                                  "text",
-                                  e.currentTarget.innerHTML,
-                                );
-                              }}
-                              dangerouslySetInnerHTML={{
-                                __html: item.data.text || "",
-                              }}
-                              className="w-full min-h-[120px] text-sm outline-none resize-y p-3 border-2 border-gray-200 rounded-lg focus:border-blue-400 bg-white"
-                              style={{ overflowY: "auto" }}
-                              placeholder="Write your paragraph here... Select text and use the toolbar above to format."
+                          <div className="flex gap-2 items-center">
+                            <select
+                              value={item.data.level || "h2"}
+                              onChange={(e) =>
+                                updateItemData(sIdx, iIdx, "level", e.target.value)
+                              }
+                              className="text-xs p-1 border rounded font-bold text-blue-600 outline-none"
+                            >
+                              <option value="h1">H1</option>
+                              <option value="h2">H2</option>
+                              <option value="h3">H3</option>
+                              <option value="h4">H4</option>
+                              <option value="h5">H5</option>
+                              <option value="h6">H6</option>
+                            </select>
+                            <input
+                              placeholder="Heading Text"
+                              value={item.data.text}
+                              onChange={(e) =>
+                                updateItemData(sIdx, iIdx, "text", e.target.value)
+                              }
+                              className="w-full font-bold text-lg outline-none border-b border-transparent focus:border-blue-300 placeholder:text-gray-300"
                             />
                           </div>
+                        )}
+                        {item.type === "paragraph" && (
+                          <RichTextEditor
+                            initialValue={item.data.text || ""}
+                            onChange={(val) =>
+                              updateItemData(sIdx, iIdx, "text", val)
+                            }
+                          />
                         )}
 
                         {item.type === "image" && (
@@ -1352,8 +1296,8 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
                                   )}
                                   {(item.data.listType === "list" ||
                                     !item.data.listType) && (
-                                    <div className="w-1.5 h-1.5 bg-gray-400 rounded-full flex-shrink-0" />
-                                  )}
+                                      <div className="w-1.5 h-1.5 bg-gray-400 rounded-full flex-shrink-0" />
+                                    )}
                                   <input
                                     value={listItem}
                                     onChange={(e) =>
@@ -1652,6 +1596,219 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
           />
         </div>
       </div>
+    </div>
+  );
+};
+
+const RichTextEditor = ({ initialValue, onChange }) => {
+  const contentEditableRef = React.useRef(null);
+  const [isBold, setIsBold] = useState(false);
+  const [isLink, setIsLink] = useState(false);
+  const [activeHeading, setActiveHeading] = useState("p");
+  const [showLinkModal, setShowLinkModal] = useState(false);
+  const [linkUrl, setLinkUrl] = useState("");
+  const savedRange = React.useRef(null);
+  const isInternalUpdate = React.useRef(false);
+
+  useEffect(() => {
+    if (contentEditableRef.current) {
+      // Only update from props if the content is different significantly and we didn't just type it
+      // Standard comparison to avoid cursor jumps
+      if (
+        !isInternalUpdate.current &&
+        contentEditableRef.current.innerHTML !== initialValue
+      ) {
+        // Check if focused - if focused, be very careful/skip to avoid jumping unless completely desynced
+        if (document.activeElement !== contentEditableRef.current) {
+          contentEditableRef.current.innerHTML = initialValue || "";
+        }
+      }
+      isInternalUpdate.current = false;
+    }
+  }, [initialValue]);
+
+  const checkActiveStates = () => {
+    setIsBold(document.queryCommandState("bold"));
+
+    // Check heading level
+    const selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+      let parent = selection.getRangeAt(0).commonAncestorContainer;
+      if (parent.nodeType === 3) parent = parent.parentNode;
+
+      setIsLink(!!parent.closest("a"));
+
+      // Check for headings
+      const heading = parent.closest("h1, h2, h3, h4, h5, h6");
+      if (heading) {
+        setActiveHeading(heading.tagName.toLowerCase());
+      } else {
+        setActiveHeading("p");
+      }
+    } else {
+      setIsLink(false);
+      setActiveHeading("p");
+    }
+  };
+
+  const handleInput = (e) => {
+    isInternalUpdate.current = true;
+    onChange(e.currentTarget.innerHTML);
+    checkActiveStates();
+  };
+
+  const toggleBold = (e) => {
+    e.preventDefault(); // Prevent losing focus
+    document.execCommand("bold");
+    checkActiveStates();
+    if (contentEditableRef.current) {
+      isInternalUpdate.current = true;
+      onChange(contentEditableRef.current.innerHTML);
+    }
+  };
+
+  const handleHeadingChange = (e) => {
+    const heading = e.target.value;
+    document.execCommand("formatBlock", false, heading);
+    setActiveHeading(heading);
+    if (contentEditableRef.current) {
+      isInternalUpdate.current = true;
+      onChange(contentEditableRef.current.innerHTML);
+    }
+  };
+
+  const openLinkModal = (e) => {
+    e.preventDefault();
+    const selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+      savedRange.current = selection.getRangeAt(0);
+      setShowLinkModal(true);
+      let parent = selection.getRangeAt(0).commonAncestorContainer;
+      if (parent.nodeType === 3) parent = parent.parentNode;
+      const existingLink = parent.closest("a");
+      setLinkUrl(existingLink ? existingLink.href : "");
+    }
+  };
+
+  const applyLink = () => {
+    setShowLinkModal(false);
+    if (savedRange.current) {
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(savedRange.current);
+
+      if (linkUrl) {
+        document.execCommand("createLink", false, linkUrl);
+        // Force target blank
+        const anchor = selection.focusNode?.parentElement?.closest("a") || selection.anchorNode?.parentElement?.closest("a");
+        if (anchor) {
+          anchor.target = "_blank";
+          anchor.className = "text-blue-600 hover:underline font-medium";
+        }
+      } else {
+        document.execCommand("unlink");
+      }
+
+      checkActiveStates();
+      if (contentEditableRef.current) {
+        isInternalUpdate.current = true;
+        onChange(contentEditableRef.current.innerHTML);
+      }
+    }
+  };
+
+  return (
+    <div className="space-y-2 relative">
+      <div className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg border flex-wrap">
+        <select
+          value={activeHeading}
+          onChange={handleHeadingChange}
+          className="px-2 py-1.5 border rounded text-sm font-bold bg-white text-gray-700 hover:bg-gray-100 transition-colors outline-none cursor-pointer"
+        >
+          <option value="p">Normal text</option>
+          <option value="h1">Heading 1</option>
+          <option value="h2">Heading 2</option>
+          <option value="h3">Heading 3</option>
+          <option value="h4">Heading 4</option>
+          <option value="h5">Heading 5</option>
+          <option value="h6">Heading 6</option>
+        </select>
+
+        <div className="w-px h-6 bg-gray-300 mx-1"></div>
+
+        <button
+          type="button"
+          onMouseDown={toggleBold}
+          className={`flex items-center gap-1 px-3 py-1.5 border rounded text-sm font-bold transition-colors ${isBold
+            ? "bg-blue-600 text-white border-blue-600 shadow-sm"
+            : "bg-white text-gray-700 hover:bg-gray-100"
+            }`}
+          title="Make text bold"
+        >
+          <Type size={14} className={isBold ? "text-white" : "text-gray-700"} />
+          <span className={isBold ? "text-white" : ""}>B</span>
+        </button>
+
+        <button
+          type="button"
+          onMouseDown={openLinkModal}
+          className={`flex items-center gap-1 px-3 py-1.5 border rounded text-sm transition-colors ${isLink
+            ? "bg-blue-600 text-white border-blue-600 shadow-sm"
+            : "bg-white text-gray-700 hover:bg-gray-100"
+            }`}
+          title="Insert Link"
+        >
+          <Link size={14} className={isLink ? "text-white" : "text-gray-700"} />
+          <span>Link</span>
+        </button>
+      </div>
+
+      <div
+        ref={contentEditableRef}
+        className="w-full min-h-[120px] text-sm outline-none resize-y p-3 border-2 border-gray-200 rounded-lg focus:border-blue-400 bg-white"
+        style={{ overflowY: "auto" }}
+        contentEditable
+        suppressContentEditableWarning
+        onInput={handleInput}
+        onBlur={handleInput}
+        onKeyUp={checkActiveStates}
+        onMouseUp={checkActiveStates}
+        placeholder="Write your paragraph here..."
+      />
+      {/* Initialize content once */}
+      <div style={{ display: "none" }} dangerouslySetInnerHTML={{ __html: initialValue }}></div>
+
+      {showLinkModal && (
+        <div className="absolute top-12 left-0 z-50 bg-white shadow-2xl border-2 border-blue-100 rounded-xl p-4 w-80 animate-in fade-in zoom-in-95">
+          <div className="flex justify-between items-center mb-3">
+            <span className="text-xs font-bold uppercase text-gray-500">Insert Link</span>
+            <button onClick={() => setShowLinkModal(false)} className="text-gray-400 hover:text-red-500">
+              <X size={14} />
+            </button>
+          </div>
+          <input
+            value={linkUrl}
+            onChange={(e) => setLinkUrl(e.target.value)}
+            placeholder="https://example.com"
+            className="w-full text-sm border p-2 rounded-lg mb-4 focus:ring-2 ring-blue-500 outline-none bg-gray-50 focus:bg-white transition-all"
+            autoFocus
+          />
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={() => setShowLinkModal(false)}
+              className="px-4 py-2 text-xs font-bold text-gray-500 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={applyLink}
+              className="px-4 py-2 text-xs font-bold bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow-lg transition-all"
+            >
+              Apply Link
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

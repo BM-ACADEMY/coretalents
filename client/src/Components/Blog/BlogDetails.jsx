@@ -289,9 +289,22 @@ const BlogDetails = () => {
                 {blog.contentBlocks.map((block, index) => (
                   <div key={index}>
                     {block.type === "heading" && (
-                      <h2 className="text-3xl font-bold text-gray-900 mt-12 mb-6">
-                        {block.data.text}
-                      </h2>
+                      (() => {
+                        const Tag = block.data.level || "h2";
+                        const tagClasses = {
+                          h1: "text-4xl md:text-5xl",
+                          h2: "text-3xl md:text-4xl",
+                          h3: "text-2xl md:text-3xl",
+                          h4: "text-xl md:text-2xl",
+                          h5: "text-lg md:text-xl",
+                          h6: "text-base md:text-lg",
+                        };
+                        return (
+                          <Tag className={`${tagClasses[Tag] || tagClasses.h2} font-bold text-gray-900 mt-12 mb-6`}>
+                            {block.data.text}
+                          </Tag>
+                        );
+                      })()
                     )}
 
                     {block.type === "paragraph" && (
@@ -342,8 +355,8 @@ const BlogDetails = () => {
                               )}
                               {(block.data.listType === "list" ||
                                 !block.data.listType) && (
-                                <div className="w-2 h-2 bg-gray-700 rounded-full flex-shrink-0 mt-3" />
-                              )}
+                                  <div className="w-2 h-2 bg-gray-700 rounded-full flex-shrink-0 mt-3" />
+                                )}
                               <span className="text-md font-medium text-gray-800 leading-relaxed">
                                 {item}
                               </span>
@@ -378,29 +391,27 @@ const BlogDetails = () => {
                         <motion.a
                           href={
                             block.data.actionType === "whatsapp" &&
-                            block.data.phone
-                              ? `https://wa.me/${
-                                  block.data.phone
-                                }?text=${encodeURIComponent(
-                                  block.data.message || "",
-                                )}`
+                              block.data.phone
+                              ? `https://wa.me/${block.data.phone
+                              }?text=${encodeURIComponent(
+                                block.data.message || "",
+                              )}`
                               : block.data.url || "#"
                           }
                           target="_blank"
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
-                          className={`relative inline-flex items-center group overflow-hidden ${
-                            block.data.style === "primary"
+                          className={`relative inline-flex items-center group overflow-hidden ${block.data.style === "primary"
                               ? "bg-indigo-600 text-white"
                               : block.data.style === "outline"
                                 ? "border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50"
                                 : block.data.style === "black"
                                   ? "bg-gray-900 text-white"
                                   : "bg-indigo-600 text-white"
-                          }
-                 px-6 py-2 sm:px-8 sm:py-3 md:px-10 md:py-4 
-                 rounded-full font-bold 
-                 text-sm sm:text-base md:text-lg lg:text-xl 
+                            }
+                 px-6 py-2 sm:px-8 sm:py-3 md:px-10 md:py-4
+                 rounded-full font-bold
+                 text-sm sm:text-base md:text-lg lg:text-xl
                  shadow-lg transition-all duration-300`}
                         >
                           {/* Hover Gradient Overlay (Only for primary/black) */}
@@ -423,11 +434,10 @@ const BlogDetails = () => {
                       <div className="my-6">
                         <motion.div
                           layout
-                          className={`overflow-hidden transition-all duration-300 border rounded-[2rem] ${
-                            openAccordion === index
+                          className={`overflow-hidden transition-all duration-300 border rounded-[2rem] ${openAccordion === index
                               ? "bg-white border-blue-600 shadow-md"
                               : "bg-white border-slate-300 hover:border-blue-400"
-                          }`}
+                            }`}
                         >
                           <button
                             onClick={() =>
@@ -438,21 +448,19 @@ const BlogDetails = () => {
                             className="w-full flex items-center justify-between px-8 py-6 text-left outline-none"
                           >
                             <span
-                              className={`text-lg md:text-xl font-semibold tracking-tight transition-colors duration-300 ${
-                                openAccordion === index
+                              className={`text-lg md:text-xl font-semibold tracking-tight transition-colors duration-300 ${openAccordion === index
                                   ? "text-blue-700"
                                   : "text-slate-800"
-                              }`}
+                                }`}
                             >
                               {block.data.title}
                             </span>
 
                             <div
-                              className={`flex items-center justify-center w-8 h-8 rounded-full transition-all duration-500 ${
-                                openAccordion === index
+                              className={`flex items-center justify-center w-8 h-8 rounded-full transition-all duration-500 ${openAccordion === index
                                   ? "bg-blue-600 text-white rotate-45"
                                   : "text-blue-600"
-                              }`}
+                                }`}
                             >
                               <Plus size={24} strokeWidth={2.5} />
                             </div>

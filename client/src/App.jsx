@@ -7,6 +7,8 @@ import { AuthProvider } from "./Context/Authcontext";
 import Whatsappfloating from "./Components/WhatsAppWidget";
 import { Scrolltotop } from "./scrolltop/Scrolltotop";
 
+import { initGA, trackPage } from "./analytics";
+
 function AppContent() {
   const location = useLocation();
 
