@@ -43,6 +43,20 @@ const BlogList = ({ onEdit }) => {
     }
   };
 
+  const handleToggleStatus = async (id, currentStatus) => {
+    const newStatus = currentStatus === "published" ? "draft" : "published";
+    try {
+      const res = await axiosInstance.patch(`/blogs/${id}/status`, { status: newStatus }, { withCredentials: true });
+      if(res.data.success) {
+        showToast(`Blog status updated to ${newStatus}`, "success");
+        setBlogs(blogs.map(b => b._id === id ? { ...b, status: newStatus } : b));
+      }
+    } catch (error) {
+       const errorMessage = error.response?.data?.message || error.message || "Failed to update status";
+       showToast(`StatusError: ${errorMessage}`, "error");
+    }
+  };
+
   useEffect(() => {
     fetchBlogs();
   }, []);
@@ -95,8 +109,10 @@ const BlogList = ({ onEdit }) => {
                     {blog.category}
                   </span>
                 </td>
-                <td className="p-4 text-xs font-semibold text-green-600 capitalize">
-                  {blog.status}
+                <td className="p-4 text-xs font-semibold capitalize cursor-pointer" onClick={() => handleToggleStatus(blog._id, blog.status)}>
+                  <span className={`px-2 py-1 rounded text-white transition-opacity hover:opacity-80 ${blog.status === 'draft' ? 'bg-orange-500' : 'bg-green-500'}`}>
+                    {blog.status}
+                  </span>
                 </td>
                 <td className="p-4 text-right">
                   <div className="flex justify-end gap-1">

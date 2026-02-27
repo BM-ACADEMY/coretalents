@@ -14,6 +14,7 @@ const contentBlockSchema = new mongoose.Schema({
       "button",
       "accordion",
       "feature",
+      "section",
     ],
   },
   data: {

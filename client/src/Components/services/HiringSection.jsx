@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Zap, Users, BrainCircuit } from "lucide-react";
+import { Link } from "react-router-dom";
 
 // --- IMPORT IMAGES HERE ---
 // Replace these paths with your actual file locations
@@ -62,7 +63,7 @@ const ModernHiringSection = () => {
           >
             <motion.div variants={textVariants}>
               <span className="inline-block bg-purple-100 text-purple-700 font-semibold px-4 py-2 rounded-full text-sm mb-0">
-                AI Advantage
+                Smart Hiring Solution
               </span>
             </motion.div>
 
@@ -70,23 +71,23 @@ const ModernHiringSection = () => {
               variants={textVariants}
               className="text-4xl lg:text-5xl font-bold text-slate-900 tracking-tight leading-[1.3]"
             >
-              AI + Human Expertise = <span className="text-yellow-600">Perfect Hiring Decisions</span>
+              AI-Powered Screening + Human Expertise = <span className="text-yellow-600">Smarter Hiring</span>
             </motion.h2>
 
             <motion.p
               variants={textVariants}
               className="text-lg text-slate-600 leading-relaxed max-w-lg"
             >
-              Stop guessing. Our AI analyzes retention probability and cultural
-              fit to give you a clear "Yes" or "No". Combine data with human
-              intuition for the perfect hire.
+              Stop guessing. Our AI-assisted screening analyzes skills, retention probability, and cultural fit — while our expert recruiters make the final decision. Data-driven insights + human judgment = better hires, faster.
             </motion.p>
 
             <motion.div variants={textVariants} className="pt-4 flex gap-4">
-              <button className="px-8 py-4 bg-slate-900 text-white rounded-xl font-semibold shadow-xl shadow-slate-900/20 hover:bg-slate-800 transition-all flex items-center gap-2 group">
-                Request AI Hiring Demo
-                <ArrowUpRight className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" size={18} />
-              </button>
+              <Link to="/contact">
+                <button className="px-8 py-4 bg-slate-900 text-white rounded-xl font-semibold shadow-xl shadow-slate-900/20 hover:bg-slate-800 transition-all flex items-center gap-2 group cursor-pointer">
+                  Request Hiring Consultation
+                  <ArrowUpRight className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" size={18} />
+                </button>
+              </Link>
             </motion.div>
           </motion.div>
 
@@ -125,7 +126,7 @@ const ModernHiringSection = () => {
                 </div>
               </div>
               <p className="text-4xl font-black text-slate-900">92%</p>
-              <p className="text-xs text-green-600 font-medium mt-1">Predictive Accuracy</p>
+              <p className="text-xs text-green-600 font-medium mt-1">Candidate Match Precision</p>
             </motion.div>
 
             {/* FLOATING CARD 2: Time to Hire */}
@@ -144,7 +145,7 @@ const ModernHiringSection = () => {
                   </div>
                   <div>
                     <p className="text-sm font-bold text-slate-800">Time-to-Hire</p>
-                    <p className="text-xs text-slate-500">Reduced significantly</p>
+                    <p className="text-xs text-slate-500">Reduced Hiring Cycle</p>
                   </div>
                </div>
                <div className="w-full bg-slate-100 rounded-full h-2 mb-2">

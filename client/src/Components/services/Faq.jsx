@@ -11,23 +11,27 @@ const FaqSection = () => {
   const faqs = [
     {
       question: "What services does Core Talents offer to companies?",
-      answer: "We provide end-to-end recruitment, staffing, and HR support services including permanent hiring, contract staffing, bulk hiring, and executive search."
+      answer: "We provide end-to-end recruitment solutions including permanent hiring, contract staffing, bulk hiring, executive search, and industry-specific talent acquisition."
     },
     {
       question: "How do you ensure the quality of candidates?",
-      answer: "Our recruitment team follows a detailed screening and verification process that includes skill assessment, background checks, and interview evaluations before shortlisting candidates."
+      answer: "We use AI-assisted screening tools combined with expert recruiter evaluation. Every candidate is skill-assessed, reference-verified, and matched based on role requirements and company culture."
     },
     {
       question: "Can Core Talents handle bulk or mass hiring projects?",
-      answer: "Yes. We have a dedicated team and network to manage large-scale hiring efficiently across multiple roles and locations."
+      answer: "Yes. Our structured sourcing process and dedicated hiring teams allow us to manage large-scale recruitment drives efficiently while maintaining quality standards."
     },
     {
       question: "What industries do you specialize in?",
-      answer: "We cater to diverse industries including IT, Non-IT, Manufacturing, BPO, Retail, Finance, and more — customizing our approach based on client needs."
+      answer: "We specialize in IT, construction, healthcare, retail, logistics, manufacturing, and education — delivering industry-specific talent tailored to business needs."
     },
     {
       question: "How long does it take to fill a position?",
-      answer: "The hiring timeline depends on the job role and requirements. However, our goal is always to deliver qualified candidates quickly without compromising on quality."
+      answer: "Hiring timelines vary based on role complexity and industry. However, our structured screening process helps reduce time-to-hire while ensuring quality placements."
+    },
+    {
+      question: "Do you offer replacement guarantees?",
+      answer: "Yes, we offer a replacement guarantee period to ensure client satisfaction and long-term hiring success."
     }
   ];
 
@@ -38,16 +42,15 @@ const FaqSection = () => {
         {/* Header Section */}
         <div className="text-center mb-16">
           <span className="inline-block py-1 px-3 rounded-full bg-indigo-50 text-indigo-600 text-sm font-semibold mb-4 border border-indigo-100">
-            Support & Details
+            FAQs
           </span>
           <h2 className="text-4xl font-bold text-gray-900 tracking-tight mb-4">
             Frequently Asked Questions
           </h2>
           <p className="text-gray-500 text-lg max-w-2xl mx-auto">
-            Everything you need to know about our recruitment process and services.
+            Find answers to common questions about our hiring process, industries, timelines, and recruitment solutions.
           </p>
         </div>
-
 
         {/* Accordion FAQ List */}
         <div className="space-y-4">
