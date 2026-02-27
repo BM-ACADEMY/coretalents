@@ -286,211 +286,229 @@ const BlogDetails = () => {
               </motion.div> */}
 
               <article className="prose prose-lg max-w-none text-gray-700 leading-relaxed">
-                {blog.contentBlocks.map((block, index) => (
-                  <div key={index}>
-                    {block.type === "heading" && (
-                      (() => {
-                        const Tag = block.data.level || "h2";
-                        const tagClasses = {
-                          h1: "text-4xl md:text-5xl",
-                          h2: "text-3xl md:text-4xl",
-                          h3: "text-2xl md:text-3xl",
-                          h4: "text-xl md:text-2xl",
-                          h5: "text-lg md:text-xl",
-                          h6: "text-base md:text-lg",
-                        };
-                        return (
-                          <Tag className={`${tagClasses[Tag] || tagClasses.h2} font-bold text-gray-900 mt-12 mb-6`}>
-                            {block.data.text}
-                          </Tag>
-                        );
-                      })()
-                    )}
-
-                    {block.type === "paragraph" && (
-                      <div
-                        className="text-lg leading-8 text-gray-700 mb-6"
-                        dangerouslySetInnerHTML={{ __html: block.data.text }}
-                      />
-                    )}
-
-                    {block.type === "image" && block.data.url && (
-                      <div className="my-10">
-                        <img
-                          src={block.data.url}
-                          alt={block.data.alt || "Content"}
-                          className="w-full aspect-video object-cover object-top rounded-2xl shadow-lg"
-                        />
-
-                      </div>
-                    )}
-
-                    {/* UPDATED LIST BLOCK */}
-                    {block.type === "list" && (
-                      <div className="my-6">
-                        {/* Optional Heading with first word bold */}
-                        {block.data.heading &&
-                          formatListHeading(block.data.heading)}
-
-                        {/* 2-Column Grid List - Single Column on Mobile */}
-                        <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-1 gap-y-6 bg-gray-50 p-8 rounded-2xl list-none">
-                          {block.data.items.map((item, i) => (
-                            <li key={i} className="flex items-start gap-4">
-                              {block.data.listType === "checklist" && (
-                                <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
-                              )}
-                              {block.data.listType === "arrow" && (
-                                <ChevronRight className="w-5 h-5 text-blue-600 flex-shrink-0 mt-1" />
-                              )}
-                              {block.data.listType === "star" && (
-                                <div className="w-5 h-5 text-yellow-500 flex-shrink-0 mt-1 pb-1 text-xl leading-none">
-                                  ★
-                                </div>
-                              )}
-                              {block.data.listType === "square" && (
-                                <Square className="w-3 h-3 text-blue-500 flex-shrink-0 mt-2 fill-current" />
-                              )}
-                              {block.data.listType === "dash" && (
-                                <Minus className="w-4 h-4 text-gray-500 flex-shrink-0 mt-1.5" />
-                              )}
-                              {(block.data.listType === "list" ||
-                                !block.data.listType) && (
-                                  <div className="w-2 h-2 bg-gray-700 rounded-full flex-shrink-0 mt-3" />
-                                )}
-                              <span className="text-md font-medium text-gray-800 leading-relaxed">
-                                {item}
-                              </span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    {block.type === "quote" && (
-                      <div className="relative my-8 group">
-                        <div className="absolute -top-5 -left-2 z-10 bg-gray-50 px-2">
-                          <FaQuoteLeft className="text-[#6366f1] text-3xl md:text-4xl" />
-                        </div>
-                        <div className="pt-10 pb-8 pl-10 pr-8 border border-gray-300 rounded-tr-3xl rounded-b-3xl rounded-bl-3xl">
-                          <p className="text-xl md:text-2xl font-semibold text-gray-800 leading-snug">
-                            {block.data.text}
-                          </p>
-                          {block.data.author && (
-                            <footer className="mt-6 flex items-center gap-3">
-                              <div className="w-10 h-[2px] bg-[#6366f1]"></div>
-                              <span className="text-sm font-bold uppercase tracking-widest text-gray-500">
-                                {block.data.author}
-                              </span>
-                            </footer>
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                    {block.type === "button" && (
-                      <div className="text-center my-12">
-                        <motion.a
-                          href={
-                            block.data.actionType === "whatsapp" &&
-                              block.data.phone
-                              ? `https://wa.me/${block.data.phone
-                              }?text=${encodeURIComponent(
-                                block.data.message || "",
-                              )}`
-                              : block.data.url || "#"
-                          }
-                          target="_blank"
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          className={`relative inline-flex items-center group overflow-hidden ${block.data.style === "primary"
-                              ? "bg-indigo-600 text-white"
-                              : block.data.style === "outline"
-                                ? "border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50"
-                                : block.data.style === "black"
-                                  ? "bg-gray-900 text-white"
-                                  : "bg-indigo-600 text-white"
-                            }
-                 px-6 py-2 sm:px-8 sm:py-3 md:px-10 md:py-4
-                 rounded-full font-bold
-                 text-sm sm:text-base md:text-lg lg:text-xl
-                 shadow-lg transition-all duration-300`}
-                        >
-                          {/* Hover Gradient Overlay (Only for primary/black) */}
-                          {block.data.style !== "outline" && (
-                            <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                {blog.contentBlocks.map((block, index) => {
+                  
+                  // Helper function to render individual inner blocks
+                  const renderBlock = (innerBlock, innerIndex) => {
+                    return (
+                        <div key={`${index}-${innerIndex}`}>
+                          {innerBlock.type === "heading" && (
+                            (() => {
+                              const Tag = innerBlock.data.level || "h2";
+                              const tagClasses = {
+                                h1: "text-4xl md:text-5xl",
+                                h2: "text-3xl md:text-4xl",
+                                h3: "text-xl md:text-2xl",
+                                h4: "text-lg md:text-xl",
+                                h5: "text-base md:text-lg",
+                                h6: "text-sm md:text-base",
+                              };
+                              return (
+                                <Tag className={`${tagClasses[Tag] || tagClasses.h2} font-bold text-gray-900 mt-8 mb-4`}>
+                                  {innerBlock.data.text}
+                                </Tag>
+                              );
+                            })()
                           )}
 
-                          {/* Button Text */}
-                          <div className="flex items-center gap-2 relative">
-                            {block.data.actionType === "whatsapp" && (
-                              <MessageCircle size={20} />
-                            )}
-                            {block.data.text}
-                          </div>
-                        </motion.a>
-                      </div>
-                    )}
+                          {innerBlock.type === "paragraph" && (
+                         <div
+                            className="text-base leading-7 text-gray-700 mb-3 [&>p]:mb-3 last:mb-0"
+                            dangerouslySetInnerHTML={{ __html: innerBlock.data.text }}
+                          />
+                          )}
 
-                    {block.type === "accordion" && (
-                      <div className="my-6">
-                        <motion.div
-                          layout
-                          className={`overflow-hidden transition-all duration-300 border rounded-[2rem] ${openAccordion === index
-                              ? "bg-white border-blue-600 shadow-md"
-                              : "bg-white border-slate-300 hover:border-blue-400"
-                            }`}
-                        >
-                          <button
-                            onClick={() =>
-                              setOpenAccordion(
-                                openAccordion === index ? null : index,
-                              )
-                            }
-                            className="w-full flex items-center justify-between px-8 py-6 text-left outline-none"
-                          >
-                            <span
-                              className={`text-lg md:text-xl font-semibold tracking-tight transition-colors duration-300 ${openAccordion === index
-                                  ? "text-blue-700"
-                                  : "text-slate-800"
-                                }`}
-                            >
-                              {block.data.title}
-                            </span>
+                          {innerBlock.type === "image" && innerBlock.data.url && (
+                            <div className="my-6">
+                              <img
+                                src={innerBlock.data.url}
+                                alt={innerBlock.data.alt || "Content"}
+                                className="w-full aspect-video object-cover object-top rounded-2xl shadow-lg"
+                              />
 
-                            <div
-                              className={`flex items-center justify-center w-8 h-8 rounded-full transition-all duration-500 ${openAccordion === index
-                                  ? "bg-blue-600 text-white rotate-45"
-                                  : "text-blue-600"
-                                }`}
-                            >
-                              <Plus size={24} strokeWidth={2.5} />
                             </div>
-                          </button>
+                          )}
 
-                          <AnimatePresence>
-                            {openAccordion === index && (
-                              <motion.div
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: "auto", opacity: 1 }}
-                                exit={{ height: 0, opacity: 0 }}
-                                transition={{
-                                  duration: 0.3,
-                                  ease: "easeInOut",
-                                }}
+                          {/* UPDATED LIST BLOCK */}
+                          {innerBlock.type === "list" && (
+                            <div className="my-4">
+                              {/* Optional Heading with first word bold */}
+                              {innerBlock.data.heading &&
+                                formatListHeading(innerBlock.data.heading)}
+
+                              {/* 2-Column Grid List - Single Column on Mobile */}
+                              <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-1 gap-y-6 bg-gray-50 p-8 rounded-2xl list-none">
+                                {innerBlock.data.items.map((item, i) => (
+                                  <li key={i} className="flex items-start gap-4">
+                                    {innerBlock.data.listType === "checklist" && (
+                                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
+                                    )}
+                                    {innerBlock.data.listType === "arrow" && (
+                                      <ChevronRight className="w-5 h-5 text-blue-600 flex-shrink-0 mt-1" />
+                                    )}
+                                    {innerBlock.data.listType === "star" && (
+                                      <div className="w-5 h-5 text-yellow-500 flex-shrink-0 mt-1 pb-1 text-xl leading-none">
+                                        ★
+                                      </div>
+                                    )}
+                                    {innerBlock.data.listType === "square" && (
+                                      <Square className="w-3 h-3 text-blue-500 flex-shrink-0 mt-2 fill-current" />
+                                    )}
+                                    {innerBlock.data.listType === "dash" && (
+                                      <Minus className="w-4 h-4 text-gray-500 flex-shrink-0 mt-1.5" />
+                                    )}
+                                    {(innerBlock.data.listType === "list" ||
+                                      !innerBlock.data.listType) && (
+                                        <div className="w-2 h-2 bg-gray-700 rounded-full flex-shrink-0 mt-3" />
+                                      )}
+                                    <span className="text-md font-medium text-gray-800 leading-relaxed">
+                                      {item}
+                                    </span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                          {innerBlock.type === "quote" && (
+                            <div className="relative my-6 group">
+                              <div className="absolute -top-5 -left-2 z-10 bg-gray-50 px-2">
+                                <FaQuoteLeft className="text-[#6366f1] text-3xl md:text-4xl" />
+                              </div>
+                              <div className="pt-10 pb-8 pl-10 pr-8 border border-gray-300 rounded-tr-3xl rounded-b-3xl rounded-bl-3xl">
+                                <p className="text-xl md:text-2xl font-semibold text-gray-800 leading-snug">
+                                  {innerBlock.data.text}
+                                </p>
+                                {innerBlock.data.author && (
+                                  <footer className="mt-6 flex items-center gap-3">
+                                    <div className="w-10 h-[2px] bg-[#6366f1]"></div>
+                                    <span className="text-sm font-bold uppercase tracking-widest text-gray-500">
+                                      {innerBlock.data.author}
+                                    </span>
+                                  </footer>
+                                )}
+                              </div>
+                            </div>
+                          )}
+
+                          {innerBlock.type === "button" && (
+                            <div className="text-center my-12">
+                              <motion.a
+                                href={
+                                  innerBlock.data.actionType === "whatsapp" &&
+                                    innerBlock.data.phone
+                                    ? `https://wa.me/${innerBlock.data.phone
+                                    }?text=${encodeURIComponent(
+                                      innerBlock.data.message || "",
+                                    )}`
+                                    : innerBlock.data.url || "#"
+                                }
+                                target="_blank"
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                                className={`relative inline-flex items-center group overflow-hidden ${innerBlock.data.style === "primary"
+                                    ? "bg-indigo-600 text-white"
+                                    : innerBlock.data.style === "outline"
+                                      ? "border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50"
+                                      : innerBlock.data.style === "black"
+                                        ? "bg-gray-900 text-white"
+                                        : "bg-indigo-600 text-white"
+                                  }
+                       px-6 py-2 sm:px-8 sm:py-3 md:px-10 md:py-4
+                       rounded-full font-bold
+                       text-sm sm:text-base md:text-lg lg:text-xl
+                       shadow-lg transition-all duration-300`}
                               >
-                                <div className="px-8 pb-8">
-                                  <div className="h-[1px] w-full bg-slate-100 mb-6" />
-                                  <p className="text-slate-600 text-lg leading-relaxed whitespace-pre-line">
-                                    {block.data.content}
-                                  </p>
+                                {/* Hover Gradient Overlay (Only for primary/black) */}
+                                {innerBlock.data.style !== "outline" && (
+                                  <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                                )}
+
+                                {/* Button Text */}
+                                <div className="flex items-center gap-2 relative">
+                                  {innerBlock.data.actionType === "whatsapp" && (
+                                    <MessageCircle size={20} />
+                                  )}
+                                  {innerBlock.data.text}
                                 </div>
+                              </motion.a>
+                            </div>
+                          )}
+
+                          {innerBlock.type === "accordion" && (
+                            <div className="my-4">
+                              <motion.div
+                                layout
+                                className={`overflow-hidden transition-all duration-300 border rounded-[2rem] ${openAccordion === index
+                                    ? "bg-white border-blue-600 shadow-md"
+                                    : "bg-white border-slate-300 hover:border-blue-400"
+                                  }`}
+                              >
+                                <button
+                                  onClick={() =>
+                                    setOpenAccordion(
+                                      openAccordion === index ? null : index,
+                                    )
+                                  }
+                                  className="w-full flex items-center justify-between px-8 py-6 text-left outline-none"
+                                >
+                                  <span
+                                    className={`text-lg md:text-xl font-semibold tracking-tight transition-colors duration-300 ${openAccordion === index
+                                        ? "text-blue-700"
+                                        : "text-slate-800"
+                                      }`}
+                                  >
+                                    {innerBlock.data.title}
+                                  </span>
+
+                                  <div
+                                    className={`flex items-center justify-center w-8 h-8 rounded-full transition-all duration-500 ${openAccordion === index
+                                        ? "bg-blue-600 text-white rotate-45"
+                                        : "text-blue-600"
+                                      }`}
+                                  >
+                                    <Plus size={24} strokeWidth={2.5} />
+                                  </div>
+                                </button>
+
+                                <AnimatePresence>
+                                  {openAccordion === index && (
+                                    <motion.div
+                                      initial={{ height: 0, opacity: 0 }}
+                                      animate={{ height: "auto", opacity: 1 }}
+                                      exit={{ height: 0, opacity: 0 }}
+                                      transition={{
+                                        duration: 0.3,
+                                        ease: "easeInOut",
+                                      }}
+                                    >
+                                      <div className="px-8 pb-8">
+                                        <div className="h-[1px] w-full bg-slate-100 mb-6" />
+                                        <p className="text-slate-600 text-lg leading-relaxed whitespace-pre-line">
+                                          {innerBlock.data.content}
+                                        </p>
+                                      </div>
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
                               </motion.div>
-                            )}
-                          </AnimatePresence>
-                        </motion.div>
-                      </div>
-                    )}
-                  </div>
-                ))}
+                            </div>
+                          )}
+                        </div>
+                    );
+                  };
+
+                  if (block.type === "section" && block.data && block.data.items) {
+                    return (
+                        <div key={index} className="blog-section mb-14">
+                          {block.data.items.map((colBlock, idx) => renderBlock(colBlock, idx))}
+                        </div>
+                    );
+                  }
+
+                  // Render old flat blocks normally
+                  return renderBlock(block, 0);
+
+                })}
               </article>
 
               {/* Dynamic CTA Section */}

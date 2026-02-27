@@ -41,6 +41,7 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
     category: "",
 
     date: "", // New Date Field
+    status: "published", // <--- ADDED STATUS FIELD
     seo: {
       canonicalUrl: "",
       metaTitle: "",
@@ -96,6 +97,7 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
           ? editingBlog.tags.join(",")
           : editingBlog.tags || "",
         category: editingBlog.category || "",
+        status: editingBlog.status || "published", // <--- Populate status when editing
         // Format Date for Input (YYYY-MM-DD)
         date: editingBlog.date
           ? new Date(editingBlog.date).toISOString().split("T")[0]
@@ -146,13 +148,31 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
       }
 
       if (editingBlog.contentBlocks && editingBlog.contentBlocks.length > 0) {
-        setSections([
-          {
-            id: Date.now(),
-            isCompleted: false,
-            items: editingBlog.contentBlocks,
-          },
-        ]);
+        // Handle BOTH flat arrays (old system) and structured sections (new system)
+        const isStructured = editingBlog.contentBlocks.some(
+          (block) => block.type === "section"
+        );
+
+        if (isStructured) {
+          // Map backend sections to frontend state format
+          const formattedSections = editingBlog.contentBlocks
+            .filter((block) => block.type === "section")
+            .map((block) => ({
+              id: Date.now() + Math.random(), // Unique ID
+              isCompleted: true, // Mark existing sections as completed
+              items: block.data.items || [], // Extract items array
+            }));
+          setSections(formattedSections);
+        } else {
+          // Fallback for old blogs: Put all flat items into one section
+          setSections([
+            {
+              id: Date.now(),
+              isCompleted: false,
+              items: editingBlog.contentBlocks,
+            },
+          ]);
+        }
       }
     }
   }, [editingBlog]);
@@ -353,7 +373,7 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e, submittedStatus = "published") => { // <--- Added submittedStatus parameter
     e.preventDefault();
     if (!meta.title || !meta.slug)
       return showToast("ValidationError: Missing Title or Slug", "error");
@@ -365,6 +385,8 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
     try {
       const processedBlocks = [];
       for (const section of sections) {
+        const sectionItems = []; // Array to hold processed items for this section
+
         for (const item of section.items) {
           let itemData = { ...item.data };
           if (item.type === "image" && itemData.file) {
@@ -399,7 +421,15 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
             delete itemData.file;
             delete itemData.preview;
           }
-          processedBlocks.push({ type: item.type, data: itemData });
+          sectionItems.push({ type: item.type, data: itemData }); // Add to section array
+        }
+        
+        // After processing all items in a section, push as a 'section' block
+        if (sectionItems.length > 0) {
+            processedBlocks.push({
+                type: "section",
+                data: { items: sectionItems } // Store items inside the section's data
+            });
         }
       }
 
@@ -416,6 +446,7 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
       formData.append("tags", meta.tags);
       // 2. Append Date to Form Data
       formData.append("date", meta.date);
+      formData.append("status", submittedStatus); // <--- Append status
       formData.append("contentBlocks", JSON.stringify(processedBlocks));
 
       formData.append("category", meta.category);
@@ -438,13 +469,13 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
           headers: { "Content-Type": "multipart/form-data" },
           withCredentials: true,
         });
-        showToast("Blog Updated!", "success");
+        showToast(submittedStatus === 'draft' ? "Draft Saved!" : "Blog Updated!", "success");
       } else {
         await axiosInstance.post("/blogs", formData, {
           headers: { "Content-Type": "multipart/form-data" },
           withCredentials: true,
         });
-        showToast("Blog Published!", "success");
+        showToast(submittedStatus === 'draft' ? "Draft Saved!" : "Blog Published!", "success");
       }
       switchToView();
     } catch (error) {
@@ -1565,7 +1596,7 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
         {activeSectionIndex === -1 && (
           <div className="sticky bottom-4 glass-card backdrop-blur-xl p-5 border-2 border-white/50 shadow-2xl rounded-2xl">
             <button
-              onClick={handleSubmit}
+              onClick={(e) => handleSubmit(e, meta.status)}
               disabled={submitting}
               className="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white py-4 rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-[1.02] flex justify-center items-center gap-3 relative overflow-hidden group"
             >
@@ -1573,13 +1604,13 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
               {submitting ? (
                 <>
                   <Loader className="animate-spin" size={20} />
-                  <span>Publishing...</span>
+                  <span>Saving...</span>
                 </>
               ) : (
                 <>
                   <Save size={20} />
                   <span>
-                    {editingBlog ? "Update Blog Post" : "Publish Blog Post"}
+                    {editingBlog ? "Update Blog Post" : "Save Blog Post"}
                   </span>
                 </>
               )}
@@ -1720,21 +1751,7 @@ const RichTextEditor = ({ initialValue, onChange }) => {
   return (
     <div className="space-y-2 relative">
       <div className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg border flex-wrap">
-        <select
-          value={activeHeading}
-          onChange={handleHeadingChange}
-          className="px-2 py-1.5 border rounded text-sm font-bold bg-white text-gray-700 hover:bg-gray-100 transition-colors outline-none cursor-pointer"
-        >
-          <option value="p">Normal text</option>
-          <option value="h1">Heading 1</option>
-          <option value="h2">Heading 2</option>
-          <option value="h3">Heading 3</option>
-          <option value="h4">Heading 4</option>
-          <option value="h5">Heading 5</option>
-          <option value="h6">Heading 6</option>
-        </select>
 
-        <div className="w-px h-6 bg-gray-300 mx-1"></div>
 
         <button
           type="button"

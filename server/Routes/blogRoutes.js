@@ -24,4 +24,7 @@ router.put('/:id', verifyToken, upload.single('coverImage'), blogController.upda
 // Delete Blog (Protected)
 router.delete('/:id', verifyToken, blogController.deleteBlog);
 
+// Update Blog Status (Protected)
+router.patch('/:id/status', verifyToken, blogController.toggleBlogStatus);
+
 module.exports = router;

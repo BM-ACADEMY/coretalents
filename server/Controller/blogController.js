@@ -16,6 +16,7 @@ exports.createBlog = async (req, res) => {
       tags,
       category,
       date,
+      status, // <--- ADDED STATUS
       seo,
       cta,
       sidebar,
@@ -70,7 +71,7 @@ exports.createBlog = async (req, res) => {
           : tags.split(",")
         : [],
 
-      status: "published",
+      status: status || "published", // <--- USE PROVIDED STATUS OR DEFAULT
       seo: typeof seo === "string" ? JSON.parse(seo) : seo, // Handle stringified JSON from FormData
       cta: typeof cta === "string" ? JSON.parse(cta) : cta,
       sidebar: typeof sidebar === "string" ? JSON.parse(sidebar) : sidebar,
@@ -242,9 +243,19 @@ exports.updateBlog = async (req, res) => {
 
     // Helper: Extract all image URLs from a list of blocks
     const extractImageUrls = (blocks) => {
-      return blocks
-        .filter((block) => block.type === "image" && block.data.url)
-        .map((block) => block.data.url);
+      let urls = [];
+      blocks.forEach((block) => {
+        if (block.type === "image" && block.data.url) {
+          urls.push(block.data.url);
+        } else if (block.type === "section" && block.data.items) {
+          block.data.items.forEach((item) => {
+            if (item.type === "image" && item.data.url) {
+              urls.push(item.data.url);
+            }
+          });
+        }
+      });
+      return urls;
     };
 
     const oldImageUrls = extractImageUrls(oldBlocks);
@@ -290,6 +301,7 @@ exports.updateBlog = async (req, res) => {
       coverImage: { url: coverImageUrl, altText: title },
       contentBlocks: newBlocks, // Save the new structure
       tags: tags ? (typeof tags === "string" ? tags.split(",") : tags) : [],
+      status: req.body.status || "published", // <--- ADDED STATUS FIELD
       seo: typeof seo === "string" ? JSON.parse(seo) : seo, // Handle stringified JSON from FormData
       cta: typeof cta === "string" ? JSON.parse(cta) : cta,
       sidebar: typeof sidebar === "string" ? JSON.parse(sidebar) : sidebar,
@@ -358,5 +370,36 @@ exports.deleteBlog = async (req, res) => {
     res
       .status(500)
       .json({ message: "Error deleting blog", error: error.message });
+  }
+};
+
+// --- 7. TOGGLE BLOG STATUS ---
+exports.toggleBlogStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!["draft", "published"].includes(status)) {
+      return res.status(400).json({ message: "Invalid status value" });
+    }
+
+    const updatedBlog = await BlogPost.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    );
+
+    if (!updatedBlog) {
+      return res.status(404).json({ message: "Blog not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: `Blog status updated to ${status}`,
+      data: updatedBlog,
+    });
+  } catch (error) {
+    console.error("Status Toggle Error:", error);
+    res.status(500).json({ message: "Error updating blog status", error: error.message });
   }
 };
