@@ -194,6 +194,18 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
   const handleCoverImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      // 1. Validate Type
+      const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
+      if (!allowedTypes.includes(file.type)) {
+        return showToast("ValidationError: Only JPEG, JPG, and PNG are allowed", "error");
+      }
+
+      // 2. Validate Size (5MB)
+      const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+      if (file.size > maxSize) {
+        return showToast("ValidationError: Image size must be less than 5MB", "error");
+      }
+
       setCoverImage(file);
       setCoverPreview(URL.createObjectURL(file));
     }
@@ -239,6 +251,19 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
 
   const handleImageSelect = (sIdx, iIdx, file) => {
     if (!file) return;
+
+    // 1. Validate Type
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
+    if (!allowedTypes.includes(file.type)) {
+      return showToast("ValidationError: Only JPEG, JPG, and PNG are allowed", "error");
+    }
+
+    // 2. Validate Size (5MB)
+    const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+    if (file.size > maxSize) {
+      return showToast("ValidationError: Image size must be less than 5MB", "error");
+    }
+
     const preview = URL.createObjectURL(file);
     updateItemData(sIdx, iIdx, "file", file);
     updateItemData(sIdx, iIdx, "preview", preview);
@@ -423,13 +448,13 @@ const BlogCreate = ({ switchToView, editingBlog }) => {
           }
           sectionItems.push({ type: item.type, data: itemData }); // Add to section array
         }
-        
+
         // After processing all items in a section, push as a 'section' block
         if (sectionItems.length > 0) {
-            processedBlocks.push({
-                type: "section",
-                data: { items: sectionItems } // Store items inside the section's data
-            });
+          processedBlocks.push({
+            type: "section",
+            data: { items: sectionItems } // Store items inside the section's data
+          });
         }
       }
 
