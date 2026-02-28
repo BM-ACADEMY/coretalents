@@ -43,7 +43,8 @@ app.use(helmet());
 app.use(morgan("dev"));
 
 // Body parser & cookies
-app.use(express.json());
+app.use(express.json({ limit: "5gb" }));
+app.use(express.urlencoded({ limit: "5gb", extended: true }));
 app.use(cookieParser());
 
 // Unified CORS setup

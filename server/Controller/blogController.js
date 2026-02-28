@@ -49,6 +49,12 @@ exports.createBlog = async (req, res) => {
       process.env.SERVER_URL || `${req.protocol}://${req.get("host")}`;
     const coverImageUrl = `${serverUrl}/uploads/blog/${slug}/${req.file.filename}`;
 
+    const blocks = typeof contentBlocks === "string"
+      ? JSON.parse(contentBlocks)
+      : contentBlocks;
+
+    console.log("DEBUG: Incoming contentBlocks for creation:", JSON.stringify(blocks, null, 2));
+
     const newBlog = new BlogPost({
       title,
       mainHeading,
@@ -60,10 +66,7 @@ exports.createBlog = async (req, res) => {
         url: coverImageUrl,
         altText: title,
       },
-      contentBlocks:
-        typeof contentBlocks === "string"
-          ? JSON.parse(contentBlocks)
-          : contentBlocks,
+      contentBlocks: blocks,
       author: req.user.id,
       tags: tags
         ? tags.startsWith("[")
@@ -233,10 +236,11 @@ exports.updateBlog = async (req, res) => {
     //  LOGIC B: Handle Content Blocks Image Cleanup
     // ---------------------------------------------------------
     // Parse the NEW content blocks (incoming from frontend)
-    const newBlocks =
-      typeof contentBlocks === "string"
-        ? JSON.parse(contentBlocks)
-        : contentBlocks;
+    typeof contentBlocks === "string"
+      ? JSON.parse(contentBlocks)
+      : contentBlocks;
+
+    console.log("DEBUG: Incoming contentBlocks for update:", JSON.stringify(newBlocks, null, 2));
 
     // Get the OLD content blocks (currently in DB)
     const oldBlocks = blog.contentBlocks;
