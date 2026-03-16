@@ -313,7 +313,7 @@ const BlogDetails = () => {
 
                           {innerBlock.type === "paragraph" && (
   <div
-    className="text-gray-700 mb-3 [&_*]:!text-[15.4px] [&_p]:!leading-6 [&_p]:!mb-3 last:[&_p]:!mb-0"
+    className="text-gray-700 mb-3 [&_*]:!text-[16px] [&_p]:!leading-6 [&_p]:!mb-3 last:[&_p]:!mb-0"
     dangerouslySetInnerHTML={{ __html: innerBlock.data.text }}
   />
 )}
