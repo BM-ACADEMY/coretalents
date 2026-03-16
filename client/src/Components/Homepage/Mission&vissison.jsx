@@ -51,12 +51,12 @@ const MissionVision = () => {
               </div>
 
               {/* Title */}
-              <h3 className="text-4xl font-bold text-orange-500 tracking-wide mb-4 uppercase transition-colors duration-500">
+              <h3 className="text-3xl font-bold text-orange-500 tracking-wide mb-4 uppercase transition-colors duration-500">
                 Mission
               </h3>
 
               {/* Body Text */}
-              <p className="text-slate-500 leading-relaxed mb-auto max-w-sm text-lg group-hover:text-slate-700 transition-colors duration-500">
+              <p className="text-slate-500 leading-relaxed mb-auto max-w-sm text-[16.5px] group-hover:text-slate-700 transition-colors duration-500">
                 We eliminate hiring guesswork. Every candidate is rigorously screened, <span className="font-semibold text-slate-700 group-hover:text-orange-600 transition-colors duration-500">skill-assessed, and AI-matched</span> to your exact needs — so you onboard talent that’s not just qualified, but ready to contribute immediately.
               </p>
 
@@ -84,12 +84,12 @@ const MissionVision = () => {
               </div>
 
               {/* Title */}
-              <h3 className="text-4xl font-bold text-teal-500 tracking-wide mb-4 uppercase transition-colors duration-500">
+              <h3 className="text-3xl font-bold text-teal-500 tracking-wide mb-4 uppercase transition-colors duration-500">
                 Vision
               </h3>
 
               {/* Body Text */}
-              <p className="text-slate-500 leading-relaxed mb-auto max-w-sm text-lg group-hover:text-slate-700 transition-colors duration-500">
+              <p className="text-slate-500 leading-relaxed mb-auto max-w-sm text-[16.5px] group-hover:text-slate-700 transition-colors duration-500">
                 We’re building the future of hiring — where speed meets quality, risk is zero, and success is guaranteed. From <span className="font-semibold text-slate-700 group-hover:text-teal-600 transition-colors duration-500">Tamil Nadu to Telangana, Pondicherry to the GCC</span>, we’re redefining how businesses scale with confidence.
               </p>
             </div>

@@ -4,7 +4,6 @@ import { Check } from 'lucide-react';
 import bgImage from '@/assets/vector/choose_bg_1.png'; 
 import { Link } from 'react-router-dom';
 
-
 import Whyimage1 from '@/assets/other/whyimage1.png';
 import Whyimage2 from '@/assets/other/whyimage2.png';
 
@@ -46,7 +45,7 @@ const WhyChooseUs = () => {
                 <h3 className="text-lg md:text-xl font-bold text-gray-900">Speed & Precision</h3>
             </div>
             
-            <p className="text-gray-600 text-base md:text-md leading-relaxed mb-6 md:mb-8">
+            <p className="text-gray-600 text-base leading-relaxed mb-6 md:mb-8">
               Businesses trust Core Talents to eliminate hiring delays with 48-hour shortlists and a 95% AI fit rate, powered by cutting-edge algorithms plus expert human vetting—delivering candidates perfectly aligned with your skills, culture, and budget.
             </p>
 
@@ -58,7 +57,7 @@ const WhyChooseUs = () => {
                   <Check className="w-5 h-5 text-purple-600 font-bold shrink-0" strokeWidth={3} />
                   <h3 className="text-lg md:text-xl font-bold text-gray-900">Cost & Confidence</h3>
                 </div>
-                <p className="text-gray-500 text-sm leading-relaxed">
+                <p className="text-gray-600 text-base leading-relaxed">
                   Enjoy transparent pricing with no hidden fees or mark-ups—just a fixed cost per hire—and our hire first, pay later model means you only pay when your selected talent starts, removing all financial risk.
                 </p>
               </div>
@@ -69,7 +68,7 @@ const WhyChooseUs = () => {
                   <Check className="w-5 h-5 text-purple-600 font-bold shrink-0" strokeWidth={3} />
                   <h3 className="text-lg md:text-xl font-bold text-gray-900">Reach & Reliability</h3>
                 </div>
-                <p className="text-gray-500 text-sm leading-relaxed">
+                <p className="text-gray-600 text-base leading-relaxed">
                   Scale effortlessly with 25+ trusted corporate partners and access to 1.2 million pre-vetted profiles across Pan-India and GCC regions, from Tier-2/3 cities to UAE, Saudi Arabia, Qatar, Bahrain, Oman, and Kuwait.
                 </p>
               </div>
