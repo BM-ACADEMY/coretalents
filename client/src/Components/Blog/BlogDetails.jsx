@@ -312,11 +312,11 @@ const BlogDetails = () => {
                           )}
 
                           {innerBlock.type === "paragraph" && (
-                         <div
-                            className="text-base leading-7 text-gray-700 mb-3 [&>p]:mb-3 last:mb-0"
-                            dangerouslySetInnerHTML={{ __html: innerBlock.data.text }}
-                          />
-                          )}
+  <div
+    className="text-gray-700 mb-3 [&_*]:!text-[15.4px] [&_p]:!leading-6 [&_p]:!mb-3 last:[&_p]:!mb-0"
+    dangerouslySetInnerHTML={{ __html: innerBlock.data.text }}
+  />
+)}
 
                           {innerBlock.type === "image" && innerBlock.data.url && (
                             <div className="my-6">
