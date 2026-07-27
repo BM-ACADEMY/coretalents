@@ -11,7 +11,7 @@ const featuredBlogs = [
     category: "Recruitment Agency",
     title: "Recruitment Agency in Pondicherry — Hire Talent in 48 Hours",
     description: "Discover how CoreTalents helps Pondicherry businesses find qualified, pre-screened candidates quickly.",
-    coverImage: { url: "https://images.pexels.com/photos/6814523/pexels-photo-6814523.jpeg?auto=compress&cs=tinysrgb&h=627&fit=crop&w=1200" },
+    coverImage: { url: "/blog-images/pondicherry-recruitment.png" },
     createdAt: "2026-07-24",
     status: "published",
   },
@@ -21,7 +21,7 @@ const featuredBlogs = [
     category: "Fresher Hiring",
     title: "How to Hire Freshers in Tamil Nadu: Complete Employer Guide",
     description: "A practical guide to campus hiring, fresher assessment, onboarding, and building a future-ready team.",
-    coverImage: { url: "https://images.pexels.com/photos/4622108/pexels-photo-4622108.jpeg?auto=compress&cs=tinysrgb&h=627&fit=crop&w=1200" },
+    coverImage: { url: "/blog-images/tamil-nadu-fresher-hiring.png" },
     createdAt: "2026-07-24",
     status: "published",
   },
@@ -31,7 +31,7 @@ const featuredBlogs = [
     category: "Hiring Costs",
     title: "Recruitment Agency Fees & Cost in India (2026)",
     description: "Understand pricing models, typical agency fees, hidden hiring costs, and how to choose the right partner.",
-    coverImage: { url: "https://images.unsplash.com/photo-1521791136064-7986c2920216?fm=jpg&q=80&w=1200&auto=format&fit=crop" },
+    coverImage: { url: "/blog-images/india-recruitment-fees.png" },
     createdAt: "2026-07-24",
     status: "published",
   },
@@ -86,7 +86,8 @@ const BlogList = () => {
                 <div className="overflow-hidden rounded-[20px]">
                   <img
                     src={
-                      blog.coverImage?.url?.startsWith("http")
+                      blog.coverImage?.url?.startsWith("http") ||
+                      blog.coverImage?.url?.startsWith("/")
                         ? blog.coverImage.url
                         : `${import.meta.env.VITE_SERVER_URL}${blog.coverImage?.url}`
                     }
