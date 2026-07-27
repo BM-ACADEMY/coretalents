@@ -89,8 +89,8 @@ const CoreTalentsHireFreshersTamilNadu = () => (
           </div>
 
           <img
-            src="https://images.pexels.com/photos/4622108/pexels-photo-4622108.jpeg?auto=compress&cs=tinysrgb&h=627&fit=crop&w=1200"
-            alt="Fresh graduates studying on a Tamil Nadu university campus"
+            src="/blog-images/tamil-nadu-fresher-hiring.png"
+            alt="Tamil Nadu graduates attending a campus recruitment session"
             className="max-h-[440px] w-full rounded-2xl object-cover"
           />
 
@@ -134,8 +134,8 @@ const CoreTalentsHireFreshersTamilNadu = () => (
               Where to Find Freshers in Tamil Nadu
             </h2>
             <img
-              src="https://images.pexels.com/photos/31815325/pexels-photo-31815325/free-photo-of-charming-blue-door-in-french-quarter-puducherry.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-              alt="French Quarter street in Pondicherry"
+              src="https://images.pexels.com/photos/4622108/pexels-photo-4622108.jpeg?auto=compress&cs=tinysrgb&h=627&fit=crop&w=1200"
+              alt="College students building skills before campus recruitment"
               className="my-6 max-h-[360px] w-full rounded-2xl object-cover"
             />
             <p className="leading-8 text-slate-700">

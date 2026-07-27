@@ -98,8 +98,8 @@ const CoreTalentsPondicherryBlog = () => {
             </div>
 
             <img
-              src="https://images.pexels.com/photos/6814523/pexels-photo-6814523.jpeg?auto=compress&cs=tinysrgb&h=627&fit=crop&w=1200"
-              alt="Business handshake after a successful hire in Pondicherry"
+              src="/blog-images/pondicherry-recruitment.png"
+              alt="CoreTalents recruiter interviewing job candidates in Pondicherry"
               className="max-h-[440px] w-full rounded-2xl object-cover"
             />
 
@@ -159,8 +159,8 @@ const CoreTalentsPondicherryBlog = () => {
                 What Makes CoreTalents Different
               </h2>
               <img
-                src="https://images.pexels.com/photos/31815325/pexels-photo-31815325/free-photo-of-charming-blue-door-in-french-quarter-puducherry.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                alt="French Quarter street in Pondicherry"
+                src="/blog-images/ai-assisted-candidate-matching.png"
+                alt="CoreTalents recruiters using AI-assisted candidate matching"
                 className="my-6 max-h-[360px] w-full rounded-2xl object-cover"
               />
               <p className="leading-8 text-slate-700">

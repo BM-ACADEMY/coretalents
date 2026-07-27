@@ -91,13 +91,10 @@ const CoreTalentsRecruitmentFeesCostIndia = () => (
           </div>
 
           <img
-            src="https://images.unsplash.com/photo-1521791136064-7986c2920216?fm=jpg&q=60&w=1600&auto=format&fit=crop"
-            alt="Business professionals agreeing on recruitment terms"
+            src="/blog-images/india-recruitment-fees.png"
+            alt="Indian HR and finance managers reviewing recruitment costs"
             className="max-h-[440px] w-full rounded-2xl object-cover"
           />
-          <p className="mt-2 text-xs text-slate-500">
-            Photo by Cytonn Photography on Unsplash
-          </p>
 
           <div className="mt-8 space-y-6 text-[17px] leading-8 text-slate-700">
             <p>
