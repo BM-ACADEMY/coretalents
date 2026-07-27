@@ -12,7 +12,6 @@ import Servicesroute from "./Servicesroute";
 import Contactroutes from "./Contactroutes";
 import ThankYou from "@/Components/Contact/ThankYou";
 import Blogroute from "./blogroute";
-import BlogList from "@/Components/Blog/BlogLis";
 import Navbar from "@/Components/layout/Navbar";
 import Footer from "@/Components/layout/Footer";
 import Userroutes from "./Userroutes";
@@ -42,7 +41,6 @@ const Mainroutes = () => {
       <Route path="/contact" element={<Contactroutes />} />
       <Route path="/thank-you" element={<ThankYou />} />
       <Route path="/blog/*" element={<Blogroute />} />
-      <Route path="/blog" element={<BlogList />} />
 
       {/* ✅ NEW: Public Certificate Route
         - This is outside any Layout, so NO Navbar/Footer will show.

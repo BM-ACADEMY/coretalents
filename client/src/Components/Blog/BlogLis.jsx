@@ -1,13 +1,44 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom"; // Added useNavigate
+import { Link } from "react-router-dom";
 import axiosInstance from "@/api/axiosInstance.jsx";
-import { Loader, Bookmark } from "lucide-react";
+import { Bookmark } from "lucide-react";
 import logo from "@/assets/logo/logo1.png"
+
+const featuredBlogs = [
+  {
+    _id: "coretalents-pondicherry",
+    slug: "coretalents-pondicherry",
+    category: "Recruitment Agency",
+    title: "Recruitment Agency in Pondicherry — Hire Talent in 48 Hours",
+    description: "Discover how CoreTalents helps Pondicherry businesses find qualified, pre-screened candidates quickly.",
+    coverImage: { url: "https://images.pexels.com/photos/6814523/pexels-photo-6814523.jpeg?auto=compress&cs=tinysrgb&h=627&fit=crop&w=1200" },
+    createdAt: "2026-07-24",
+    status: "published",
+  },
+  {
+    _id: "coretalents-hire-freshers-tamil-nadu",
+    slug: "coretalents-hire-freshers-tamil-nadu",
+    category: "Fresher Hiring",
+    title: "How to Hire Freshers in Tamil Nadu: Complete Employer Guide",
+    description: "A practical guide to campus hiring, fresher assessment, onboarding, and building a future-ready team.",
+    coverImage: { url: "https://images.pexels.com/photos/4622108/pexels-photo-4622108.jpeg?auto=compress&cs=tinysrgb&h=627&fit=crop&w=1200" },
+    createdAt: "2026-07-24",
+    status: "published",
+  },
+  {
+    _id: "coretalents-recruitment-fees-cost-india",
+    slug: "coretalents-recruitment-fees-cost-india",
+    category: "Hiring Costs",
+    title: "Recruitment Agency Fees & Cost in India (2026)",
+    description: "Understand pricing models, typical agency fees, hidden hiring costs, and how to choose the right partner.",
+    coverImage: { url: "https://images.unsplash.com/photo-1521791136064-7986c2920216?fm=jpg&q=80&w=1200&auto=format&fit=crop" },
+    createdAt: "2026-07-24",
+    status: "published",
+  },
+];
 
 const BlogList = () => {
   const [blogs, setBlogs] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -16,19 +47,19 @@ const BlogList = () => {
         setBlogs(res.data);
       } catch (error) {
         console.error("Failed to fetch blogs");
-      } finally {
-        setLoading(false);
       }
     };
     fetchBlogs();
   }, []);
 
-  if (loading)
-    return (
-      <div className="flex justify-center items-center h-screen bg-white">
-        <Loader className="animate-spin text-indigo-600" size={40} />
-      </div>
-    );
+  const publishedBlogs = [
+    ...featuredBlogs,
+    ...blogs.filter(
+      (blog) =>
+        blog.status === "published" &&
+        !featuredBlogs.some((featured) => featured.slug === blog.slug),
+    ),
+  ];
 
   return (
     <div className="bg-[#F3F4F6] min-h-screen pt-[70px]">
@@ -43,7 +74,7 @@ const BlogList = () => {
 
       <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {blogs.filter(blog => blog.status === 'published').map((blog) => (
+          {publishedBlogs.map((blog) => (
             /* --- THE FULL CARD IS NOW A LINK --- */
             <Link
               to={`/blog/${blog.slug}`}
