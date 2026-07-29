@@ -1,289 +1,346 @@
 import React from "react";
 import { Helmet } from "react-helmet";
-import { Calendar, CheckCircle, Clock, User } from "lucide-react";
+import { Link } from "react-router-dom";
 
-const benefits = [
-  ["Lower Recruitment Cost", "Freshers are generally more flexible with salary expectations while offering significant growth potential."],
-  ["Easier to Train", "Fresh graduates adapt quickly to your company culture, tools, and processes."],
-  ["Better Employee Loyalty", "Employees who begin their careers with you often stay longer when given meaningful learning opportunities."],
-  ["Fresh Ideas & Digital Skills", "Young graduates arrive comfortable with AI tools, digital marketing, data analytics, and modern collaboration tools."],
-];
+const CoreTalentsHireFreshersTamilNadu = () => {
+  return (
+    <>
+      <Helmet>
+        <title>How to Hire Freshers in Tamil Nadu: A Complete Guide for Employers (2026) | CoreTalents</title>
+        <meta name="description" content="Hiring freshers in Tamil Nadu is one of the smartest ways to build a loyal, skilled, and cost-effective workforce. A complete employer guide from CoreTalents." />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+      </Helmet>
 
-const hiringChannels = [
-  ["Campus Recruitment", "Partner with colleges across Pondicherry, Chennai, Villupuram, Cuddalore, Karaikal, Salem, Coimbatore, and Trichy."],
-  ["Recruitment Agencies", "Use CoreTalents' verified database to receive a relevant candidate shortlist without weeks of searching."],
-  ["Internship Programs", "Evaluate candidates before offering permanent roles to improve cultural fit and joining rates."],
-  ["Job Portals & Referrals", "Combine portals such as LinkedIn, Indeed, and Naukri with referrals from your existing employees."],
-];
+      <style dangerouslySetInnerHTML={{ __html: `
+        .bpc {
+          background: #f9fafb;
+          color: #111827;
+          font-family: 'Inter', sans-serif;
+          line-height: 1.7;
+          font-size: 16px;
+          min-height: 100vh;
+        }
+        .bpc * { box-sizing: border-box; }
+        .bpc h1, .bpc h2, .bpc h3 { font-family: 'Fraunces', serif; font-weight: 700; color: #111827; line-height: 1.25; margin: 0; }
+        .bpc a { color: #4f46e5; text-decoration: none; }
+        .bpc a:hover { text-decoration: underline; }
+        .bpc img { max-width: 100%; display: block; }
 
-const hiringSteps = [
-  ["Define the Role", "Set a clear title, responsibilities, salary range, and realistic requirements for an entry-level position."],
-  ["Focus on Skills and Potential", "Screen for communication, problem-solving, adaptability, computer knowledge, and willingness to learn."],
-  ["Assess Practically", "Use a short skills task and ask candidates to explain college projects where they solved real problems."],
-  ["Verify and Onboard", "Verify certificates and identity, then provide structured training on company culture, software, and customer interaction."],
-];
+        .bpc .page { max-width: 1200px; margin: 0 auto; padding: 96px 40px 80px 40px; display: grid; grid-template-columns: 1fr 320px; gap: 46px; }
+        @media (max-width: 880px) { .bpc .page { grid-template-columns: 1fr; padding: 80px 20px 50px 20px; } }
 
-const faqs = [
-  ["How can I hire freshers in Tamil Nadu?", "Use campus recruitment, recruitment agencies, internship programs, employee referrals, and online job portals."],
-  ["Why should businesses hire fresh graduates?", "Freshers are cost-effective, adaptable, easier to train, and often stay longer with employers who invest in their growth."],
-  ["How long does it take to hire a fresher?", "With a structured recruitment partner, employers can receive a shortlisted set of candidates within 48 hours for suitable roles."],
-  ["Is campus hiring better than online hiring?", "Campus hiring gives direct access to graduating students, while online hiring offers broader reach. Combining both usually delivers the best results."],
-  ["Why choose CoreTalents for fresher recruitment?", "CoreTalents uses AI-assisted matching to connect employers with pre-screened, job-ready candidates across Tamil Nadu."],
-];
+        .bpc .breadcrumb { font-size: .85rem; color: #6b7280; margin-bottom: 16px; display: flex; align-items: center; gap: 6px; }
+        .bpc .breadcrumb a { color: #6b7280; }
+        .bpc .breadcrumb a:hover { color: #4f46e5; }
+        .bpc .breadcrumb .current { color: #111827; font-weight: 600; }
 
-const whatsappUrl =
-  "https://wa.me/919944940051?text=Hi%20CoreTalents%2C%20I%20want%20to%20hire%20freshers";
+        .bpc .tag-pill { display: inline-flex; align-items: center; gap: 6px; background: #eef2ff; border: 1px solid #c7d2fe; color: #4f46e5; font-size: .7rem; font-weight: 700; letter-spacing: .08em; padding: 6px 14px; border-radius: 100px; margin-bottom: 16px; text-transform: uppercase; }
 
-const InfoGrid = ({ items }) => (
-  <div className="mt-7 grid gap-4 sm:grid-cols-2">
-    {items.map(([title, text]) => (
-      <div key={title} className="rounded-xl border border-[#e5e1d6] bg-white p-6">
-        <div className="flex gap-3">
-          <CheckCircle className="mt-1 shrink-0 text-[#e3a72b]" size={20} />
-          <div>
-            <h3 className="font-bold text-[#132840]">{title}</h3>
-            <p className="mt-2 leading-7 text-slate-600">{text}</p>
-          </div>
-        </div>
-      </div>
-    ))}
-  </div>
-);
+        .bpc article h1 { font-size: 2.2rem; max-width: 720px; margin-bottom: 18px; color: #111827; }
+        .bpc .meta-row { display: flex; gap: 22px; align-items: center; color: #6b7280; font-size: .88rem; padding-bottom: 20px; border-bottom: 1px solid #e5e7eb; margin-bottom: 26px; }
+        .bpc .meta-row span { display: flex; align-items: center; gap: 6px; }
+        .bpc .meta-row svg { width: 16px; height: 16px; color: #6366f1; }
 
-const CoreTalentsHireFreshersTamilNadu = () => (
-  <>
-    <Helmet>
-      <title>
-        How to Hire Freshers in Tamil Nadu: A Complete Guide for Employers
-        (2026) | CoreTalents
-      </title>
-      <meta
-        name="description"
-        content="Hiring freshers in Tamil Nadu is one of the smartest ways to build a loyal, skilled, and cost-effective workforce. Read the complete CoreTalents employer guide."
-      />
-    </Helmet>
+        .bpc .hero-image { width: 100%; border-radius: 1.25rem; overflow: hidden; margin-bottom: 8px; border: 1px solid #e5e7eb; box-shadow: 0 4px 24px rgba(0,0,0,.06); }
+        .bpc .hero-image img { width: 100%; max-height: 440px; object-fit: cover; }
 
-    <main className="min-h-screen bg-[#f5f5f2] px-5 pb-20 pt-28 text-[#1a1e23]">
-      <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[minmax(0,1fr)_320px]">
-        <article className="min-w-0">
-          <nav className="mb-5 text-sm text-slate-500" aria-label="Breadcrumb">
-            Home <span className="mx-2">›</span> Blog
-            <span className="mx-2">›</span>
-            <span className="font-semibold text-slate-800">
-              Hiring Freshers in Tamil Nadu
+        .bpc article > p.lead { font-size: 1.05rem; color: #374151; margin: 26px 0 14px 0; }
+        .bpc article p { margin: 0 0 16px 0; color: #374151; font-size: 1rem; }
+
+        .bpc .block { margin-top: 52px; }
+        .bpc .block h2 { font-size: 1.55rem; margin-bottom: 20px; color: #111827; }
+        .bpc .block-image { width: 100%; border-radius: 1rem; overflow: hidden; margin-bottom: 20px; border: 1px solid #e5e7eb; }
+        .bpc .block-image img { width: 100%; max-height: 360px; object-fit: cover; }
+        .bpc .block-intro { margin-bottom: 22px; color: #374151; }
+        .bpc .sub { margin-bottom: 20px; }
+        .bpc .sub h3 { font-size: 1.06rem; margin-bottom: 6px; color: #1e1b4b; }
+        .bpc .sub p { margin: 0; color: #374151; font-size: .96rem; }
+
+        .bpc .cta-wrap { text-align: center; margin: 30px 0 6px 0; }
+        .bpc .cta-btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 30px; border-radius: 100px; font-weight: 700; font-size: .95rem; text-decoration: none; cursor: pointer; transition: all .2s; box-shadow: 0 4px 14px rgba(0,0,0,.1); }
+        .bpc .cta-btn:hover { text-decoration: none; transform: translateY(-1px); }
+        .bpc .cta-solid { background: #4f46e5; color: #fff; }
+        .bpc .cta-solid:hover { background: #4338ca; }
+        .bpc .cta-outline { background: transparent; border: 2px solid #4f46e5; color: #4f46e5; box-shadow: none; }
+        .bpc .cta-outline:hover { background: #eef2ff; }
+        .bpc .cta-solid2 { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: #fff; }
+
+        .bpc .illus-block { width: 100%; border-radius: 1.25rem; overflow: hidden; margin-bottom: 22px; background: linear-gradient(135deg, #1e1b4b 0%, #312e81 55%, #4338ca 100%); }
+        .bpc .illus-block svg { width: 100%; display: block; }
+
+        .bpc .callout { background: #fef9c3; border-left: 4px solid #eab308; border-radius: 10px; padding: 18px 22px; margin: 22px 0; color: #713f12; font-size: .96rem; }
+        .bpc .callout strong { color: #713f12; }
+
+        .bpc table.compare { width: 100%; border-collapse: collapse; margin: 20px 0; background: #fff; border-radius: 1rem; overflow: hidden; border: 1px solid #e5e7eb; box-shadow: 0 1px 6px rgba(0,0,0,.04); }
+        .bpc table.compare th { background: #312e81; color: #fff; text-align: left; padding: 11px 16px; font-size: .82rem; font-family: 'Inter', sans-serif; }
+        .bpc table.compare td { padding: 11px 16px; border-bottom: 1px solid #e5e7eb; font-size: .88rem; color: #6b7280; }
+        .bpc table.compare td.win { color: #1e1b4b; font-weight: 700; }
+        .bpc table.compare tr:last-child td { border-bottom: none; }
+
+        .bpc .faq-row { background: #fff; border: 1px solid #e5e7eb; border-radius: 1rem; padding: 16px 20px; margin-bottom: 10px; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,.03); }
+        .bpc .faq-row summary { display: flex; justify-content: space-between; align-items: center; font-weight: 600; color: #1e1b4b; font-size: .98rem; list-style: none; }
+        .bpc .faq-row summary::-webkit-details-marker { display: none; }
+        .bpc .plus-circle { width: 26px; height: 26px; border-radius: 50%; background: #eef2ff; color: #4f46e5; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem; flex-shrink: 0; }
+        .bpc details.faq-row[open] .plus-circle { background: #4f46e5; color: #fff; }
+        .bpc .faq-row p { margin: 12px 0 0 0; color: #6b7280; font-size: .9rem; }
+
+        .bpc .bottom-cta { position: relative; overflow: hidden; background: linear-gradient(120deg, #1e1b4b 0%, #4338ca 60%, #7c3aed 130%); border-radius: 1.5rem; padding: 44px 40px; margin-top: 50px; text-align: center; box-shadow: 0 8px 32px rgba(79,70,229,.25); }
+        .bpc .bottom-cta::before { content: ""; position: absolute; top: -60px; left: -60px; width: 220px; height: 220px; border-radius: 50%; background: rgba(255,255,255,.08); }
+        .bpc .bottom-cta::after { content: ""; position: absolute; bottom: -80px; right: -40px; width: 260px; height: 260px; border-radius: 50%; background: rgba(255,255,255,.06); }
+        .bpc .bottom-cta h2 { color: #fff; font-size: 1.6rem; margin-bottom: 12px; position: relative; }
+        .bpc .bottom-cta p { color: #c7d2fe; max-width: 560px; margin: 0 auto 22px auto; position: relative; font-size: .98rem; }
+        .bpc .bottom-cta .cta-btn { position: relative; background: #facc15; color: #1e1b4b; box-shadow: 0 4px 14px rgba(234,179,8,.4); }
+        .bpc .bottom-cta .cta-btn:hover { background: #eab308; }
+
+        .bpc aside { align-self: start; position: sticky; top: 24px; display: flex; flex-direction: column; gap: 20px; }
+        .bpc .side-card { background: #fff; border: 1px solid #f3f4f6; border-radius: 2rem; padding: 28px; box-shadow: 0 1px 8px rgba(0,0,0,.04); }
+        .bpc .eyebrow-mini { font-size: .68rem; letter-spacing: .1em; color: #9ca3af; font-weight: 700; margin-bottom: 16px; display: block; text-transform: uppercase; }
+        .bpc .brand-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+        .bpc .brand-logo { width: 48px; height: 48px; border-radius: 50%; background: #1e1b4b; display: flex; align-items: center; justify-content: center; color: #facc15; font-family: 'Fraunces', serif; font-weight: 800; font-size: 1.15rem; flex-shrink: 0; }
+        .bpc .brand-row strong { font-size: 1.05rem; color: #111827; }
+        .bpc .side-card p { font-size: .87rem; color: #6b7280; margin: 0 0 14px 0; line-height: 1.65; }
+        .bpc .side-divider { border: none; border-top: 1px solid #f3f4f6; margin: 16px 0; }
+        .bpc .tag-list { display: flex; flex-wrap: wrap; gap: 8px; }
+        .bpc .tag-list span { background: #f9fafb; border: 1px solid #e5e7eb; color: #6b7280; font-size: .74rem; padding: 5px 10px; border-radius: 100px; }
+
+        .bpc .cta-card { background: #f0fdf4; border: 1px solid #bbf7d0; }
+        .bpc .cta-card h3 { color: #166534; font-size: 1.05rem; margin-bottom: 8px; }
+        .bpc .cta-card p { color: #166534cc; }
+        .bpc .wa-btn { display: flex; align-items: center; justify-content: center; gap: 8px; background: #16a34a; color: #fff; font-weight: 700; font-size: .92rem; padding: 14px; border-radius: .75rem; text-decoration: none; transition: background .2s; box-shadow: 0 4px 12px rgba(22,163,74,.25); }
+        .bpc .wa-btn:hover { text-decoration: none; background: #15803d; }
+        .bpc .wa-btn svg { width: 20px; height: 20px; fill: #fff; }
+      `}} />
+
+      <div className="bpc">
+        <div className="page">
+          <article>
+            <div className="breadcrumb">
+              <Link to="/">Home</Link>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m9 18 6-6-6-6"/></svg>
+              <Link to="/blog">Blog</Link>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m9 18 6-6-6-6"/></svg>
+              <span className="current">Hiring Freshers in Tamil Nadu</span>
+            </div>
+
+            <span className="tag-pill">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><circle cx="7" cy="7" r="1"/></svg>
+              FRESHER HIRING
             </span>
-          </nav>
+            <h1>How to Hire Freshers in Tamil Nadu: A Complete Guide for Employers (2026)</h1>
 
-          <span className="inline-flex rounded-full bg-[#fbf0da] px-4 py-2 text-xs font-bold tracking-wider text-[#9c6b10]">
-            FRESHER HIRING
-          </span>
-          <h1 className="mt-5 max-w-4xl text-4xl font-bold leading-tight text-[#132840] md:text-5xl">
-            How to Hire Freshers in Tamil Nadu: A Complete Guide for Employers
-            (2026)
-          </h1>
+            <div className="meta-row">
+              <span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
+                CoreTalents Team
+              </span>
+              <span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>
+                7/24/2026
+              </span>
+            </div>
 
-          <div className="my-7 flex flex-wrap gap-6 border-b border-[#e5e1d6] pb-6 text-sm text-slate-500">
-            <span className="flex items-center gap-2"><User size={16} /> CoreTalents Team</span>
-            <span className="flex items-center gap-2"><Calendar size={16} /> July 24, 2026</span>
-            <span className="flex items-center gap-2"><Clock size={16} /> 8 min read</span>
-          </div>
+            <div className="hero-image">
+              <img src="https://images.pexels.com/photos/4622108/pexels-photo-4622108.jpeg?auto=compress&cs=tinysrgb&h=627&fit=crop&w=1200" alt="Fresh graduates studying together on a Tamil Nadu university campus" />
+            </div>
 
-          <img
-            src="/blog-images/tamil-nadu-fresher-hiring.png"
-            alt="Tamil Nadu graduates attending a campus recruitment session"
-            className="max-h-[440px] w-full rounded-2xl object-cover"
-          />
+            <p className="lead">Hiring freshers in Tamil Nadu is one of the smartest ways to build a loyal, skilled, and cost-effective workforce. By partnering with colleges, using trusted recruitment agencies like <strong>CoreTalents</strong>, and evaluating skills instead of only experience, businesses can hire quality fresh graduates quickly — often receiving a shortlist within 48 hours.</p>
 
-          <div className="mt-8 space-y-6 text-[17px] leading-8 text-slate-700">
-            <p>
-              Hiring freshers in Tamil Nadu is one of the smartest ways to build
-              a loyal, skilled, and cost-effective workforce. By partnering
-              with colleges, using trusted recruitment agencies such as{" "}
-              <strong>CoreTalents</strong>, and evaluating skills instead of
-              experience alone, businesses can hire quality graduates quickly.
-            </p>
-            <p>
-              Companies in Pondicherry, Chennai, Cuddalore, and Villupuram are
-              increasingly hiring fresh talent. Graduates bring enthusiasm,
-              adaptability, and a willingness to learn that can make them
-              excellent long-term employees.
-            </p>
-          </div>
+            <p>Finding experienced employees has become more competitive than ever, and many businesses in Pondicherry, Chennai, Cuddalore, and Villupuram are now shifting focus toward hiring freshers. Fresh graduates bring enthusiasm, adaptability, and a willingness to learn that often makes them excellent long-term employees — whether you're running a startup, retail store, manufacturing unit, IT company, or hospital.</p>
 
-          <section className="mt-14">
-            <h2 className="text-3xl font-bold text-[#132840]">
-              Why Businesses Should Hire Freshers
-            </h2>
-            <img
-              src="https://images.pexels.com/photos/29927465/pexels-photo-29927465.jpeg?auto=compress&cs=tinysrgb&h=627&fit=crop&w=1200"
-              alt="Young professionals collaborating in a modern office"
-              className="my-6 max-h-[360px] w-full rounded-2xl object-cover"
-            />
-            <p className="leading-8 text-slate-700">
-              Thousands of students graduate every year from engineering
-              colleges, arts colleges, polytechnics, and universities across
-              Tamil Nadu. Experience is valuable, but attitude, learning
-              ability, and practical skills often predict entry-level success
-              more accurately.
-            </p>
-            <InfoGrid items={benefits} />
-          </section>
+            <div className="block">
+              <h2>Why Businesses Should Hire Freshers</h2>
+              <div className="block-image">
+                <img src="https://images.pexels.com/photos/29927465/pexels-photo-29927465.jpeg?auto=compress&cs=tinysrgb&h=627&fit=crop&w=1200" alt="Young professionals collaborating in a modern office" />
+              </div>
+              <p className="block-intro">Many employers hesitate because freshers don't have prior work experience — but experience isn't always the most important factor. Thousands of students graduate every year from engineering colleges, arts colleges, polytechnics, and universities across <Link to="/">Tamil Nadu</Link>, actively searching for their first opportunity.</p>
 
-          <section className="mt-14">
-            <h2 className="text-3xl font-bold text-[#132840]">
-              Where to Find Freshers in Tamil Nadu
-            </h2>
-            <img
-              src="https://images.pexels.com/photos/4622108/pexels-photo-4622108.jpeg?auto=compress&cs=tinysrgb&h=627&fit=crop&w=1200"
-              alt="College students building skills before campus recruitment"
-              className="my-6 max-h-[360px] w-full rounded-2xl object-cover"
-            />
-            <p className="leading-8 text-slate-700">
-              Successful fresher recruitment uses multiple channels instead of
-              relying on a single online job advertisement.
-            </p>
-            <InfoGrid items={hiringChannels} />
-          </section>
+              <div className="sub"><h3>Lower Recruitment Cost</h3><p>Freshers are generally more flexible with salary expectations while offering significant growth potential.</p></div>
+              <div className="sub"><h3>Easier to Train</h3><p>Without fixed work habits, fresh graduates adapt quickly to your company's culture and processes.</p></div>
+              <div className="sub"><h3>Better Employee Loyalty</h3><p>Employees who start their careers with you tend to stay longer when given real learning opportunities.</p></div>
+              <div className="sub"><h3>Fresh Ideas &amp; Digital Skills</h3><p>Young graduates arrive fluent in AI tools, digital marketing, Canva, ChatGPT, and data analytics.</p></div>
 
-          <section className="mt-14">
-            <h2 className="text-3xl font-bold text-[#132840]">
-              Step-by-Step Process to Hire Freshers
-            </h2>
-            <img
-              src="https://images.pexels.com/photos/6814523/pexels-photo-6814523.jpeg?auto=compress&cs=tinysrgb&h=627&fit=crop&w=1200"
-              alt="Employer greeting a fresh graduate candidate"
-              className="my-6 max-h-[360px] w-full rounded-2xl object-cover"
-            />
-            <InfoGrid items={hiringSteps} />
-          </section>
+              <div className="cta-wrap"><a href="mailto:hire@coretalents.in?subject=Fresher%20Hiring%20Requirement" className="cta-btn cta-solid">🎯 Post Your Fresher Job Role</a></div>
+            </div>
 
-          <section className="mt-14">
-            <h2 className="text-3xl font-bold text-[#132840]">
-              Recruitment Agency vs. Direct Hiring for Freshers
-            </h2>
-            <p className="mt-5 leading-8 text-slate-700">
-              Direct hiring requires the employer to manage sourcing, screening,
-              verification, and interview coordination. CoreTalents streamlines
-              that work and can reduce a process lasting several weeks to a
-              relevant shortlist in as little as 48 hours.
-            </p>
-            <div className="mt-7 overflow-x-auto rounded-xl border border-[#e5e1d6] bg-white">
-              <table className="w-full text-left text-sm">
-                <thead className="bg-[#132840] text-white">
-                  <tr>
-                    <th className="p-4">Feature</th>
-                    <th className="p-4">Direct Hiring</th>
-                    <th className="p-4">Through CoreTalents</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#e5e1d6]">
-                  <tr><td className="p-4">Resume screening</td><td className="p-4">Time-consuming</td><td className="p-4 font-bold">Done by experts</td></tr>
-                  <tr><td className="p-4">Verification</td><td className="p-4">Employer responsibility</td><td className="p-4 font-bold">Pre-verified candidates</td></tr>
-                  <tr><td className="p-4">Hiring speed</td><td className="p-4">2–6 weeks</td><td className="p-4 font-bold">Up to 48-hour shortlist</td></tr>
-                  <tr><td className="p-4">Quality matching</td><td className="p-4">Depends on internal HR</td><td className="p-4 font-bold">AI-assisted matching</td></tr>
+            <div className="block">
+              <h2>Where to Find Freshers in Tamil Nadu</h2>
+              <div className="block-image">
+                <img src="https://images.pexels.com/photos/31815325/pexels-photo-31815325/free-photo-of-charming-blue-door-in-french-quarter-puducherry.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="French Quarter street in Pondicherry, Tamil Nadu" />
+              </div>
+              <p className="block-intro">Hiring freshers isn't just about posting a job online — successful companies use multiple channels, from <Link to="/">campus recruitment</Link> to <Link to="/">recruitment agencies</Link> and internship programs.</p>
+
+              <div className="sub"><h3>Campus Recruitment</h3><p>Partner with colleges across Pondicherry, Chennai, Villupuram, Cuddalore, Karaikal, Salem, Coimbatore, and Trichy for direct access to graduating students.</p></div>
+              <div className="sub"><h3>Recruitment Agencies</h3><p>CoreTalents already maintains a verified database of job-ready candidates — instead of weeks of searching, you get a shortlist quickly.</p></div>
+              <div className="sub"><h3>Internship Programs</h3><p>Evaluate candidates before offering permanent roles — lower hiring risk, better cultural fit, higher joining rates.</p></div>
+              <div className="sub"><h3>Job Portals &amp; Employee Referrals</h3><p>Naukri, LinkedIn, Indeed, and Freshersworld work well, and referrals from existing employees often mean faster onboarding.</p></div>
+
+              <div className="cta-wrap"><Link to="/" className="cta-btn cta-outline">🔍 Explore Campus Hiring With CoreTalents</Link></div>
+            </div>
+
+            <div className="block">
+              <h2>Step-by-Step Process to Hire Freshers</h2>
+              <div className="block-image">
+                <img src="https://images.pexels.com/photos/6814523/pexels-photo-6814523.jpeg?auto=compress&cs=tinysrgb&h=627&fit=crop&w=1200" alt="Employer greeting a fresh graduate candidate" />
+              </div>
+              <p className="block-intro">Avoid unrealistic requirements like asking for "3 years of experience for a fresher role." Instead, focus on skills and potential — communication, problem-solving, computer knowledge, and learning ability often predict performance better than a resume line.</p>
+
+              <div className="sub"><h3>Define the Role &amp; Focus on Skills</h3><p>Clear job title, responsibilities, and realistic requirements — then screen for communication, adaptability, and attitude over years of experience.</p></div>
+              <div className="sub"><h3>Assess &amp; Interview Practically</h3><p>Simple skill assessments plus practical questions like "Tell us about a college project where you solved a problem" reveal real ability.</p></div>
+              <div className="sub"><h3>Verify &amp; Onboard</h3><p>Verify educational certificates, ID, and references, then offer structured training covering company culture, software, and customer interaction.</p></div>
+
+              <div className="cta-wrap"><a href="https://wa.me/919999999999?text=Hi%20CoreTalents%2C%20I%20want%20to%20hire%20freshers" className="cta-btn cta-solid2" target="_blank" rel="noopener noreferrer">⚡ Get a Fresher Shortlist in 48 Hours</a></div>
+            </div>
+
+            <div className="block">
+              <h2>Recruitment Agency vs. Direct Hiring for Freshers</h2>
+              <div className="illus-block">
+                <svg viewBox="0 0 1000 400" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <radialGradient id="glowF" cx="50%" cy="50%" r="60%">
+                      <stop offset="0%" stopColor="#818cf8" stopOpacity=".55"/>
+                      <stop offset="100%" stopColor="#1e1b4b" stopOpacity="0"/>
+                    </radialGradient>
+                  </defs>
+                  <rect width="1000" height="400" fill="url(#glowF)"/>
+                  <g stroke="#a5b4fc" strokeWidth="1" opacity=".5">
+                    <line x1="120" y1="200" x2="500" y2="150"/>
+                    <line x1="120" y1="200" x2="500" y2="250"/>
+                    <line x1="220" y1="120" x2="500" y2="150"/>
+                    <line x1="220" y1="280" x2="500" y2="250"/>
+                    <line x1="880" y1="200" x2="500" y2="150"/>
+                    <line x1="880" y1="200" x2="500" y2="250"/>
+                    <line x1="780" y1="120" x2="500" y2="150"/>
+                    <line x1="780" y1="280" x2="500" y2="250"/>
+                  </g>
+                  <g fill="#facc15">
+                    <circle cx="120" cy="200" r="4"/>
+                    <circle cx="220" cy="120" r="4"/>
+                    <circle cx="220" cy="280" r="4"/>
+                    <circle cx="880" cy="200" r="4"/>
+                    <circle cx="780" cy="120" r="4"/>
+                    <circle cx="780" cy="280" r="4"/>
+                  </g>
+                  <g transform="translate(150,260)" fill="#e0e7ff">
+                    <circle cx="0" cy="-40" r="16"/>
+                    <path d="M-20 10 a20 26 0 0 1 40 0 z"/>
+                  </g>
+                  <g transform="translate(60,270)" fill="#e0e7ff" opacity=".8">
+                    <circle cx="0" cy="-34" r="13"/>
+                    <path d="M-16 8 a16 22 0 0 1 32 0 z"/>
+                  </g>
+                  <g transform="translate(850,260)" fill="#e0e7ff">
+                    <circle cx="0" cy="-40" r="16"/>
+                    <path d="M-20 10 a20 26 0 0 1 40 0 z"/>
+                  </g>
+                  <g transform="translate(940,270)" fill="#e0e7ff" opacity=".8">
+                    <circle cx="0" cy="-34" r="13"/>
+                    <path d="M-16 8 a16 22 0 0 1 32 0 z"/>
+                  </g>
+                  <text x="500" y="210" textAnchor="middle" fontFamily="Fraunces, serif" fontWeight="700" fontSize="42" fill="#FFFFFF" letterSpacing="2">CORETALENTS</text>
+                </svg>
+              </div>
+              <p className="block-intro">Direct hiring means handling resume screening, verification, and interview scheduling entirely in-house — often taking 2 to 6 weeks. CoreTalents shortens that timeline dramatically.</p>
+
+              <table className="compare">
+                <tbody>
+                  <tr><th>Feature</th><th>Direct Hiring</th><th>Through CoreTalents</th></tr>
+                  <tr><td>Resume screening</td><td>Time-consuming</td><td className="win">Done by experts</td></tr>
+                  <tr><td>Candidate verification</td><td>Employer responsibility</td><td className="win">Pre-verified candidates</td></tr>
+                  <tr><td>Hiring speed</td><td>2–6 weeks</td><td className="win">Up to 48-hour shortlist</td></tr>
+                  <tr><td>Quality matching</td><td>Depends on HR</td><td className="win">AI-assisted matching</td></tr>
                 </tbody>
               </table>
-            </div>
-          </section>
 
-          <section className="mt-14">
-            <h2 className="text-3xl font-bold text-[#132840]">
-              Real Results and the Future of Fresher Hiring
-            </h2>
-            <img
-              src="https://images.pexels.com/photos/31047149/pexels-photo-31047149.jpeg?auto=compress&cs=tinysrgb&h=627&fit=crop&w=1200"
-              alt="Team working on an industrial floor in Tamil Nadu"
-              className="my-6 max-h-[360px] w-full rounded-2xl object-cover"
-            />
-            <div className="rounded-xl border-l-4 border-[#e3a72b] bg-[#fbf0da] p-6 leading-7 text-[#132840]">
-              <strong>Real example from Pondicherry:</strong> a growing retail
-              company hired five fresh graduates for customer support before
-              the festive season. After two weeks of product training, the
-              company achieved better retention and lower recruitment costs
-              than when hiring experienced staff.
+              <div className="cta-wrap"><Link to="/" className="cta-btn cta-solid">🤝 Let CoreTalents Handle the Screening</Link></div>
             </div>
-            <p className="mt-6 leading-8 text-slate-700">
-              Tamil Nadu continues to grow in manufacturing, IT, healthcare,
-              retail, logistics, and e-commerce. Employers that combine clear
-              job roles, practical assessment, and structured training can
-              build reliable, future-ready teams from fresh talent.
-            </p>
-          </section>
 
-          <section className="mt-14">
-            <h2 className="text-3xl font-bold text-[#132840]">
-              Frequently Asked Questions
-            </h2>
-            <div className="mt-6 space-y-3">
-              {faqs.map(([question, answer]) => (
-                <details
-                  key={question}
-                  className="rounded-xl border border-[#e5e1d6] bg-white p-5"
-                >
-                  <summary className="cursor-pointer font-semibold text-[#132840]">
-                    {question}
-                  </summary>
-                  <p className="mt-3 leading-7 text-slate-600">{answer}</p>
-                </details>
-              ))}
+            <div className="block">
+              <h2>Real Results &amp; The Future of Fresher Hiring</h2>
+              <div className="block-image">
+                <img src="https://images.pexels.com/photos/31047149/pexels-photo-31047149.jpeg?auto=compress&cs=tinysrgb&h=627&fit=crop&w=1200" alt="Team working on a manufacturing and industrial floor in Tamil Nadu" />
+              </div>
+              <p className="block-intro">Tamil Nadu continues to grow as a hub for manufacturing, IT services, healthcare, retail, logistics, and e-commerce. Businesses that invest in fresh talent today build stronger teams for tomorrow.</p>
+
+              <div className="callout">
+                <strong>Real example from Pondicherry:</strong> a growing retail company needed five customer support executives before the festive season. They hired fresh graduates, provided two weeks of product training, and within three months saw improved customer satisfaction, higher retention, and lower recruitment costs than hiring experienced staff.
+              </div>
+
+              <div className="sub"><h3>How BM Academy Supports Fresher Hiring</h3><p>BM Academy has trained 1,400+ students and helped 150+ learners secure placements — through mock interviews, resume building, AI tools, and communication training, graduates arrive more job-ready.</p></div>
+              <div className="sub"><h3>Common Mistakes to Avoid</h3><p>Hiring only on marks, delaying decisions, ignoring soft skills, and skipping a training plan are the most common reasons employers lose good freshers.</p></div>
+
+              <div className="cta-wrap"><Link to="/" className="cta-btn cta-outline">⭐ Build Your Fresher Pipeline With CoreTalents</Link></div>
             </div>
-          </section>
 
-          <section className="mt-14 rounded-3xl bg-gradient-to-br from-[#132840] to-[#1d3a5f] p-8 text-center md:p-12">
-            <h2 className="text-3xl font-bold text-white">
-              Ready to Hire Freshers?
-            </h2>
-            <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-200">
-              Get a pre-screened shortlist of job-ready graduates across
-              Pondicherry, Chennai, Cuddalore, and Villupuram.
-            </p>
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-7 inline-flex rounded-full bg-[#e3a72b] px-7 py-4 font-bold text-[#132840]"
-            >
-              WhatsApp Our Recruitment Team
-            </a>
-          </section>
-        </article>
-
-        <aside className="h-fit space-y-5 lg:sticky lg:top-24">
-          <div className="rounded-2xl border border-[#e5e1d6] bg-white p-6">
-            <span className="text-xs font-bold tracking-widest text-slate-500">
-              ABOUT CORETALENTS
-            </span>
-            <h2 className="mt-3 text-xl font-bold text-[#132840]">CoreTalents</h2>
-            <p className="mt-3 leading-7 text-slate-600">
-              We connect employers with skilled, job-ready fresh graduates
-              using AI-assisted matching and pre-screening.
-            </p>
-            <div className="mt-5 flex flex-wrap gap-2 text-xs text-slate-600">
-              {["#FresherHiring", "#CampusRecruitment", "#TamilNadu", "#AIRecruitment"].map((tag) => (
-                <span key={tag} className="rounded-full bg-slate-100 px-3 py-2">{tag}</span>
-              ))}
+            <div className="block">
+              <h2>Conclusion</h2>
+              <p>Hiring freshers is no longer just an alternative — it's a smart business strategy. Fresh graduates bring energy, adaptability, and a willingness to learn, making them valuable assets for organizations across Tamil Nadu. By defining clear job roles, focusing on skills, offering proper training, and partnering with an experienced recruitment agency like <strong>CoreTalents</strong>, employers can build reliable, future-ready teams — whether in Pondicherry, Cuddalore, Chennai, or Villupuram.</p>
             </div>
-          </div>
-          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6">
-            <h2 className="text-xl font-bold text-emerald-800">
-              Need Freshers Fast?
-            </h2>
-            <p className="mt-2 leading-7 text-emerald-800/80">
-              Share your role and get a pre-screened shortlist within 48 hours.
-            </p>
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-5 block rounded-lg bg-emerald-600 px-5 py-3 text-center font-bold text-white"
-            >
-              Connect on WhatsApp
-            </a>
-          </div>
-        </aside>
+
+            <div className="block">
+              <h2>Frequently Asked Questions (FAQs)</h2>
+
+              <details className="faq-row" open>
+                <summary>How can I hire freshers in Tamil Nadu?<span className="plus-circle">+</span></summary>
+                <p>Through campus recruitment, recruitment agencies, internship programs, employee referrals, and online job portals.</p>
+              </details>
+              <details className="faq-row">
+                <summary>Why should businesses hire fresh graduates?<span className="plus-circle">+</span></summary>
+                <p>Freshers are easier to train, cost-effective, adaptable, and often stay longer with organizations that invest in their growth.</p>
+              </details>
+              <details className="faq-row">
+                <summary>How long does it take to hire a fresher?<span className="plus-circle">+</span></summary>
+                <p>With a structured recruitment partner, employers can receive a shortlisted set of candidates within 48 hours for suitable roles.</p>
+              </details>
+              <details className="faq-row">
+                <summary>Is campus hiring better than online hiring?<span className="plus-circle">+</span></summary>
+                <p>Campus hiring gives direct access to graduating students, while online hiring offers broader reach — combining both usually delivers the best results.</p>
+              </details>
+              <details className="faq-row">
+                <summary>Why choose CoreTalents for fresher recruitment?<span className="plus-circle">+</span></summary>
+                <p>CoreTalents connects employers with pre-screened, job-ready candidates across Pondicherry, Chennai, Cuddalore, and Villupuram using AI-assisted matching, helping businesses hire faster with confidence.</p>
+              </details>
+            </div>
+
+            <div className="bottom-cta">
+              <h2>Ready to Hire Freshers?</h2>
+              <p>Looking for skilled, job-ready fresh graduates in Pondicherry, Chennai, Cuddalore, or Villupuram? CoreTalents makes hiring simple with AI-assisted matching and a 48-hour candidate shortlist.</p>
+              <a href="https://wa.me/919999999999?text=Hi%20CoreTalents%2C%20I%20want%20to%20hire%20freshers" className="cta-btn" target="_blank" rel="noopener noreferrer">📲 WhatsApp Our Recruitment Team</a>
+            </div>
+          </article>
+
+          <aside>
+            <div className="side-card">
+              <span className="eyebrow-mini">About CoreTalents</span>
+              <div className="brand-row">
+                <div className="brand-logo">C</div>
+                <strong>CoreTalents</strong>
+              </div>
+              <p>CoreTalents connects employers with skilled, job-ready fresh graduates across Pondicherry, Chennai, Cuddalore, and Villupuram — AI-assisted matching, pre-verified candidates, and a 48-hour shortlist.</p>
+              <hr className="side-divider" />
+              <div className="tag-list">
+                <span>#FresherHiring</span>
+                <span>#CampusRecruitment</span>
+                <span>#TamilNadu</span>
+                <span>#AIRecruitment</span>
+                <span>#CoreTalents</span>
+              </div>
+            </div>
+
+            <div className="side-card cta-card">
+              <h3>Need Freshers Fast?</h3>
+              <p>Share your role and get a pre-screened, job-ready shortlist of fresh graduates within 48 hours.</p>
+              <a href="https://wa.me/919999999999?text=Hi%20CoreTalents%2C%20I%20want%20to%20hire%20freshers" className="wa-btn" target="_blank" rel="noopener noreferrer">
+                <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 00-8.6 15L2 22l5.2-1.4A10 10 0 1012 2zm5.6 14.3c-.3.7-1.4 1.3-2 1.4-.5.1-1.1.2-3.6-.8-3-1.2-4.9-4.2-5.1-4.4-.1-.2-1.2-1.6-1.2-3 0-1.4.7-2.1 1-2.4.3-.3.6-.3.8-.3h.6c.2 0 .5-.1.7.5.3.7.9 2.3 1 2.5.1.2.1.4 0 .6-.1.2-.2.3-.4.5-.2.2-.4.5-.5.6-.2.2-.4.4-.2.8.2.4 1 1.6 2.1 2.6 1.4 1.3 2.6 1.7 3 1.9.4.2.6.1.8-.1.2-.2.9-1 1.1-1.3.2-.3.4-.3.7-.2.3.1 1.9.9 2.2 1.1.3.2.5.2.6.4.1.2.1.9-.2 1.6z"/></svg>
+                Connect on WhatsApp
+              </a>
+            </div>
+          </aside>
+        </div>
       </div>
-    </main>
-  </>
-);
+    </>
+  );
+};
 
 export default CoreTalentsHireFreshersTamilNadu;
