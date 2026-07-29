@@ -161,7 +161,7 @@ const CoreTalentsPondicherryBlog = () => {
               <div className="sub"><h3>Pre-Screened &amp; Verified Talent</h3><p>Every candidate in our pipeline is pre-interviewed, verified, and assessed before being recommended to employers.</p></div>
               <div className="sub"><h3>Local Market Knowledge</h3><p>We understand Pondicherry's hiring landscape, salary benchmarks, and talent availability across sectors from IT to retail to manufacturing.</p></div>
 
-              <div className="cta-wrap"><a href="mailto:hire@coretalents.in?subject=Recruitment%20Requirement%20%E2%80%93%20Pondicherry" className="cta-btn cta-solid">🎯 Share Your Hiring Requirement</a></div>
+              <div className="cta-wrap"><a href="https://wa.me/919944509441?text=Hi%20CoreTalents%2C%20I%20need%20to%20hire%20in%20Pondicherry" className="cta-btn cta-solid" target="_blank" rel="noopener noreferrer">🎯 Share Your Hiring Requirement</a></div>
             </div>
 
             <div className="block">
@@ -190,7 +190,7 @@ const CoreTalentsPondicherryBlog = () => {
               <div className="sub"><h3>Step 2 — Receive a Shortlist</h3><p>We match from our database, screen candidates, and deliver a verified shortlist — typically within 48 hours for standard roles.</p></div>
               <div className="sub"><h3>Step 3 — Interview &amp; Hire</h3><p>You interview only qualified profiles. We coordinate scheduling, assist with offer, and follow up through joining to reduce drop-offs.</p></div>
 
-              <div className="cta-wrap"><a href="https://wa.me/919999999999?text=Hi%20CoreTalents%2C%20I%20need%20to%20hire%20in%20Pondicherry" className="cta-btn cta-solid2" target="_blank" rel="noopener noreferrer">⚡ Get Your 48-Hour Shortlist</a></div>
+              <div className="cta-wrap"><a href="https://wa.me/919944509441?text=Hi%20CoreTalents%2C%20I%20need%20to%20hire%20in%20Pondicherry" className="cta-btn cta-solid2" target="_blank" rel="noopener noreferrer">⚡ Get Your 48-Hour Shortlist</a></div>
             </div>
 
             <div className="block">
@@ -270,7 +270,7 @@ const CoreTalentsPondicherryBlog = () => {
               <div className="sub"><h3>Connected to BM Academy</h3><p>CoreTalents is supported by BM Academy — which has trained 1,400+ students and placed 150+ graduates — giving employers access to job-ready, trained candidates.</p></div>
               <div className="sub"><h3>Covering Pondicherry &amp; Beyond</h3><p>We recruit across Pondicherry, Cuddalore, Villupuram, Karaikal, Chennai, and other Tamil Nadu locations depending on your requirement.</p></div>
 
-              <div className="cta-wrap"><Link to="/" className="cta-btn cta-outline">⭐ View Our Services</Link></div>
+              <div className="cta-wrap"><Link to="/services" className="cta-btn cta-outline">⭐ View Our Services</Link></div>
             </div>
 
             <div className="block">
@@ -306,7 +306,7 @@ const CoreTalentsPondicherryBlog = () => {
             <div className="bottom-cta">
               <h2>Ready to Hire in Pondicherry?</h2>
               <p>Share your hiring requirement and get a pre-screened, AI-matched candidate shortlist within 48 hours. No lengthy process — just results.</p>
-              <a href="https://wa.me/919999999999?text=Hi%20CoreTalents%2C%20I%20need%20to%20hire%20in%20Pondicherry" className="cta-btn" target="_blank" rel="noopener noreferrer">📲 WhatsApp Our Recruitment Team</a>
+              <a href="https://wa.me/919944509441?text=Hi%20CoreTalents%2C%20I%20need%20to%20hire%20in%20Pondicherry" className="cta-btn" target="_blank" rel="noopener noreferrer">📲 WhatsApp Our Recruitment Team</a>
             </div>
           </article>
 
@@ -331,7 +331,7 @@ const CoreTalentsPondicherryBlog = () => {
             <div className="side-card cta-card">
               <h3>Hire in 48 Hours</h3>
               <p>Share your role and receive a pre-screened, job-ready candidate shortlist within 48 hours — no lengthy process.</p>
-              <a href="https://wa.me/919999999999?text=Hi%20CoreTalents%2C%20I%20need%20to%20hire%20in%20Pondicherry" className="wa-btn" target="_blank" rel="noopener noreferrer">
+              <a href="https://wa.me/919944509441?text=Hi%20CoreTalents%2C%20I%20need%20to%20hire%20in%20Pondicherry" className="wa-btn" target="_blank" rel="noopener noreferrer">
                 <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 00-8.6 15L2 22l5.2-1.4A10 10 0 1012 2zm5.6 14.3c-.3.7-1.4 1.3-2 1.4-.5.1-1.1.2-3.6-.8-3-1.2-4.9-4.2-5.1-4.4-.1-.2-1.2-1.6-1.2-3 0-1.4.7-2.1 1-2.4.3-.3.6-.3.8-.3h.6c.2 0 .5-.1.7.5.3.7.9 2.3 1 2.5.1.2.1.4 0 .6-.1.2-.2.3-.4.5-.2.2-.4.5-.5.6-.2.2-.4.4-.2.8.2.4 1 1.6 2.1 2.6 1.4 1.3 2.6 1.7 3 1.9.4.2.6.1.8-.1.2-.2.9-1 1.1-1.3.2-.3.4-.3.7-.2.3.1 1.9.9 2.2 1.1.3.2.5.2.6.4.1.2.1.9-.2 1.6z"/></svg>
                 Connect on WhatsApp
               </a>

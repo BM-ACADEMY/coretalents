@@ -164,7 +164,7 @@ const CoreTalentsRecruitmentFeesCostIndia = () => {
               <div className="sub"><h3>Interview Coordination</h3><p>Scheduling, follow-ups, and communication handled on your behalf, start to finish.</p></div>
               <div className="sub"><h3>Offer Management &amp; Follow-Up</h3><p>Support through offer negotiation, joining, and early follow-up to reduce drop-offs.</p></div>
 
-              <div className="cta-wrap"><a href="mailto:hire@coretalents.in?subject=Recruitment%20Fee%20Quote%20Request" className="cta-btn cta-solid">🎯 Get a Custom Recruitment Quote</a></div>
+              <div className="cta-wrap"><a href="https://wa.me/919944509441?text=Hi%20CoreTalents%2C%20I%20want%20a%20Recruitment%20Fee%20Quote" className="cta-btn cta-solid" target="_blank" rel="noopener noreferrer">🎯 Get a Custom Recruitment Quote</a></div>
             </div>
 
             <div className="block">
@@ -206,7 +206,7 @@ const CoreTalentsRecruitmentFeesCostIndia = () => {
               <div className="sub"><h3>Fixed Fee &amp; Monthly Subscription</h3><p>Some agencies charge a flat amount (₹15,000–₹40,000) regardless of salary — useful for repeated hiring — or an unlimited monthly plan for companies hiring continuously.</p></div>
               <div className="sub"><h3>What to Look For</h3><p>Industry experience, local market knowledge of Pondicherry, Chennai, Villupuram, and Cuddalore, transparent pricing, and a clear replacement policy in writing.</p></div>
 
-              <div className="cta-wrap"><a href="https://wa.me/919999999999?text=Hi%20CoreTalents%2C%20I%20want%20to%20know%20your%20recruitment%20fees" className="cta-btn cta-solid2" target="_blank" rel="noopener noreferrer">🔍 Talk to a Recruitment Consultant</a></div>
+              <div className="cta-wrap"><a href="https://wa.me/919944509441?text=Hi%20CoreTalents%2C%20I%20want%20to%20know%20your%20recruitment%20fees" className="cta-btn cta-solid2" target="_blank" rel="noopener noreferrer">🔍 Talk to a Recruitment Consultant</a></div>
             </div>
 
             <div className="block">
@@ -325,7 +325,7 @@ const CoreTalentsRecruitmentFeesCostIndia = () => {
             <div className="bottom-cta">
               <h2>Ready to Hire the Right Talent?</h2>
               <p>Finding the right employee doesn't have to be difficult. CoreTalents helps businesses hire skilled, pre-screened candidates quickly with AI-assisted matching and a 48-hour candidate shortlist.</p>
-              <a href="https://wa.me/919999999999?text=Hi%20CoreTalents%2C%20I%20want%20to%20discuss%20a%20hiring%20requirement" className="cta-btn" target="_blank" rel="noopener noreferrer">💬 Connect With Us on WhatsApp</a>
+              <a href="https://wa.me/919944509441?text=Hi%20CoreTalents%2C%20I%20want%20to%20discuss%20a%20hiring%20requirement" className="cta-btn" target="_blank" rel="noopener noreferrer">💬 Connect With Us on WhatsApp</a>
             </div>
           </article>
 
@@ -350,7 +350,7 @@ const CoreTalentsRecruitmentFeesCostIndia = () => {
             <div className="side-card cta-card">
               <h3>Wondering What It'll Cost?</h3>
               <p>Share your hiring requirement and get a clear, upfront quote — no hidden charges.</p>
-              <a href="https://wa.me/919999999999?text=Hi%20CoreTalents%2C%20I%20want%20a%20recruitment%20fee%20quote" className="wa-btn" target="_blank" rel="noopener noreferrer">
+              <a href="https://wa.me/919944509441?text=Hi%20CoreTalents%2C%20I%20want%20a%20recruitment%20fee%20quote" className="wa-btn" target="_blank" rel="noopener noreferrer">
                 <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 00-8.6 15L2 22l5.2-1.4A10 10 0 1012 2zm5.6 14.3c-.3.7-1.4 1.3-2 1.4-.5.1-1.1.2-3.6-.8-3-1.2-4.9-4.2-5.1-4.4-.1-.2-1.2-1.6-1.2-3 0-1.4.7-2.1 1-2.4.3-.3.6-.3.8-.3h.6c.2 0 .5-.1.7.5.3.7.9 2.3 1 2.5.1.2.1.4 0 .6-.1.2-.2.3-.4.5-.2.2-.4.5-.5.6-.2.2-.4.4-.2.8.2.4 1 1.6 2.1 2.6 1.4 1.3 2.6 1.7 3 1.9.4.2.6.1.8-.1.2-.2.9-1 1.1-1.3.2-.3.4-.3.7-.2.3.1 1.9.9 2.2 1.1.3.2.5.2.6.4.1.2.1.9-.2 1.6z"/></svg>
                 Connect on WhatsApp
               </a>
