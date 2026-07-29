@@ -129,7 +129,7 @@ const CoreTalentsRecruitmentFeesCostIndia = () => {
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><circle cx="7" cy="7" r="1"/></svg>
               HIRING COSTS
             </span>
-            <h1>Recruitment Agency Fees &amp; Cost in India (2026): Complete Guide for Employers</h1>
+            <h1>Recruitment agency fees &amp; cost in India</h1>
 
             <div className="meta-row">
               <span>
@@ -138,7 +138,7 @@ const CoreTalentsRecruitmentFeesCostIndia = () => {
               </span>
               <span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>
-                7/24/2026
+                August 3, 2026
               </span>
             </div>
 
