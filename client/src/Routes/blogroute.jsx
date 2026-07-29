@@ -12,22 +12,20 @@ const Blogroute = () => {
   return (
     <div>
 
-       <Helmet>
+      <Helmet>
         <title>Recruitment & Hiring Insights Blog | Core Talents</title>
         <meta
           name="description"
           content="Read expert insights on recruitment, AI hiring, staffing trends, and career growth from Core Talents."
         />
       </Helmet>
-
-      
       <Routes>
-      <Route index element={<BlogList />} />
-      <Route path="coretalents-pondicherry" element={<CoreTalentsPondicherryBlog />} />
-      <Route path="coretalents-hire-freshers-tamil-nadu" element={<CoreTalentsHireFreshersTamilNadu />} />
-      <Route path="coretalents-recruitment-fees-cost-india" element={<CoreTalentsRecruitmentFeesCostIndia />} />
-      <Route path=":slug" element={<BlogDetails />} />
-    </Routes>
+        <Route index element={<BlogList />} />
+        <Route path="coretalents-pondicherry" element={<CoreTalentsPondicherryBlog />} />
+        <Route path="coretalents-hire-freshers-tamil-nadu" element={<CoreTalentsHireFreshersTamilNadu />} />
+        <Route path="coretalents-recruitment-fees-cost-india" element={<CoreTalentsRecruitmentFeesCostIndia />} />
+        <Route path=":slug" element={<BlogDetails />} />
+      </Routes>
     </div>
   )
 }
