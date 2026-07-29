@@ -161,7 +161,7 @@ const CoreTalentsHireFreshersTamilNadu = () => {
               <div className="sub"><h3>Better Employee Loyalty</h3><p>Employees who start their careers with you tend to stay longer when given real learning opportunities.</p></div>
               <div className="sub"><h3>Fresh Ideas &amp; Digital Skills</h3><p>Young graduates arrive fluent in AI tools, digital marketing, Canva, ChatGPT, and data analytics.</p></div>
 
-              <div className="cta-wrap"><a href="mailto:hire@coretalents.in?subject=Fresher%20Hiring%20Requirement" className="cta-btn cta-solid">🎯 Post Your Fresher Job Role</a></div>
+              <div className="cta-wrap"><a href="https://wa.me/919944509441?text=Hi%20CoreTalents%2C%20I%20have%20a%20Fresher%20Hiring%20Requirement" className="cta-btn cta-solid" target="_blank" rel="noopener noreferrer">🎯 Post Your Fresher Job Role</a></div>
             </div>
 
             <div className="block">
@@ -190,7 +190,7 @@ const CoreTalentsHireFreshersTamilNadu = () => {
               <div className="sub"><h3>Assess &amp; Interview Practically</h3><p>Simple skill assessments plus practical questions like "Tell us about a college project where you solved a problem" reveal real ability.</p></div>
               <div className="sub"><h3>Verify &amp; Onboard</h3><p>Verify educational certificates, ID, and references, then offer structured training covering company culture, software, and customer interaction.</p></div>
 
-              <div className="cta-wrap"><a href="https://wa.me/919999999999?text=Hi%20CoreTalents%2C%20I%20want%20to%20hire%20freshers" className="cta-btn cta-solid2" target="_blank" rel="noopener noreferrer">⚡ Get a Fresher Shortlist in 48 Hours</a></div>
+              <div className="cta-wrap"><a href="https://wa.me/919944509441?text=Hi%20CoreTalents%2C%20I%20want%20to%20hire%20freshers" className="cta-btn cta-solid2" target="_blank" rel="noopener noreferrer">⚡ Get a Fresher Shortlist in 48 Hours</a></div>
             </div>
 
             <div className="block">
@@ -306,7 +306,7 @@ const CoreTalentsHireFreshersTamilNadu = () => {
             <div className="bottom-cta">
               <h2>Ready to Hire Freshers?</h2>
               <p>Looking for skilled, job-ready fresh graduates in Pondicherry, Chennai, Cuddalore, or Villupuram? CoreTalents makes hiring simple with AI-assisted matching and a 48-hour candidate shortlist.</p>
-              <a href="https://wa.me/919999999999?text=Hi%20CoreTalents%2C%20I%20want%20to%20hire%20freshers" className="cta-btn" target="_blank" rel="noopener noreferrer">📲 WhatsApp Our Recruitment Team</a>
+              <a href="https://wa.me/919944509441?text=Hi%20CoreTalents%2C%20I%20want%20to%20hire%20freshers" className="cta-btn" target="_blank" rel="noopener noreferrer">📲 WhatsApp Our Recruitment Team</a>
             </div>
           </article>
 
@@ -331,7 +331,7 @@ const CoreTalentsHireFreshersTamilNadu = () => {
             <div className="side-card cta-card">
               <h3>Need Freshers Fast?</h3>
               <p>Share your role and get a pre-screened, job-ready shortlist of fresh graduates within 48 hours.</p>
-              <a href="https://wa.me/919999999999?text=Hi%20CoreTalents%2C%20I%20want%20to%20hire%20freshers" className="wa-btn" target="_blank" rel="noopener noreferrer">
+              <a href="https://wa.me/919944509441?text=Hi%20CoreTalents%2C%20I%20want%20to%20hire%20freshers" className="wa-btn" target="_blank" rel="noopener noreferrer">
                 <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 00-8.6 15L2 22l5.2-1.4A10 10 0 1012 2zm5.6 14.3c-.3.7-1.4 1.3-2 1.4-.5.1-1.1.2-3.6-.8-3-1.2-4.9-4.2-5.1-4.4-.1-.2-1.2-1.6-1.2-3 0-1.4.7-2.1 1-2.4.3-.3.6-.3.8-.3h.6c.2 0 .5-.1.7.5.3.7.9 2.3 1 2.5.1.2.1.4 0 .6-.1.2-.2.3-.4.5-.2.2-.4.5-.5.6-.2.2-.4.4-.2.8.2.4 1 1.6 2.1 2.6 1.4 1.3 2.6 1.7 3 1.9.4.2.6.1.8-.1.2-.2.9-1 1.1-1.3.2-.3.4-.3.7-.2.3.1 1.9.9 2.2 1.1.3.2.5.2.6.4.1.2.1.9-.2 1.6z"/></svg>
                 Connect on WhatsApp
               </a>
