@@ -6,6 +6,36 @@ import logo from "@/assets/logo/logo1.png"
 
 const featuredBlogs = [
   {
+    _id: "staffing-solutions-tamil-nadu",
+    slug: "staffing-solutions-tamil-nadu",
+    category: "Startup Hiring",
+    title: "Staffing solutions for startups in Tamil Nadu",
+    description: "A practical guide to faster, flexible staffing for startups building teams across Tamil Nadu.",
+    coverImage: { url: "https://images.unsplash.com/photo-1559523182-a284c3fb7cff?fm=jpg&q=75&w=1200&auto=format&fit=crop" },
+    createdAt: "2026-07-24",
+    status: "published",
+  },
+  {
+    _id: "reduce-time-to-hire",
+    slug: "reduce-time-to-hire",
+    category: "Faster Hiring",
+    title: "How to reduce time-to-hire for small business",
+    description: "Practical ways to streamline recruitment, engage candidates, and fill small-business vacancies faster.",
+    coverImage: { url: "https://images.unsplash.com/photo-1490724500206-cd5482e02b9e?fm=jpg&q=75&w=1200&auto=format&fit=crop" },
+    createdAt: "2026-07-24",
+    status: "published",
+  },
+  {
+    _id: "pay-after-hire-recruitment",
+    slug: "pay-after-hire-recruitment",
+    category: "Smart Hiring",
+    title: "Pay-after-hire recruitment explained",
+    description: "Learn how success-based recruitment reduces upfront hiring costs and risk for growing businesses.",
+    coverImage: { url: "https://images.unsplash.com/photo-1559523182-a284c3fb7cff?fm=jpg&q=75&w=1200&auto=format&fit=crop" },
+    createdAt: "2026-07-24",
+    status: "published",
+  },
+  {
     _id: "coretalents-pondicherry",
     slug: "coretalents-pondicherry",
     category: "Recruitment Agency",
@@ -87,13 +117,13 @@ const BlogList = () => {
                   <img
                     src={
                       blog.coverImage?.url?.startsWith("http") ||
-                      blog.coverImage?.url?.startsWith("/")
+                        blog.coverImage?.url?.startsWith("/")
                         ? blog.coverImage.url
                         : `${import.meta.env.VITE_SERVER_URL}${blog.coverImage?.url}`
                     }
                     alt={blog.title}
                     className="w-full aspect-[16/10] object-cover object-top-center transition-transform duration-500"
-                    
+
                   />
                 </div>
               </div>
@@ -101,12 +131,12 @@ const BlogList = () => {
               {/* Content Area */}
               <div className="p-6 pt-5 flex flex-col flex-grow">
                 <div className="flex flex-wrap gap-2 mb-4">
-                  
-                    <span className="bg-[#f0f2f5] text-[#6b7280] text-[12px] font-medium px-4 py-1 rounded-full">
-                       {blog.category}
-                    </span>
-                 
-                  
+
+                  <span className="bg-[#f0f2f5] text-[#6b7280] text-[12px] font-medium px-4 py-1 rounded-full">
+                    {blog.category}
+                  </span>
+
+
                 </div>
 
                 {/* Title (Removed internal Link to avoid nested <a> tags) */}
@@ -122,20 +152,20 @@ const BlogList = () => {
                 <div className="mt-auto pt-4 flex items-center justify-between border-t border-gray-200">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-[#ecb812] flex items-center justify-center text-white font-bold text-sm uppercase">
-                      <img src={logo} alt="logo"/>
+                      <img src={logo} alt="logo" />
                     </div>
                     <div className="flex flex-col">
                       <span className="text-[14px] font-bold text-[#1a1a1a]">
-                       Core Talents
+                        Core Talents
                       </span>
                       <span className="text-[12px] text-gray-400">
                         {new Date(blog.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
                       </span>
                     </div>
                   </div>
-                  
+
                   {/* Bookmark Button (Prevents card click) */}
-                  <button 
+                  <button
                     onClick={(e) => {
                       e.preventDefault(); // Prevents following the Link
                       e.stopPropagation(); // Prevents the click from bubbling up to the Link
