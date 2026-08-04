@@ -12,7 +12,7 @@ const featuredBlogs = [
     title: "Staffing solutions for startups in Tamil Nadu",
     description: "A practical guide to faster, flexible staffing for startups building teams across Tamil Nadu.",
     coverImage: { url: "https://images.unsplash.com/photo-1559523182-a284c3fb7cff?fm=jpg&q=75&w=1200&auto=format&fit=crop" },
-    createdAt: "2026-07-24",
+    createdAt: "2026-08-10",
     status: "published",
   },
   {
@@ -22,7 +22,7 @@ const featuredBlogs = [
     title: "How to reduce time-to-hire for small business",
     description: "Practical ways to streamline recruitment, engage candidates, and fill small-business vacancies faster.",
     coverImage: { url: "https://images.unsplash.com/photo-1490724500206-cd5482e02b9e?fm=jpg&q=75&w=1200&auto=format&fit=crop" },
-    createdAt: "2026-07-24",
+    createdAt: "2026-08-08",
     status: "published",
   },
   {
@@ -32,7 +32,7 @@ const featuredBlogs = [
     title: "Pay-after-hire recruitment explained",
     description: "Learn how success-based recruitment reduces upfront hiring costs and risk for growing businesses.",
     coverImage: { url: "https://images.unsplash.com/photo-1559523182-a284c3fb7cff?fm=jpg&q=75&w=1200&auto=format&fit=crop" },
-    createdAt: "2026-07-24",
+    createdAt: "2026-08-06",
     status: "published",
   },
   {

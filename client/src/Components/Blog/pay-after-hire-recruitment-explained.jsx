@@ -48,7 +48,7 @@ const PayAfterHireRecruitmentExplained = () => (
           <nav className="breadcrumb" aria-label="Breadcrumb"><Link to="/">Home</Link><span>›</span><Link to="/blog">Blog</Link><span>›</span><span className="current">Pay After Hire Recruitment</span></nav>
           <span className="tag-pill">🏷 SMART HIRING</span>
           <h1>Pay After Hire Recruitment Explained: A Smart Hiring Model for Businesses in India</h1>
-          <div className="meta-row"><span>CoreTalents Team</span><span>July 24, 2026</span></div>
+          <div className="meta-row"><span>CoreTalents Team</span><span>August 6, 2026</span></div>
           <div className="media"><img src="https://images.unsplash.com/photo-1559523182-a284c3fb7cff?fm=jpg&q=75&w=1600&auto=format&fit=crop" alt="Startup team discussing a hiring plan" /></div>
           <p className="credit">Photo by Austin Distel on Unsplash</p>
           <p className="lead">Pay-after-hire recruitment is a model where employers pay the recruitment agency only after a candidate is successfully hired and joins the company. It reduces upfront hiring costs and recruitment risk for startups, SMEs, and growing companies across India.</p>

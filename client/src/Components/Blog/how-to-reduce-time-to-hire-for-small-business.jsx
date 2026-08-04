@@ -24,7 +24,7 @@ const HowToReduceTimeToHireForSmallBusiness = () => (
     `}</style>
     <div className="tth"><div className="page"><article>
       <nav className="crumb" aria-label="Breadcrumb"><Link to="/">Home</Link><span>›</span><Link to="/blog">Blog</Link><span>›</span><strong>Reduce Time-to-Hire</strong></nav>
-      <span className="pill">🏷 FASTER HIRING</span><h1>How to Reduce Time-to-Hire for Small Businesses: A Complete Guide (2026)</h1><div className="meta"><span>CoreTalents Team</span><span>July 24, 2026</span></div>
+      <span className="pill">🏷 FASTER HIRING</span><h1>How to Reduce Time-to-Hire for Small Businesses: A Complete Guide (2026)</h1><div className="meta"><span>CoreTalents Team</span><span>August 8, 2026</span></div>
       <div className="media"><img src="https://images.unsplash.com/photo-1490724500206-cd5482e02b9e?fm=jpg&q=75&w=1600&auto=format&fit=crop" alt="Desk clock beside a pen and notebook, symbolizing hiring speed" /></div><p className="credit">Photo by freestocks on Unsplash</p>
       <p className="lead">Reducing time-to-hire means filling vacancies faster without compromising candidate quality. Small businesses can do this with clear job descriptions, simpler interviews, recruitment support, an active talent pipeline, and prompt candidate communication.</p><p>When recruitment takes weeks or months, projects are delayed, current employees become overworked, and strong candidates accept competing offers. A small business does not need a large HR team to hire quickly—it needs a focused process.</p>
 
