@@ -31,7 +31,7 @@ const featuredBlogs = [
     category: "Smart Hiring",
     title: "Pay-after-hire recruitment explained",
     description: "Learn how success-based recruitment reduces upfront hiring costs and risk for growing businesses.",
-    coverImage: { url: "https://images.unsplash.com/photo-1559523182-a284c3fb7cff?fm=jpg&q=75&w=1200&auto=format&fit=crop" },
+    coverImage: { url: "/blog-images/ai-assisted-candidate-matching.png" },
     createdAt: "2026-08-06",
     status: "published",
   },

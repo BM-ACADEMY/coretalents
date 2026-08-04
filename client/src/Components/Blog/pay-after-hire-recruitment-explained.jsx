@@ -49,8 +49,8 @@ const PayAfterHireRecruitmentExplained = () => (
           <span className="tag-pill">🏷 SMART HIRING</span>
           <h1>Pay After Hire Recruitment Explained: A Smart Hiring Model for Businesses in India</h1>
           <div className="meta-row"><span>CoreTalents Team</span><span>August 6, 2026</span></div>
-          <div className="media"><img src="https://images.unsplash.com/photo-1559523182-a284c3fb7cff?fm=jpg&q=75&w=1600&auto=format&fit=crop" alt="Startup team discussing a hiring plan" /></div>
-          <p className="credit">Photo by Austin Distel on Unsplash</p>
+          <div className="media"><img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?fm=jpg&q=75&w=1600&auto=format&fit=crop" alt="Business professionals shaking hands after a successful hire" /></div>
+          <p className="credit">Photo by Cytonn Photography on Unsplash</p>
           <p className="lead">Pay-after-hire recruitment is a model where employers pay the recruitment agency only after a candidate is successfully hired and joins the company. It reduces upfront hiring costs and recruitment risk for startups, SMEs, and growing companies across India.</p>
           <p>Hiring the right employee can be expensive and time-consuming. Businesses often spend on advertisements, resume screening, interviews, and HR resources without any guarantee of a successful hire. Under this model, the agency is paid only after the selected candidate joins.</p>
 
