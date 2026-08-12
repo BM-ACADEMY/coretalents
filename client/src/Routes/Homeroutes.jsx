@@ -28,7 +28,7 @@ const Homeroutes = () => {
         />
       </Helmet>
 
-      <HomePopup />
+      {/* <HomePopup /> */}
       <Homepage />
       <Section />
       <About />
