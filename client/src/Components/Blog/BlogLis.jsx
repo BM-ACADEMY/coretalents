@@ -6,6 +6,16 @@ import logo from "@/assets/logo/logo1.png"
 
 const featuredBlogs = [
   {
+    _id: "hire-digital-marketing-staff",
+    slug: "hire-digital-marketing-staff",
+    category: "Hiring Guide",
+    title: "Hire Digital Marketing Staff (Job-Ready Freshers)",
+    description: "A complete guide to hiring job-ready digital marketing freshers in Tamil Nadu — covering skills, roles, and how CoreTalents delivers pre-screened candidates within 48 hours.",
+    coverImage: { url: "https://images.unsplash.com/photo-1758691736580-a41e0cfe9e9f?auto=format&fit=crop&w=1200&q=80" },
+    createdAt: "2026-08-13",
+    status: "published",
+  },
+  {
     _id: "staffing-solutions-tamil-nadu",
     slug: "staffing-solutions-tamil-nadu",
     category: "Startup Hiring",
