@@ -46,13 +46,13 @@ const featuredBlogs = [
     status: "published",
   },
   {
-    _id: "coretalents-pondicherry",
-    slug: "coretalents-pondicherry",
-    category: "Recruitment Agency",
-    title: "Recruitment Agency in Pondicherry",
-    description: "Discover how CoreTalents helps Pondicherry businesses find qualified, pre-screened candidates quickly.",
-    coverImage: { url: "/blog-images/pondicherry-recruitment.png" },
-    createdAt: "2026-07-29",
+    _id: "coretalents-recruitment-fees-cost-india",
+    slug: "coretalents-recruitment-fees-cost-india",
+    category: "Hiring Costs",
+    title: "Recruitment agency fees & cost in India",
+    description: "Understand pricing models, typical agency fees, hidden hiring costs, and how to choose the right partner.",
+    coverImage: { url: "/blog-images/india-recruitment-fees.png" },
+    createdAt: "2026-08-03",
     status: "published",
   },
   {
@@ -66,13 +66,13 @@ const featuredBlogs = [
     status: "published",
   },
   {
-    _id: "coretalents-recruitment-fees-cost-india",
-    slug: "coretalents-recruitment-fees-cost-india",
-    category: "Hiring Costs",
-    title: "Recruitment agency fees & cost in India",
-    description: "Understand pricing models, typical agency fees, hidden hiring costs, and how to choose the right partner.",
-    coverImage: { url: "/blog-images/india-recruitment-fees.png" },
-    createdAt: "2026-08-03",
+    _id: "coretalents-pondicherry",
+    slug: "coretalents-pondicherry",
+    category: "Recruitment Agency",
+    title: "Recruitment Agency in Pondicherry",
+    description: "Discover how CoreTalents helps Pondicherry businesses find qualified, pre-screened candidates quickly.",
+    coverImage: { url: "/blog-images/pondicherry-recruitment.png" },
+    createdAt: "2026-07-29",
     status: "published",
   },
 ];
@@ -99,7 +99,7 @@ const BlogList = () => {
         blog.status === "published" &&
         !featuredBlogs.some((featured) => featured.slug === blog.slug),
     ),
-  ];
+  ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   return (
     <div className="bg-[#F3F4F6] min-h-screen pt-[70px]">
