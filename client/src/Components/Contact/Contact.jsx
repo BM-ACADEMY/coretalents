@@ -108,8 +108,7 @@ const Contact = () => {
                     rel="noopener noreferrer"
                     className="text-lg text-gray-800 pt-1 hover:text-[#ffc700] transition"
                   >
-                    252, 2nd floor, M G ROAD, KOTTAKUPPAM, Vanur, Tamil Nadu
-                    605104
+                   78, Lenin Street, Kosapalayam, Puducherry – 605013.
                   </a>
                 </div>
 
